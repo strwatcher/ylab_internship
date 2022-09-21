@@ -1,15 +1,15 @@
 import React from 'react';
-import useSelector from "../hooks/use-selector";
+import {useSelector as useSelectorRedux} from 'react-redux'
 import {Routes, Route} from "react-router-dom";
-import useInit from "../hooks/use-init";
-import useStore from "../hooks/use-store";
+import useSelector from "@src/hooks/use-selector";
+import useInit from "@src/hooks/use-init";
+import useStore from "@src/hooks/use-store";
+import Protected from "@src/containers/protected";
 import Main from "./main";
 import Basket from "./basket";
 import Article from "./article";
 import Login from "./login";
 import Profile from "./profile";
-import Protected from "../containers/protected";
-import {useSelector as useSelectorRedux} from 'react-redux'
 
 /**
  * Приложение

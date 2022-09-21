@@ -1,4 +1,4 @@
-import StateModule from "../module";
+import StateModule from "@src/store/module";
 
 /**
  * Состояние товара

@@ -1,13 +1,13 @@
 import React from "react";
-import useStore from "../../hooks/use-store";
-import useSelector from "../../hooks/use-selector";
-import useInit from "../../hooks/use-init";
-import Spinner from "../../components/spinner";
-import Layout from "../../components/layout";
-import TopContainer from "../../containers/top";
-import HeadContainer from "../../containers/head";
-import ToolsContainer from "../../containers/tools";
-import ProfileCard from "../../components/profile-card";
+import useStore from "@src/hooks/use-store";
+import useSelector from "@src/hooks/use-selector";
+import useInit from "@src/hooks/use-init";
+import Spinner from "@src/components/elements/spinner";
+import Layout from "@src/components/layouts/layout";
+import TopContainer from "@src/containers/top";
+import HeadContainer from "@src/containers/head";
+import ToolsContainer from "@src/containers/tools";
+import ProfileCard from "@src/components/profile/profile-card";
 
 function Profile(){
   const store = useStore();

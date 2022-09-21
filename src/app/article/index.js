@@ -1,17 +1,17 @@
 import React, {useCallback} from "react";
 import {useStore as useStoreRedux, useSelector as useSelectorRedux, shallowEqual} from "react-redux";
-import useStore from "../../hooks/use-store";
-import useSelector from "../../hooks/use-selector";
+import useStore from "@src/hooks/use-store";
+import useSelector from "@src/hooks/use-selector";
 import {useParams} from "react-router-dom";
-import useInit from "../../hooks/use-init";
-import useTranslate from "../../hooks/use-translate";
-import ArticleCard from "../../components/article-card";
-import Spinner from "../../components/spinner";
-import Layout from "../../components/layout";
-import TopContainer from "../../containers/top";
-import HeadContainer from "../../containers/head";
-import ToolsContainer from "../../containers/tools";
-import actionsArticle from '../../store-redux/article/actions';
+import useInit from "@src/hooks/use-init";
+import useTranslate from "@src/hooks/use-translate";
+import ArticleCard from "@src/components/catalog/article-card";
+import Spinner from "@src/components/elements/spinner";
+import Layout from "@src/components/layouts/layout";
+import TopContainer from "@src/containers/top";
+import HeadContainer from "@src/containers/head";
+import ToolsContainer from "@src/containers/tools";
+import actionsArticle from '@src/store-redux/article/actions';
 
 function Article(){
   const store = useStore();

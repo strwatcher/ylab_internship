@@ -1,13 +1,13 @@
 import React, {useCallback, useMemo} from "react";
-import useSelector from "../../hooks/use-selector";
-import useStore from "../../hooks/use-store";
-import useTranslate from "../../hooks/use-translate";
-import Select from "../../components/select";
-import Input from "../../components/input";
-import LayoutFlex from "../../components/layout-flex";
-import {categories} from "../../store/exports";
-import listToTree from "../../utils/list-to-tree";
-import treeToList from "../../utils/tree-to-list";
+import useSelector from "@src/hooks/use-selector";
+import useStore from "@src/hooks/use-store";
+import useTranslate from "@src/hooks/use-translate";
+import Select from "@src/components/elements/select";
+import Input from "@src/components/elements/input";
+import LayoutFlex from "@src/components/layouts/layout-flex";
+import {categories} from "@src/store/exports";
+import listToTree from "@src/utils/list-to-tree";
+import treeToList from "@src/utils/tree-to-list";
 
 function CatalogFilter() {
 

@@ -1,8 +1,8 @@
 import React from "react";
 import propTypes from "prop-types";
-import useTranslate from "../../hooks/use-translate";
-import LayoutHead from "../../components/layout-head";
-import LocaleSelect from "../locale-select";
+import useTranslate from "@src/hooks/use-translate";
+import LayoutHead from "@src/components/layouts/layout-head";
+import LocaleSelect from "@src/containers/locale-select";
 
 function HeadContainer(props) {
 

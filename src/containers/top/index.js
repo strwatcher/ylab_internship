@@ -1,10 +1,9 @@
 import React, {useCallback} from "react";
-import useTranslate from "../../hooks/use-translate";
-import LayoutFlex from "../../components/layout-flex";
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import useSelector from "../../hooks/use-selector";
-import useStore from "../../hooks/use-store";
-
+import useTranslate from "@src/hooks/use-translate";
+import LayoutFlex from "@src/components/layouts/layout-flex";
+import useSelector from "@src/hooks/use-selector";
+import useStore from "@src/hooks/use-store";
 
 function TopContainer() {
 

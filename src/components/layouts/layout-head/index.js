@@ -1,6 +1,6 @@
 import React from 'react';
 import propTypes from "prop-types";
-import './style.css';
+import './style.less';
 import {cn as bem} from "@bem-react/classname";
 
 function LayoutHead({title, children}){

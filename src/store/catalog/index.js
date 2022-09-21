@@ -1,6 +1,6 @@
-import StateModule from "../module";
-import qs from '../../utils/search-params';
-import diff from "../../utils/diff";
+import StateModule from "@src/store/module";
+import qs from '@src/utils/search-params';
+import diff from "@src/utils/diff";
 
 /**
  * Состояние каталога

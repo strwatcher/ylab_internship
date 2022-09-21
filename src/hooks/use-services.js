@@ -1,5 +1,5 @@
 import {useContext} from "react";
-import {ServicesContext} from "../provider";
+import {ServicesContext} from "@src/provider";
 
 /**
  * Хук для доступа к менеджеру сервисов

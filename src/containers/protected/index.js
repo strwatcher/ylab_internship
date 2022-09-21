@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import propTypes from "prop-types";
 import { useNavigate, useLocation } from "react-router-dom";
-import useSelector from "../../hooks/use-selector";
+import useSelector from "@src/hooks/use-selector";
 
 function Protected({children, redirect}) {
 

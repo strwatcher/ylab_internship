@@ -1,7 +1,7 @@
 import {useCallback} from 'react';
-import useSelector from "./use-selector";
-import translate from "../utils/translate";
-import useStore from "./use-store";
+import useSelector from "@src/hooks/use-selector";
+import translate from "@src/utils/translate";
+import useStore from "@src/hooks/use-store";
 
 /**
  * Хук возвращает функция для локализации текстов

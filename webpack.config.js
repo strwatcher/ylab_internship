@@ -1,6 +1,8 @@
 // Режим сборки development или production
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
+const webpack = require('webpack');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
@@ -15,6 +17,14 @@ let config = {
     clean: true, // Очистить ./dist от предыдущей сборки
   },
   plugins: [
+    new ProgressBarPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        IS_WEB: process.env.TARGET === 'web',
+        IS_NODE: process.env.TARGET === 'node',
+      },
+    }),
     new MiniCssExtractPlugin(), // Сборка стилей в отдельный файл
     new HtmlWebPackPlugin({ // Создание dist/index.html с подключенной сборкой
       template: './index.html',
@@ -25,7 +35,10 @@ let config = {
   //
   resolve: {
     extensions: ['.js', '.jsx'], // Расширения по умолчанию, если не указаны в import
-    modules: ['./', 'node_modules'], // Где искать файлы подключаемых модулей
+    modules: [path.resolve(__dirname, 'src'), 'node_modules'], // Где искать файлы подключаемых модулей
+    alias: {
+      '@src': path.resolve(__dirname, './src'),
+    },
   },
   module: {
     rules: [
@@ -44,6 +57,18 @@ let config = {
           {loader: 'css-loader', options: {url: true, import: true/*, modules: true*/}},
         ],
       },
+      {
+        test: /\.less$/,
+        use: [
+          { loader: MiniCssExtractPlugin.loader, options: {} },
+          { loader: 'css-loader', options: { url: true, import: true } },
+          { loader: 'less-loader', options: { lessOptions: {} } },
+        ],
+      },
+      {
+        test: /\.(svg|png|swf|jpg|otf|eot|ttf|woff|woff2)(\?.*)?$/,
+        type: 'asset',
+      },
     ],
   },
 };
@@ -53,8 +78,9 @@ if (process.env.NODE_ENV === 'development') {
   config.devtool = 'inline-source-map';
   config.devServer = {
     static: path.join(__dirname, 'dist'),
-    port: 8010,
     historyApiFallback: true,
+    port: 8020,
+    // Прокси на апи, если режим разработки
     proxy: {
       '/api/**': {
         target: 'http://example.front.ylab.io',

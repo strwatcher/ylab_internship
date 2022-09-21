@@ -1,5 +1,5 @@
-import StateModule from "../module";
-import qs from "../../utils/search-params";
+import StateModule from "@src/store/module";
+import qs from "@src/utils/search-params";
 
 /**
  * Состояние товара

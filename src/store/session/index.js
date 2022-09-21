@@ -1,5 +1,5 @@
-import StateModule from "../module";
-import simplifyErrors from "../../utils/simplify-errors";
+import StateModule from "@src/store/module";
+import simplifyErrors from "@src/utils/simplify-errors";
 
 /**
  * Сессия
