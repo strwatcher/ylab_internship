@@ -44,6 +44,7 @@ function SearchSelect({ options, onSelect }) {
 
     select: (index) => () => {
       setCurrentOption(index);
+      setShow(false);
     },
   };
 
