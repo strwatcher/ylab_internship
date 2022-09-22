@@ -1,15 +1,22 @@
 .wrapper {
+  --width: 240px;
 }
 
 .head {
-  width: 200px;
-  height: 50px;
+  min-width: var(--width);
+  min-height: 30px;
   position: relative;
   background-color: bisque;
+  // outline: none;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .body {
-  width: 200px;
+  width: var(--width);
   height: 400px;
   background-color: azure;
   display: none;
