@@ -81,7 +81,15 @@ function CatalogFilter() {
         theme="big"
       />
       <button onClick={callbacks.onReset}>{t("filter.reset")}</button>
-      <SearchSelect />
+      <SearchSelect
+        options={[
+          { _id: 1, title: "Россия", iconString: "RU" },
+          { _id: 2, title: "Германия", iconString: "GD" },
+          { _id: 3, title: "Чехия", iconString: "CH" },
+          { _id: 4, title: "Франция", iconString: "FR" },
+          { _id: 5, title: "Бельгия", iconString: "BE" },
+        ]}
+      />
     </LayoutFlex>
   );
 }
