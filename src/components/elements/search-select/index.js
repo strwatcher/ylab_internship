@@ -1,6 +1,6 @@
 import { useClickOutside } from "@src/hooks/use-click-outside";
 import { joinClasses } from "@src/utils/join-classes";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Arrow from "./arrow";
 import Option from "./option";
 import s from "./style.module.scss";
@@ -9,44 +9,76 @@ function SearchSelect({ options, onSelect }) {
   const [show, setShow] = useState(false);
   const [currentOption, setCurrentOption] = useState(0);
   const dropdownRef = useRef(null);
+  const currentOptionRef = useRef(null);
 
   const handlers = {
-    toggleShow: (event) => {
+    toggleShow: () => {
       setShow(!show);
     },
 
     optionKeydown: (index) => (event) => {
+      let direction = 0;
       if (event.key === "Enter") {
         event.preventDefault();
-        setShow(false);
-        setCurrentOption(index);
+        handlers.select(index)();
+        dropdownRef.current.focus();
+      }
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        if (currentOption < options.length - 1) direction = 1;
+      }
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        if (currentOption > 0) direction = -1;
+      }
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        if (currentOption < options.length - 1 && !show) direction = 1;
+      }
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        if (currentOption > 0 && !show) direction = -1;
+      }
+      if (direction !== 0) {
+        setCurrentOption(currentOption + direction);
+        if (direction === -1) {
+          event.target.previousElementSibling.focus();
+        }
+        if (direction === 1) {
+          event.target.nextElementSibling.focus();
+        }
+        console.log(event.target);
       }
     },
 
     selectKeydown: (event) => {
-      let nextOption = currentOption;
-      if (event.key === "ArrowDown" || (event.key === "ArrowRight" && !show)) {
+      if (event.key === "Enter") {
         event.preventDefault();
-        if (currentOption < options.length - 1) nextOption += 1;
-      }
-      if (event.key === "ArrowUp" || (event.key === "ArrowLeft" && !show)) {
-        event.preventDefault();
-        if (currentOption > 0) nextOption -= 1;
+        handlers.toggleShow();
       }
 
       if (event.key === "Escape") {
+        event.preventDefault();
         setShow(false);
         return;
       }
 
-      if (nextOption !== currentOption) {
-        setCurrentOption(nextOption);
+      if (event.key === "Tab" && show) {
+        event.preventDefault();
+        setShow(false);
+      }
+
+      if (event.key === " ") {
+        event.preventDefault();
+        if (!show) setShow(true);
       }
     },
 
     select: (index) => () => {
       setCurrentOption(index);
       setShow(false);
+      onSelect && onSelect();
     },
   };
 
@@ -54,19 +86,24 @@ function SearchSelect({ options, onSelect }) {
     setShow(false);
   }, dropdownRef);
 
+  useEffect(() => {
+    show && currentOptionRef.current.focus();
+  }, [show]);
+
   return (
     <div
       ref={dropdownRef}
       className={s.wrapper}
       onKeyDown={handlers.selectKeydown}
+      tabIndex={0}
     >
-      <button className={s.head} onClick={handlers.toggleShow}>
+      <div className={s.head} onClick={handlers.toggleShow}>
         <Option
           title={options[currentOption].title}
           iconString={options[currentOption].iconString}
         />
         <Arrow />
-      </button>
+      </div>
 
       <div className={joinClasses(s.body, show && s.body__show)}>
         <ul
@@ -76,7 +113,9 @@ function SearchSelect({ options, onSelect }) {
         >
           {options.map((item, index) => (
             <Option
+              selectedRef={currentOption === index ? currentOptionRef : null}
               onClick={handlers.select(index)}
+              onKeyDown={handlers.optionKeydown(index)}
               selectable
               selected={currentOption === index}
               key={item._id}

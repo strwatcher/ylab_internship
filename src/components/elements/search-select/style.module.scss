@@ -26,7 +26,6 @@ $placeholder-color: #cccdd4;
 
 .body {
   width: $width;
-  height: 400px;
   background-color: $white;
   display: none;
   position: absolute;
@@ -38,6 +37,8 @@ $placeholder-color: #cccdd4;
   }
 
   ul {
+    max-height: 120px;
+    overflow: auto;
     margin: 0;
     padding: 0 5px;
 
@@ -85,7 +86,7 @@ $placeholder-color: #cccdd4;
   &:focus,
   &[aria-selected="true"] {
     background-color: $select-color;
-
+    outline: none;
     & * {
       color: $white;
     }

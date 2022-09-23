@@ -9,15 +9,17 @@ function Option({
   selected,
   onClick,
   onKeyDown,
+  selectedRef,
 }) {
   return (
     <li
+      ref={selectedRef}
       className={joinClasses(s.option, selectable && s.selectable)}
       onClick={onClick}
       onKeyDown={onKeyDown}
       role={"option"}
       aria-selected={selected}
-      // tabIndex={selectable && 0}
+      tabIndex={selectable && -1}
     >
       <div className={s.option_icon}>{iconString}</div>
       <div className={s.option_title}>{title}</div>
