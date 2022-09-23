@@ -17,7 +17,6 @@ function SearchSelect({ options, onSelect }) {
     },
 
     optionKeydown: (index) => (event) => {
-      let direction = 0;
       if (event.key === "Enter") {
         event.preventDefault();
         handlers.select(index)();
@@ -25,30 +24,17 @@ function SearchSelect({ options, onSelect }) {
       }
       if (event.key === "ArrowDown") {
         event.preventDefault();
-        if (currentOption < options.length - 1) direction = 1;
+        if (currentOption < options.length - 1) {
+          setCurrentOption(currentOption + 1);
+          event.target.nextElementSibling.focus();
+        }
       }
       if (event.key === "ArrowUp") {
         event.preventDefault();
-        if (currentOption > 0) direction = -1;
-      }
-
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        if (currentOption < options.length - 1 && !show) direction = 1;
-      }
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        if (currentOption > 0 && !show) direction = -1;
-      }
-      if (direction !== 0) {
-        setCurrentOption(currentOption + direction);
-        if (direction === -1) {
+        if (currentOption > 0) {
+          setCurrentOption(currentOption - 1);
           event.target.previousElementSibling.focus();
         }
-        if (direction === 1) {
-          event.target.nextElementSibling.focus();
-        }
-        console.log(event.target);
       }
     },
 
@@ -57,21 +43,23 @@ function SearchSelect({ options, onSelect }) {
         event.preventDefault();
         handlers.toggleShow();
       }
-
-      if (event.key === "Escape") {
+      if (event.key === "Escape" || (event.key === "Tab" && show)) {
         event.preventDefault();
-        setShow(false);
-        return;
-      }
-
-      if (event.key === "Tab" && show) {
-        event.preventDefault();
+        dropdownRef.current.focus();
         setShow(false);
       }
-
       if (event.key === " ") {
         event.preventDefault();
         if (!show) setShow(true);
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        if (currentOption < options.length - 1 && !show)
+          setCurrentOption(currentOption + 1);
+      }
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        if (currentOption > 0 && !show) setCurrentOption(currentOption - 1);
       }
     },
 
