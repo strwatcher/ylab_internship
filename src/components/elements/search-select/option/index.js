@@ -17,7 +17,7 @@ function Option({
       onKeyDown={onKeyDown}
       role={"option"}
       aria-selected={selected}
-      tabIndex={selectable && 0}
+      // tabIndex={selectable && 0}
     >
       <div className={s.option_icon}>{iconString}</div>
       <div className={s.option_title}>{title}</div>

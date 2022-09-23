@@ -1,5 +1,6 @@
+import { useClickOutside } from "@src/hooks/use-click-outside";
 import { joinClasses } from "@src/utils/join-classes";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Arrow from "./arrow";
 import Option from "./option";
 import s from "./style.module.scss";
@@ -7,13 +8,14 @@ import s from "./style.module.scss";
 function SearchSelect({ options, onSelect }) {
   const [show, setShow] = useState(false);
   const [currentOption, setCurrentOption] = useState(0);
+  const dropdownRef = useRef(null);
 
   const handlers = {
-    onHeadClick: (event) => {
+    toggleShow: (event) => {
       setShow(!show);
     },
 
-    optionKeyboardHandler: (index) => (event) => {
+    optionKeydown: (index) => (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
         setShow(false);
@@ -21,7 +23,7 @@ function SearchSelect({ options, onSelect }) {
       }
     },
 
-    selectKeyboardHandler: (event) => {
+    selectKeydown: (event) => {
       let nextOption = currentOption;
       if (event.key === "ArrowDown" || (event.key === "ArrowRight" && !show)) {
         event.preventDefault();
@@ -48,9 +50,17 @@ function SearchSelect({ options, onSelect }) {
     },
   };
 
+  useClickOutside(() => {
+    setShow(false);
+  }, dropdownRef);
+
   return (
-    <div className={s.wrapper} onKeyDown={handlers.selectKeyboardHandler}>
-      <button className={s.head} onClick={handlers.onHeadClick}>
+    <div
+      ref={dropdownRef}
+      className={s.wrapper}
+      onKeyDown={handlers.selectKeydown}
+    >
+      <button className={s.head} onClick={handlers.toggleShow}>
         <Option
           title={options[currentOption].title}
           iconString={options[currentOption].iconString}
