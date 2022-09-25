@@ -1,119 +1,129 @@
 import { useClickOutside } from "@src/hooks/use-click-outside";
-import { joinClasses } from "@src/utils/join-classes";
 import React, { useEffect, useRef, useState } from "react";
-import Arrow from "./arrow";
-import Option from "./option";
-import s from "./style.module.scss";
+import PureSearchSelect from "./search-select";
 
 function SearchSelect({ options, onSelect }) {
-  const [show, setShow] = useState(false);
-  const [currentOption, setCurrentOption] = useState(0);
-  const dropdownRef = useRef(null);
-  const currentOptionRef = useRef(null);
+  const [opened, setShow] = useState(false);
+  const [currentOptionId, setCurrentOptionId] = useState(options[0]._id);
+  const [currentOption, setCurrentOption] = useState({});
+  const [workingOptions, setWorkingOptions] = useState([]);
+  const [filter, setFilter] = useState("");
+  const refs = {
+    select: useRef(null),
+    dropdown: useRef(null),
+    search: useRef(null),
+    currentOption: useRef(null),
+  };
 
-  const handlers = {
+  const callbacks = {
     toggleShow: () => {
-      setShow(!show);
+      setShow(!opened);
     },
 
-    optionKeydown: (index) => (event) => {
+    select: (id) => () => {
+      setCurrentOptionId(id);
+      setShow(false);
+      onSelect && onSelect();
+    },
+
+    filterChange: (text) => {
+      setFilter(text);
+    },
+
+    nextOption: (currentIndex) => {
+      if (currentIndex >= 0 && currentIndex < workingOptions.length - 1) {
+        setCurrentOptionId(workingOptions[currentIndex + 1]._id);
+        refs.currentOption.current.nextElementSibling.focus();
+      } else if (currentIndex < 0) {
+        setCurrentOptionId(workingOptions[0]._id);
+        refs.search.current.nextElementSibling.focus();
+      }
+    },
+
+    previousOption: (currentIndex) => {
+      if (currentIndex > 0) {
+        setCurrentOptionId(workingOptions[currentIndex - 1]._id);
+        refs.currentOption.current.previousElementSibling.focus();
+      } else {
+        refs.search.current.focus();
+      }
+    },
+
+    changeOptions: (event, nextKey, previousKey) => {
+      const currentIndex = workingOptions.findIndex(
+        (item) => item._id === currentOptionId
+      );
+      if (event.key === nextKey) {
+        event.preventDefault();
+        callbacks.nextOption(currentIndex);
+      } else if (event.key === previousKey) {
+        event.preventDefault();
+        callbacks.previousOption(currentIndex);
+      }
+    },
+
+    dropdownKeydown: (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        handlers.select(index)();
-        dropdownRef.current.focus();
+        setFilter("");
+        refs.select.current.focus();
       }
-      if (event.key === "ArrowDown") {
+
+      if (event.key === "Shift") {
         event.preventDefault();
-        if (currentOption < options.length - 1) {
-          setCurrentOption(currentOption + 1);
-          event.target.nextElementSibling.focus();
-        }
+        refs.search.current.focus();
       }
-      if (event.key === "ArrowUp") {
-        event.preventDefault();
-        if (currentOption > 0) {
-          setCurrentOption(currentOption - 1);
-          event.target.previousElementSibling.focus();
-        }
-      }
+      callbacks.changeOptions(event, "ArrowDown", "ArrowUp");
     },
 
     selectKeydown: (event) => {
       if (event.key === "Enter") {
         event.preventDefault();
-        handlers.toggleShow();
+        callbacks.toggleShow();
       }
-      if (event.key === "Escape" || (event.key === "Tab" && show)) {
+      if (event.key === "Escape" || (event.key === "Tab" && opened)) {
         event.preventDefault();
-        dropdownRef.current.focus();
-        setShow(false);
+        setFilter("");
+        refs.select.current.focus();
+        callbacks.toggleShow();
       }
       if (event.key === " ") {
         event.preventDefault();
-        if (!show) setShow(true);
+        if (!opened) setShow(true);
       }
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        if (currentOption < options.length - 1 && !show)
-          setCurrentOption(currentOption + 1);
+      if (!opened) {
+        callbacks.changeOptions(event, "ArrowRight", "ArrowLeft");
       }
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        if (currentOption > 0 && !show) setCurrentOption(currentOption - 1);
-      }
-    },
-
-    select: (index) => () => {
-      setCurrentOption(index);
-      setShow(false);
-      onSelect && onSelect();
     },
   };
 
-  useClickOutside(() => {
-    setShow(false);
-  }, dropdownRef);
+  useClickOutside(() => setShow(false), refs.select, refs.dropdown);
 
   useEffect(() => {
-    show && currentOptionRef.current.focus();
-  }, [show]);
+    opened && refs.search.current && refs.search.current.focus();
+  }, [opened]);
+
+  useEffect(() => {
+    setWorkingOptions(
+      options.filter((item) =>
+        item.title.toLowerCase().startsWith(filter.toLowerCase())
+      )
+    );
+  }, [filter]);
+
+  useEffect(() => {
+    setCurrentOption(options.find((item) => item._id === currentOptionId));
+  }, [currentOptionId]);
 
   return (
-    <div
-      ref={dropdownRef}
-      className={s.wrapper}
-      onKeyDown={handlers.selectKeydown}
-      tabIndex={0}
-    >
-      <div className={s.head} onClick={handlers.toggleShow}>
-        <Option
-          title={options[currentOption].title}
-          iconString={options[currentOption].iconString}
-        />
-        <Arrow />
-      </div>
-
-      <div className={joinClasses(s.body, show && s.body__show)}>
-        <ul
-          role={"listbox"}
-          aria-activedescendant={options[currentOption]}
-          tabIndex={-1}
-        >
-          {options.map((item, index) => (
-            <Option
-              selectedRef={currentOption === index ? currentOptionRef : null}
-              onClick={handlers.select(index)}
-              onKeyDown={handlers.optionKeydown(index)}
-              selectable
-              selected={currentOption === index}
-              key={item._id}
-              title={item.title}
-              iconString={item.iconString}
-            />
-          ))}
-        </ul>
-      </div>
-    </div>
+    <PureSearchSelect
+      callbacks={callbacks}
+      refs={refs}
+      options={workingOptions}
+      currentOption={currentOption}
+      opened={opened}
+      filter={filter}
+    />
   );
 }
 

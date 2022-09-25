@@ -88,10 +88,10 @@ function CatalogFilter() {
           { _id: 3, title: "Чехия", iconString: "CH" },
           { _id: 4, title: "Франция", iconString: "FR" },
           { _id: 5, title: "Бельгия", iconString: "BE" },
-          { _id: 6, title: "Россия", iconString: "RU" },
-          { _id: 7, title: "Германия", iconString: "GD" },
-          { _id: 8, title: "Германия", iconString: "GD" },
-          { _id: 9, title: "Германия", iconString: "GD" },
+          { _id: 6, title: "Англия", iconString: "EN" },
+          { _id: 7, title: "Белорусь", iconString: "BY" },
+          { _id: 8, title: "Австралия", iconString: "AU" },
+          { _id: 9, title: "Аргентина", iconString: "AG" },
         ]}
       />
     </LayoutFlex>
