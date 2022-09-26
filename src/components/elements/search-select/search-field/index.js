@@ -3,17 +3,18 @@ import React, { useCallback } from "react";
 import s from "./style.module.scss";
 
 SearchField.propTypes = {
+  searchRef: propTypes.object.isRequired,
   filter: propTypes.string,
-  onChange: propTypes.func
-}
+  onChange: propTypes.func,
+};
 
-function SearchField({ onChange, filter }, ref) {
+function SearchField({ onChange, filter, searchRef }) {
   const changeCallback = useCallback((event) => {
     return onChange(event.target.value);
   });
   return (
     <input
-      ref={ref}
+      ref={searchRef}
       className={s.searchField}
       onChange={changeCallback}
       placeholder="Поиск"
@@ -22,4 +23,4 @@ function SearchField({ onChange, filter }, ref) {
   );
 }
 
-export default React.memo(React.forwardRef(SearchField));
+export default React.memo(SearchField);

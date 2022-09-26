@@ -6,7 +6,7 @@ import PureSearchSelect from "./pure-search-select";
 
 SearchSelect.propTypes = {
   options: propTypes.arrayOf(propTypes.object).isRequired,
-  value: propTypes.object.isRequired,
+  value: propTypes.string.isRequired,
   onChange: propTypes.func,
   width: propTypes.number
 }
@@ -155,7 +155,7 @@ function SearchSelect({ options, onChange, value, width }) {
     } else {
       refs.select.current.style.setProperty("--width", width + "px");
     }
-  }, [options, responsible]);
+  }, [options]);
 
   return (
     <PureSearchSelect

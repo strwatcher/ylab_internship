@@ -45,7 +45,7 @@ function PureSearchSelect({
         onKeyDown={callbacks.dropdownKeydown}
       >
         <SearchField
-          ref={refs.search}
+          searchRef={refs.search}
           onChange={callbacks.filterChange}
           filter={filter}
         />

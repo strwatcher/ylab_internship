@@ -4,7 +4,7 @@ import React from "react";
 import s from "./style.module.scss";
 
 Option.propTypes = {
-  title: propTypes.string.isRequired,
+  title: propTypes.string,
   selectedRef: propTypes.object,  
   iconString: propTypes.string,
   selectable: propTypes.bool,
