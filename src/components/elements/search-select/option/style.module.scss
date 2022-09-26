@@ -1,10 +1,4 @@
-$hover-color: #dbdfff;
-$select-color: #808dff;
-$white: #fff;
-$icon-color: #6f7eff;
-$text-color: #000;
-$placeholder-color: #cccdd4;
-$scrollbar-color: #e5e6e9;
+@import '../variables.scss';
 
 .option {
   width: 100%;
