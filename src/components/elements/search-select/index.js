@@ -111,6 +111,9 @@ function SearchSelect({ options, onChange, value, width, responsible }) {
         _changeOptions(event, "ArrowRight", "ArrowLeft", (nextIndex) =>
           callbacks.select(workingOptions[nextIndex].value)()
         );
+        _changeOptions(event, "ArrowDown", "ArrowUp", (nextIndex) =>
+          callbacks.select(workingOptions[nextIndex].value)()
+        );
       }
     },
   };
@@ -136,14 +139,13 @@ function SearchSelect({ options, onChange, value, width, responsible }) {
   useEffect(() => {
     let newWidth;
     if (!width) {
-    const maxOption = options.reduce((prev, cur) =>
-      prev.title.length > cur.title.length ? prev : cur
+      const maxOption = options.reduce((prev, cur) =>
+        prev.title.length > cur.title.length ? prev : cur
       );
       newWidth = Math.floor(textWidth(maxOption.title, "15px sans-serif"));
       refs.select.current.style.setProperty("--width", newWidth + 70 + "px");
-    }
-    else {
-      refs.select.current.style.setProperty("--width", width + "px")
+    } else {
+      refs.select.current.style.setProperty("--width", width + "px");
     }
   }, [options, responsible]);
 
