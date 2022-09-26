@@ -8,8 +8,8 @@ SearchSelect.propTypes = {
   options: propTypes.arrayOf(propTypes.object).isRequired,
   value: propTypes.string.isRequired,
   onChange: propTypes.func,
-  width: propTypes.number
-}
+  width: propTypes.number,
+};
 
 function SearchSelect({ options, onChange, value, width }) {
   const [opened, setOpened] = useState(false);
@@ -142,7 +142,11 @@ function SearchSelect({ options, onChange, value, width }) {
 
   useEffect(() => {
     setCurrentOption(options.find((item) => item.value === currentOptionId));
-  }, [currentOptionId]);
+  }, [currentOptionId, options]);
+
+  useEffect(() => {
+    setCurrentOptionId(value);
+  }, [value]);
 
   useEffect(() => {
     let newWidth;
@@ -168,6 +172,5 @@ function SearchSelect({ options, onChange, value, width }) {
     />
   );
 }
-
 
 export default React.memo(SearchSelect);
