@@ -1,5 +1,6 @@
 import Input from "@src/components/elements/input";
 import SearchSelect from "@src/components/elements/search-select";
+import Select from "@src/components/elements/select";
 import LayoutFlex from "@src/components/layouts/layout-flex";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
@@ -66,12 +67,12 @@ function CatalogFilter() {
   return (
     <LayoutFlex flex="start" indent="big">
       <SearchSelect
-        onSelect={callbacks.onCategory}
+        onChange={callbacks.onCategory}
         value={select.category}
         options={options.categories}
         // width={100}
       />
-      <SearchSelect onSelect={callbacks.onSort} options={options.sort} value={select.sort}/>
+      <Select onChange={callbacks.onSort} options={options.sort} value={select.sort}/>
       <Input
         onChange={callbacks.onSearch}
         value={select.query}

@@ -2,7 +2,7 @@ import { useClickOutside } from "@src/hooks/use-click-outside";
 import React, { useEffect, useRef, useState } from "react";
 import PureSearchSelect from "./pure-search-select";
 
-function SearchSelect({ options, onSelect, value, width }) {
+function SearchSelect({ options, onChange, value, width }) {
   const [opened, setOpened] = useState(false);
   const [currentOptionId, setCurrentOptionId] = useState(value);
   const [currentOption, setCurrentOption] = useState({});
@@ -15,35 +15,47 @@ function SearchSelect({ options, onSelect, value, width }) {
     currentOption: useRef(null),
   };
 
-  const _nextOption = (currentIndex) => {
+  const _nextOption = (currentIndex, additional) => {
     if (currentIndex >= 0 && currentIndex < workingOptions.length - 1) {
       setCurrentOptionId(workingOptions[currentIndex + 1].value);
       refs.currentOption.current.nextElementSibling.focus();
+      additional();
     } else if (currentIndex < 0) {
       setCurrentOptionId(workingOptions[0].value);
       refs.search.current.nextElementSibling.focus();
+      // additional()
     }
   };
 
-  const _previousOption = (currentIndex) => {
+  const _previousOption = (currentIndex, additional) => {
     if (currentIndex > 0) {
       setCurrentOptionId(workingOptions[currentIndex - 1].value);
       refs.currentOption.current.previousElementSibling.focus();
+      additional();
     } else {
       refs.search.current.focus();
     }
   };
 
-  const _changeOptions = (event, nextKey, previousKey) => {
+  const _changeOptions = (
+    event,
+    nextKey,
+    previousKey,
+    additional = (nextIndex) => {}
+  ) => {
     const currentIndex = workingOptions.findIndex(
       (item) => item.value === currentOptionId
     );
     if (event.key === nextKey) {
       event.preventDefault();
-      _nextOption(currentIndex);
+      _nextOption(currentIndex, () => {
+        additional(currentIndex + 1);
+      });
     } else if (event.key === previousKey) {
       event.preventDefault();
-      _previousOption(currentIndex);
+      _previousOption(currentIndex, () => {
+        additional(currentIndex - 1);
+      });
     }
   };
 
@@ -55,7 +67,7 @@ function SearchSelect({ options, onSelect, value, width }) {
     select: (value) => () => {
       setCurrentOptionId(value);
       setOpened(false);
-      onSelect && onSelect(value);
+      onChange && onChange(value);
     },
 
     filterChange: (text) => {
@@ -89,11 +101,15 @@ function SearchSelect({ options, onSelect, value, width }) {
         callbacks.toggleShow();
       }
       if (event.key === " ") {
-        event.preventDefault();
-        if (!opened) setOpened(true);
+        if (!opened) {
+          event.preventDefault();
+          setOpened(true);
+        }
       }
       if (!opened) {
-        _changeOptions(event, "ArrowRight", "ArrowLeft");
+        _changeOptions(event, "ArrowRight", "ArrowLeft", (nextIndex) =>
+          callbacks.select(workingOptions[nextIndex].value)()
+        );
       }
     },
   };
