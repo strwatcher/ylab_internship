@@ -11,7 +11,7 @@ function PureSearchSelect({
   currentOption,
   callbacks,
   opened,
-  filter
+  filter,
 }) {
   return (
     <div
@@ -38,14 +38,12 @@ function PureSearchSelect({
           onChange={callbacks.filterChange}
           filter={filter}
         />
-        <ul
-          role={"listbox"}
-          aria-activedescendant={currentOption}
-          disabled
-        >
+        <ul role={"listbox"} aria-activedescendant={currentOption} disabled>
           {options.map((item) => (
             <Option
-              selectedRef={currentOption?.value === item.value ? refs.currentOption : null}
+              selectedRef={
+                currentOption?.value === item.value ? refs.currentOption : null
+              }
               onClick={callbacks.select(item.value)}
               onKeyDown={callbacks.optionKeydown}
               selectable

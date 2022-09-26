@@ -11,11 +11,10 @@ $scrollbar-color: #e5e6e9;
 }
 
 .head {
-  min-width: $width;
+  width: var(--width, $width);
   min-height: 30px;
-  position: relative;
   background-color: $white;
-  // outline: none;
+  // position: relative;
   border: none;
   display: flex;
   flex-direction: row;
@@ -26,7 +25,7 @@ $scrollbar-color: #e5e6e9;
 }
 
 .dropdown {
-  width: $width;
+  width: var(--width, $width);
   background-color: $white;
   display: none;
   position: absolute;
@@ -44,7 +43,6 @@ $scrollbar-color: #e5e6e9;
     overflow: auto;
     margin: 0;
     padding: 0;
-    // padding: 5px 0 5px 5px;
   }
 
   ul::-webkit-scrollbar {

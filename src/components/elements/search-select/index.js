@@ -2,7 +2,7 @@ import { useClickOutside } from "@src/hooks/use-click-outside";
 import React, { useEffect, useRef, useState } from "react";
 import PureSearchSelect from "./pure-search-select";
 
-function SearchSelect({ options, onSelect, value }) {
+function SearchSelect({ options, onSelect, value, width }) {
   const [opened, setOpened] = useState(false);
   const [currentOptionId, setCurrentOptionId] = useState(value);
   const [currentOption, setCurrentOption] = useState({});
@@ -114,6 +114,10 @@ function SearchSelect({ options, onSelect, value }) {
   useEffect(() => {
     setCurrentOption(options.find((item) => item.value === currentOptionId));
   }, [currentOptionId]);
+
+  useEffect(() => {
+    width && refs.select.current.style.setProperty("--width", width + "px");
+  }, []);
 
   return (
     <PureSearchSelect
