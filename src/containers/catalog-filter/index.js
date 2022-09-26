@@ -62,7 +62,6 @@ function CatalogFilter() {
       [select.categories]
     ),
   };
-  console.log(options.categories)
 
   return (
     <LayoutFlex flex="start" indent="big">

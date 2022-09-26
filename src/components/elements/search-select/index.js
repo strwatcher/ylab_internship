@@ -133,8 +133,21 @@ function SearchSelect({ options, onChange, value, width }) {
   }, [currentOptionId]);
 
   useEffect(() => {
-    width && refs.select.current.style.setProperty("--width", width + "px");
-  }, []);
+    const maxOption = options.reduce((prev, cur) =>
+      prev.title.length > cur.title.length ? prev : cur
+      );
+      console.log(measureText(maxOption.title));
+      const newWidth = measureText(maxOption.title)
+      newWidth && refs.select.current.style.setProperty("--width", newWidth + 100 + "px");
+  }, [options]);
+
+  const measureText = (text) => {
+    const canvas = document.createElement("canvas");
+    canvas.hidden = true;
+    const context = canvas.getContext("2d");
+    context.font = "15px sans-serif";
+    return context.measureText(text).width;
+  };
 
   return (
     <PureSearchSelect
