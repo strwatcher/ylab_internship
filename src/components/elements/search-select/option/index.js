@@ -1,6 +1,17 @@
 import { joinClasses } from "@src/utils/join-classes";
+import propTypes from "prop-types";
 import React from "react";
 import s from "./style.module.scss";
+
+Option.propTypes = {
+  title: propTypes.string.isRequired,
+  selectedRef: propTypes.object,  
+  iconString: propTypes.string,
+  selectable: propTypes.bool,
+  selected: propTypes.bool,
+  onClick: propTypes.func,
+  onKeyDown: propTypes.func,
+}
 
 function Option({
   title,

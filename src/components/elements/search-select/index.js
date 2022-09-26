@@ -1,9 +1,17 @@
 import { useClickOutside } from "@src/hooks/use-click-outside";
 import { textWidth } from "@src/utils/text-width";
+import propTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 import PureSearchSelect from "./pure-search-select";
 
-function SearchSelect({ options, onChange, value, width, responsible }) {
+SearchSelect.propTypes = {
+  options: propTypes.arrayOf(propTypes.object).isRequired,
+  value: propTypes.object.isRequired,
+  onChange: propTypes.func,
+  width: propTypes.number
+}
+
+function SearchSelect({ options, onChange, value, width }) {
   const [opened, setOpened] = useState(false);
   const [currentOptionId, setCurrentOptionId] = useState(value);
   const [currentOption, setCurrentOption] = useState({});
@@ -160,5 +168,6 @@ function SearchSelect({ options, onChange, value, width, responsible }) {
     />
   );
 }
+
 
 export default React.memo(SearchSelect);

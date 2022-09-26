@@ -1,5 +1,11 @@
+import propTypes from "prop-types";
 import React, { useCallback } from "react";
 import s from "./style.module.scss";
+
+SearchField.propTypes = {
+  filter: propTypes.string,
+  onChange: propTypes.func
+}
 
 function SearchField({ onChange, filter }, ref) {
   const changeCallback = useCallback((event) => {
