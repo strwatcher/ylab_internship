@@ -2,9 +2,9 @@ import { useClickOutside } from "@src/hooks/use-click-outside";
 import React, { useEffect, useRef, useState } from "react";
 import PureSearchSelect from "./pure-search-select";
 
-function SearchSelect({ options, onSelect }) {
+function SearchSelect({ options, onSelect, value }) {
   const [opened, setOpened] = useState(false);
-  const [currentOptionId, setCurrentOptionId] = useState(options[0]._id);
+  const [currentOptionId, setCurrentOptionId] = useState(value);
   const [currentOption, setCurrentOption] = useState({});
   const [workingOptions, setWorkingOptions] = useState([]);
   const [filter, setFilter] = useState("");
@@ -17,17 +17,17 @@ function SearchSelect({ options, onSelect }) {
 
   const _nextOption = (currentIndex) => {
     if (currentIndex >= 0 && currentIndex < workingOptions.length - 1) {
-      setCurrentOptionId(workingOptions[currentIndex + 1]._id);
+      setCurrentOptionId(workingOptions[currentIndex + 1].value);
       refs.currentOption.current.nextElementSibling.focus();
     } else if (currentIndex < 0) {
-      setCurrentOptionId(workingOptions[0]._id);
+      setCurrentOptionId(workingOptions[0].value);
       refs.search.current.nextElementSibling.focus();
     }
   };
 
   const _previousOption = (currentIndex) => {
     if (currentIndex > 0) {
-      setCurrentOptionId(workingOptions[currentIndex - 1]._id);
+      setCurrentOptionId(workingOptions[currentIndex - 1].value);
       refs.currentOption.current.previousElementSibling.focus();
     } else {
       refs.search.current.focus();
@@ -36,7 +36,7 @@ function SearchSelect({ options, onSelect }) {
 
   const _changeOptions = (event, nextKey, previousKey) => {
     const currentIndex = workingOptions.findIndex(
-      (item) => item._id === currentOptionId
+      (item) => item.value === currentOptionId
     );
     if (event.key === nextKey) {
       event.preventDefault();
@@ -52,10 +52,10 @@ function SearchSelect({ options, onSelect }) {
       setOpened(!opened);
     },
 
-    select: (id) => () => {
-      setCurrentOptionId(id);
+    select: (value) => () => {
+      setCurrentOptionId(value);
       setOpened(false);
-      onSelect && onSelect();
+      onSelect && onSelect(value);
     },
 
     filterChange: (text) => {
@@ -112,7 +112,7 @@ function SearchSelect({ options, onSelect }) {
   }, [filter]);
 
   useEffect(() => {
-    setCurrentOption(options.find((item) => item._id === currentOptionId));
+    setCurrentOption(options.find((item) => item.value === currentOptionId));
   }, [currentOptionId]);
 
   return (

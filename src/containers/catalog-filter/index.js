@@ -42,10 +42,10 @@ function CatalogFilter() {
   const options = {
     sort: useMemo(
       () => [
-        { value: "order", title: "По порядку" },
-        { value: "title.ru", title: "По именованию" },
-        { value: "-price", title: "Сначала дорогие" },
-        { value: "edition", title: "Древние" },
+        { value: "order", title: "По порядку", iconString: "ПП"},
+        { value: "title.ru", title: "По именованию", iconString: "ПИ"},
+        { value: "-price", title: "Сначала дорогие", iconString: "СД"},
+        { value: "edition", title: "Древние", iconString: "ДР"},
       ],
       []
     ),
@@ -69,11 +69,7 @@ function CatalogFilter() {
         value={select.category}
         options={options.categories}
       />
-      <Select
-        onChange={callbacks.onSort}
-        value={select.sort}
-        options={options.sort}
-      />
+      <SearchSelect onSelect={callbacks.onSort} options={options.sort} value={select.sort}/>
       <Input
         onChange={callbacks.onSearch}
         value={select.query}
@@ -83,16 +79,17 @@ function CatalogFilter() {
       <button onClick={callbacks.onReset}>{t("filter.reset")}</button>
       <SearchSelect
         options={[
-          { _id: 1, title: "Россия", iconString: "RU" },
-          { _id: 2, title: "Германия", iconString: "GD" },
-          { _id: 3, title: "Чехия", iconString: "CH" },
-          { _id: 4, title: "Франция", iconString: "FR" },
-          { _id: 5, title: "Бельгия", iconString: "BE" },
-          { _id: 6, title: "Англия", iconString: "EN" },
-          { _id: 7, title: "Белорусь", iconString: "BY" },
-          { _id: 8, title: "Австралия", iconString: "AU" },
-          { _id: 9, title: "Аргентина", iconString: "AG" },
+          { value: 1, title: "Россия", iconString: "RU" },
+          { value: 2, title: "Германия", iconString: "GD" },
+          { value: 3, title: "Чехия", iconString: "CH" },
+          { value: 4, title: "Франция", iconString: "FR" },
+          { value: 5, title: "Бельгия", iconString: "BE" },
+          { value: 6, title: "Англия", iconString: "EN" },
+          { value: 7, title: "Белорусь", iconString: "BY" },
+          { value: 8, title: "Австралия", iconString: "AU" },
+          { value: 9, title: "Аргентина", iconString: "AG" },
         ]}
+        value={4}
       />
     </LayoutFlex>
   );

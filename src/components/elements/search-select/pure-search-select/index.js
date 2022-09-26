@@ -22,8 +22,8 @@ function PureSearchSelect({
     >
       <div className={s.head} onClick={callbacks.toggleShow}>
         <Option
-          title={currentOption.title}
-          iconString={currentOption.iconString}
+          title={currentOption?.title}
+          iconString={currentOption?.iconString}
         />
         <Arrow />
       </div>
@@ -45,12 +45,12 @@ function PureSearchSelect({
         >
           {options.map((item) => (
             <Option
-              selectedRef={currentOption._id === item._id ? refs.currentOption : null}
-              onClick={callbacks.select(item._id)}
+              selectedRef={currentOption?.value === item.value ? refs.currentOption : null}
+              onClick={callbacks.select(item.value)}
               onKeyDown={callbacks.optionKeydown}
               selectable
-              selected={currentOption._id === item._id}
-              key={item._id}
+              selected={currentOption?.value === item.value}
+              key={item.value}
               title={item.title}
               iconString={item.iconString}
             />
