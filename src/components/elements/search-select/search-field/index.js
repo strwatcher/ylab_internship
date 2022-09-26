@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import s from "../style.module.scss";
+import s from "./style.module.scss";
 
 function SearchField({ onChange, filter }, ref) {
   const changeCallback = useCallback((event) => {

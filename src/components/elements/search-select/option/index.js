@@ -1,6 +1,6 @@
 import { joinClasses } from "@src/utils/join-classes";
 import React from "react";
-import s from "../style.module.scss";
+import s from "./style.module.scss";
 
 function Option({
   title,

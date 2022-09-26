@@ -1,8 +1,8 @@
 import { joinClasses } from "@src/utils/join-classes";
 import React from "react";
-import Arrow from "./arrow";
-import Option from "./option";
-import SearchField from "./search-field";
+import Arrow from "../arrow";
+import Option from "../option";
+import SearchField from "../search-field";
 import s from "./style.module.scss";
 
 function PureSearchSelect({
@@ -30,7 +30,7 @@ function PureSearchSelect({
 
       <div
         ref={refs.dropdown}
-        className={joinClasses(s.body, opened && s.body__show)}
+        className={joinClasses(s.dropdown, opened && s.dropdown__show)}
         onKeyDown={callbacks.dropdownKeydown}
       >
         <SearchField

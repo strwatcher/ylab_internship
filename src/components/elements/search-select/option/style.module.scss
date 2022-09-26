@@ -1,0 +1,53 @@
+$width: 240px;
+$hover-color: #dbdfff;
+$select-color: #808dff;
+$white: #fff;
+$icon-color: #6f7eff;
+$text-color: #000;
+$placeholder-color: #cccdd4;
+$scrollbar-color: #e5e6e9;
+
+.option {
+  width: 100%;
+  padding: 6px;
+  background-color: $white;
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  box-sizing: border-box;
+
+  &_title {
+    color: $text-color;
+    font-size: 15px;
+  }
+
+  &_icon {
+    height: 18px;
+    width: 18px;
+    line-height: 18px;
+    font-size: 8px;
+    font-weight: 700;
+    border-radius: 3px;
+    color: $white;
+    background-color: $icon-color;
+    text-align: center;
+  }
+}
+
+.selectable {
+  cursor: pointer;
+
+  &:hover {
+    background-color: $hover-color;
+  }
+
+  &:active,
+  &:focus,
+  &[aria-selected="true"] {
+    background-color: $select-color;
+    outline: none;
+    & * {
+      color: $white;
+    }
+  }
+}

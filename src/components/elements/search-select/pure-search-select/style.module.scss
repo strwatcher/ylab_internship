@@ -25,7 +25,7 @@ $scrollbar-color: #e5e6e9;
   box-sizing: border-box;
 }
 
-.body {
+.dropdown {
   width: $width;
   background-color: $white;
   display: none;
@@ -59,59 +59,4 @@ $scrollbar-color: #e5e6e9;
     background-color: $scrollbar-color;
     border-radius: 100px;
   }
-}
-
-.option {
-  width: 100%;
-  padding: 6px;
-  background-color: $white;
-  display: flex;
-  flex-direction: row;
-  gap: 6px;
-  box-sizing: border-box;
-
-  &_title {
-    color: $text-color;
-    font-size: 15px;
-  }
-
-  &_icon {
-    height: 18px;
-    width: 18px;
-    line-height: 18px;
-    font-size: 8px;
-    font-weight: 700;
-    border-radius: 3px;
-    color: $white;
-    background-color: $icon-color;
-    text-align: center;
-  }
-}
-
-.selectable {
-  cursor: pointer;
-
-  &:hover {
-    background-color: $hover-color;
-  }
-
-  &:active,
-  &:focus,
-  &[aria-selected="true"] {
-    background-color: $select-color;
-    outline: none;
-    & * {
-      color: $white;
-    }
-  }
-}
-
-.searchField {
-  border: none;
-  outline: none;
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  font-style: italic;
-  font-size: 13px;
 }
