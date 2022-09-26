@@ -8,10 +8,12 @@
   flex-direction: row;
   gap: 6px;
   box-sizing: border-box;
+  
 
   &_title {
     color: $text-color;
     font-size: 15px;
+    line-height: 20px;
   }
 
   &_icon {

@@ -32,7 +32,6 @@ function SearchSelect({ options, onChange, value, width }) {
     } else if (currentIndex < 0) {
       setCurrentOptionId(workingOptions[0].value);
       refs.search.current.nextElementSibling.focus();
-      // additional()
     }
   };
 
