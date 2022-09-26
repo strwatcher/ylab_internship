@@ -1,8 +1,9 @@
 import { useClickOutside } from "@src/hooks/use-click-outside";
+import { textWidth } from "@src/utils/text-width";
 import React, { useEffect, useRef, useState } from "react";
 import PureSearchSelect from "./pure-search-select";
 
-function SearchSelect({ options, onChange, value, width }) {
+function SearchSelect({ options, onChange, value, width, responsible }) {
   const [opened, setOpened] = useState(false);
   const [currentOptionId, setCurrentOptionId] = useState(value);
   const [currentOption, setCurrentOption] = useState({});
@@ -133,21 +134,18 @@ function SearchSelect({ options, onChange, value, width }) {
   }, [currentOptionId]);
 
   useEffect(() => {
+    let newWidth;
+    if (!width) {
     const maxOption = options.reduce((prev, cur) =>
       prev.title.length > cur.title.length ? prev : cur
       );
-      console.log(measureText(maxOption.title));
-      const newWidth = measureText(maxOption.title)
-      newWidth && refs.select.current.style.setProperty("--width", newWidth + 100 + "px");
-  }, [options]);
-
-  const measureText = (text) => {
-    const canvas = document.createElement("canvas");
-    canvas.hidden = true;
-    const context = canvas.getContext("2d");
-    context.font = "15px sans-serif";
-    return context.measureText(text).width;
-  };
+      newWidth = Math.floor(textWidth(maxOption.title, "15px sans-serif"));
+      refs.select.current.style.setProperty("--width", newWidth + 70 + "px");
+    }
+    else {
+      refs.select.current.style.setProperty("--width", width + "px")
+    }
+  }, [options, responsible]);
 
   return (
     <PureSearchSelect
