@@ -51,15 +51,17 @@ function CatalogFilter() {
 
     categories: useMemo(
       () => [
-        { value: "", title: "Все" },
+        { value: "", title: "Все", iconString: "" },
         ...treeToList(listToTree(select.categories), (item, level) => ({
           value: item._id,
           title: "- ".repeat(level) + item.title,
+          iconString: ""
         })),
       ],
       [select.categories]
     ),
   };
+  console.log(options.categories)
 
   return (
     <LayoutFlex flex="start" indent="big">
@@ -67,7 +69,7 @@ function CatalogFilter() {
         onSelect={callbacks.onCategory}
         value={select.category}
         options={options.categories}
-        width={100}
+        // width={100}
       />
       <SearchSelect onSelect={callbacks.onSort} options={options.sort} value={select.sort}/>
       <Input
@@ -77,20 +79,6 @@ function CatalogFilter() {
         theme="big"
       />
       <button onClick={callbacks.onReset}>{t("filter.reset")}</button>
-      <SearchSelect
-        options={[
-          { value: 1, title: "Россия", iconString: "RU" },
-          { value: 2, title: "Германия", iconString: "GD" },
-          { value: 3, title: "Чехия", iconString: "CH" },
-          { value: 4, title: "Франция", iconString: "FR" },
-          { value: 5, title: "Бельгия", iconString: "BE" },
-          { value: 6, title: "Англия", iconString: "EN" },
-          { value: 7, title: "Белорусь", iconString: "BY" },
-          { value: 8, title: "Австралия", iconString: "AU" },
-          { value: 9, title: "Аргентина", iconString: "AG" },
-        ]}
-        value={4}
-      />
     </LayoutFlex>
   );
 }

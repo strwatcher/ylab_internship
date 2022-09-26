@@ -66,6 +66,7 @@ function SearchSelect({ options, onSelect, value, width }) {
       if (event.key === "Enter") {
         event.preventDefault();
         setFilter("");
+        callbacks.select(currentOption.value)();
         refs.select.current.focus();
       }
 
@@ -109,7 +110,7 @@ function SearchSelect({ options, onSelect, value, width }) {
         item.title.toLowerCase().startsWith(filter.toLowerCase())
       )
     );
-  }, [filter]);
+  }, [filter, options]);
 
   useEffect(() => {
     setCurrentOption(options.find((item) => item.value === currentOptionId));
