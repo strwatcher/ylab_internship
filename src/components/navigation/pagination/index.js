@@ -1,10 +1,10 @@
-import React from 'react';
+import { cn as bem } from "@bem-react/classname";
 import propTypes from "prop-types";
-import {cn as bem} from '@bem-react/classname'
-import './style.css';
+import React from "react";
+import "./style.css";
 
 function Pagination(props) {
-  const cn = bem('Pagination');
+  const cn = bem("Pagination");
   // Количество страниц
   const length = Math.ceil(props.count / Math.max(props.limit, 1));
 
@@ -21,29 +21,36 @@ function Pagination(props) {
   // Пропуск
   if (left > 2) items.push(null);
   // Последваотельность страниц
-  for (let page = left; page <= right; page++) items.push(page)
+  for (let page = left; page <= right; page++) items.push(page);
   // Пропуск
   if (right < length - 1) items.push(null);
   // Последнаяя страница
   if (right < length) items.push(length);
 
   // Возвращает функцию с замыканием на номер страницы
-  const clickHandler = page => {
+  const clickHandler = (page) => {
     return () => props.onChange(page);
   };
 
   return (
-    <ul className={cn()}>
-      {items.map((num, i) => num
-        ? (
-          <li key={i} className={cn('item', {active: num === props.page})} onClick={clickHandler(num)}>
+    <ul className={cn()} ref={props.fetchRef}>
+      {items.map((num, i) =>
+        num ? (
+          <li
+            key={i}
+            className={cn("item", { active: num === props.page })}
+            onClick={clickHandler(num)}
+          >
             {num}
           </li>
+        ) : (
+          <li key={i} className={cn("item", { split: true })}>
+            ...
+          </li>
         )
-        : <li key={i} className={cn('item', {split: true})}>...</li>
       )}
     </ul>
-  )
+  );
 }
 
 Pagination.propTypes = {
@@ -51,16 +58,16 @@ Pagination.propTypes = {
   limit: propTypes.number,
   count: propTypes.number,
   onChange: propTypes.func,
-  indent: propTypes.number
-}
+  indent: propTypes.number,
+  lastItemRef: propTypes.object,
+};
 
 Pagination.defaultProps = {
   page: 1,
   limit: 10,
   count: 1000,
   indent: 1,
-  onChange: () => {
-  },
-}
+  onChange: () => {},
+};
 
 export default React.memo(Pagination);
