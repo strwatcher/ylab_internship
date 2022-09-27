@@ -127,10 +127,12 @@ function SearchSelect({ options, onChange, value, width }) {
 
   useClickOutside(() => setOpened(false), refs.select, refs.dropdown);
 
+  // фокус на поиск при открытии
   useEffect(() => {
     opened && refs.search.current && refs.search.current.focus();
   }, [opened]);
 
+  // обрезание опций при поиске
   useEffect(() => {
     setWorkingOptions(
       options.filter((item) =>
@@ -139,14 +141,17 @@ function SearchSelect({ options, onChange, value, width }) {
     );
   }, [filter, options]);
 
+  // установка текущей опции для вывода в шапке селекта
   useEffect(() => {
     setCurrentOption(options.find((item) => item.value === currentOptionId));
   }, [currentOptionId, options]);
 
+  // установка текущей опции при подсовывании значения из вне
   useEffect(() => {
     setCurrentOptionId(value);
   }, [value]);
 
+  // контроль ширины селекта
   useEffect(() => {
     let newWidth;
     if (!width) {
