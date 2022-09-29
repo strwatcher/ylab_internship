@@ -5,20 +5,21 @@ import StateModule from "@src/store/module";
  */
 class ModalsState extends StateModule{
 
+  // items: [{render: () => jsx, onClose: result => void, onSuccess: result => void}]
   initState() {
     return {
-      name: null
+      items: []
     };
   }
 
   /**
    * Открытие модального окна по названию
-   * @param name {String} Название модалки
    */
-  open(name){
+  open(item){
     this.setState({
-      name
-    }, `Открытие модалки ${name}`);
+      ...this.getState(),
+      items: [...this.getState().items, item],
+    }, `Открытие модалки`);
   }
 
   /**
@@ -26,7 +27,8 @@ class ModalsState extends StateModule{
    */
   close(){
     this.setState({
-      name: false
+      ...this.getState(),
+      items: this.getState().items.slice(0, -1),
     }, `Закрытие модалки`);
   }
 }
