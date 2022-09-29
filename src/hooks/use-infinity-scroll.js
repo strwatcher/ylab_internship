@@ -1,14 +1,14 @@
 import { useCallback, useRef } from "react";
 
-export function useInfinityScroll(fetching, hasMore, setPageNum) {
+export function useInfinityScroll(fetching, hasMore, onIntersection) {
   const observer = useRef();
-  const lastItemRef = useCallback(
+  const observedRef = useCallback(
     (node) => {
       if (fetching) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          setPageNum();
+          onIntersection();
         }
       });
       if (node) observer.current.observe(node);
@@ -16,5 +16,5 @@ export function useInfinityScroll(fetching, hasMore, setPageNum) {
     [fetching, hasMore]
   );
 
-  return lastItemRef;
+  return observedRef;
 }

@@ -2,6 +2,7 @@ import Item from "@src/components/catalog/item";
 import List from "@src/components/elements/list";
 import Spinner from "@src/components/elements/spinner";
 import Pagination from "@src/components/navigation/pagination";
+import { useFirstRender } from "@src/hooks/use-first-render";
 import { useInfinityScroll } from "@src/hooks/use-infinity-scroll";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
@@ -17,6 +18,7 @@ function CatalogList() {
     limit: state.catalog.params.limit,
     count: state.catalog.count,
     waiting: state.catalog.waiting,
+    hasMore: state.catalog.hasMore,
   }));
 
   const { t } = useTranslate();
@@ -30,17 +32,22 @@ function CatalogList() {
       []
     ),
     increasePage: useCallback(
-      () => store.get("catalog").setParams({ page: select.page + 1 }),
+      () =>
+        store
+          .get("catalog")
+          .setParams(
+            { page: select.page + 1 },
+            { historyReplace: true, append: true }
+          ),
       [select.page]
     ),
   };
 
-  const lastItemRef = useInfinityScroll(
+  const observedRef = useInfinityScroll(
     select.waiting,
-    true,
+    select.hasMore,
     callbacks.increasePage
   );
-  console.log(lastItemRef);
 
   const renders = {
     item: useCallback(
@@ -56,16 +63,20 @@ function CatalogList() {
     ),
   };
 
+  const isFirstRender = useFirstRender(() => {
+    console.log(`It's first render`);
+  });
+
   return (
     <Spinner active={select.waiting}>
-      <List items={select.items} renderItem={renders.item} />
       <Pagination
-        fetchRef={lastItemRef}
         count={select.count}
         page={select.page}
         limit={select.limit}
         onChange={callbacks.onPaginate}
       />
+      <List items={select.items} renderItem={renders.item} />
+      {!isFirstRender && <div ref={observedRef}></div>}
     </Spinner>
   );
 }

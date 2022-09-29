@@ -59,7 +59,6 @@ Pagination.propTypes = {
   count: propTypes.number,
   onChange: propTypes.func,
   indent: propTypes.number,
-  lastItemRef: propTypes.object,
 };
 
 Pagination.defaultProps = {
