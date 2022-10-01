@@ -32,7 +32,6 @@ function App() {
         <Route path={"/login"} element={<Login/>}/>
         <Route path={"/profile"} element={<Protected redirect={'/login'}><Profile/></Protected>}/>
       </Routes>
-      {/* {modal === 'basket' && <Basket/>} */}
       <ModalsManager />
     </>
   );

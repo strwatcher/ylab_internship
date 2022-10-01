@@ -20,6 +20,9 @@ class ModalsState extends StateModule{
       ...this.getState(),
       items: [...this.getState().items, item],
     }, `Открытие модалки`);
+    // return new Promise((resolve, reject) => {
+// 
+    // })
   }
 
   /**

@@ -10,7 +10,7 @@ import s from "./style.module.scss";
 PureSearchSelect.propTypes = {
   refs: propTypes.object.isRequired,
   options: propTypes.arrayOf(propTypes.object).isRequired,
-  currentOption: propTypes.object.isRequired,
+  currentOption: propTypes.object,
   callbacks: propTypes.objectOf(propTypes.func).isRequired,
   opened: propTypes.bool,
   filter: propTypes.string

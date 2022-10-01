@@ -1,3 +1,4 @@
+import AddDialog from "@src/app/add-dialog";
 import Item from "@src/components/catalog/item";
 import List from "@src/components/elements/list";
 import Spinner from "@src/components/elements/spinner";
@@ -25,7 +26,14 @@ function CatalogList() {
 
   const callbacks = {
     // Добавление в корзину
-    addToBasket: useCallback((_id) => store.get("basket").addToBasket(_id), []),
+    addToBasket: useCallback(
+      (_id) =>
+        store.get("modals").open({
+          render: (key, onSuccess) => <AddDialog key={key} onSuccess={onSuccess}/>,
+          onSuccess: (value) => {store.get("basket").addToBasket(_id, value)},
+        }),
+      []
+    ),
     // Пагианция
     onPaginate: useCallback(
       (page) => store.get("catalog").setParams({ page }),
@@ -63,9 +71,7 @@ function CatalogList() {
     ),
   };
 
-  const isFirstRender = useFirstRender(() => {
-    console.log(`It's first render`);
-  });
+  const isFirstRender = useFirstRender();
 
   return (
     <Spinner active={select.waiting}>

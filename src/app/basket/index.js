@@ -31,12 +31,6 @@ function Basket() {
       (_id) => store.get("basket").removeFromBasket(_id),
       []
     ),
-
-    openModalBasket: useCallback(() => {
-      store.get("modals").open({ render: (key) => <Basket key={key} /> });
-      console.log(store);
-      // storeRedux.dispatch(actionsModals.open('basket'));
-    }, []),
   };
 
   const renders = {
@@ -61,7 +55,6 @@ function Basket() {
       labelClose={t("basket.close")}
       onClose={callbacks.closeModal}
     >
-      <button onClick={callbacks.openModalBasket}>открыть еще</button>
       <List items={select.items} renderItem={renders.itemBasket} />
       <BasketTotal sum={select.sum} t={t} />
     </LayoutModal>

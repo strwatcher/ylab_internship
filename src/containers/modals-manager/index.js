@@ -24,8 +24,8 @@ function ModalsManager() {
         {select.modals.map((item, index) =>
           item.render(
             index,
-            item.onClose || (() => {}),
-            item.onSuccess || (() => {})
+            item.onSuccess || (() => {}),
+            item.onClose || (() => {})
           )
         )}
       </ModalsBase>
