@@ -1,13 +1,36 @@
+import ModalsBase from "@src/components/elements/modals-base";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
-import React from "react";
+import React, { useEffect } from "react";
 
 function ModalsManager() {
   const store = useStore();
   const select = useSelector((state) => ({
     modals: state.modals.items,
   }));
-  return <>{select.modals.map((item, index) => item.render(index, item.onClose || (() => {}), item.onSuccess || (() => {})))}</>;
+
+  useEffect(() => {
+    if (select.modals.length >= 1) {
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [select.modals.length]);
+
+  return (
+    select.modals.length >= 1 && (
+      <ModalsBase>
+        {select.modals.map((item, index) =>
+          item.render(
+            index,
+            item.onClose || (() => {}),
+            item.onSuccess || (() => {})
+          )
+        )}
+      </ModalsBase>
+    )
+  );
 }
 
 export default React.memo(ModalsManager);
