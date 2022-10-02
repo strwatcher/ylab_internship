@@ -1,4 +1,5 @@
 import AddDialog from "@src/app/add-dialog";
+import Error from "@src/app/error";
 import Item from "@src/components/catalog/item";
 import List from "@src/components/elements/list";
 import Spinner from "@src/components/elements/spinner";
@@ -25,13 +26,20 @@ function CatalogList() {
   const { t } = useTranslate();
 
   const callbacks = {
+    closeModal: useCallback(() => store.get("modals").close()),
+
+    onAddSuccess: useCallback((_id) => (amount) => {
+      store.get("basket").addToBasket(_id, amount);
+    }),
+
+    onAddFail: useCallback(() => {
+      store.get("modals").open({ render: renders.error });
+      store.get("addDialog").setAmount(1);
+    }, []),
     // Добавление в корзину
     addToBasket: useCallback(
       (_id) =>
-        store.get("modals").open({
-          render: (key, onSuccess) => <AddDialog key={key} onSuccess={onSuccess}/>,
-          onSuccess: (value) => {store.get("basket").addToBasket(_id, value)},
-        }),
+        store.get("modals").open({ render: renders.dialog(_id) }),
       []
     ),
     // Пагианция
@@ -69,6 +77,25 @@ function CatalogList() {
       ),
       [t]
     ),
+
+    dialog: useCallback(
+      (_id) => (key) => (
+        <AddDialog
+          key={key}
+          onSuccess={callbacks.onAddSuccess(_id)}
+          onError={callbacks.onAddFail}
+        />
+      ),
+      []
+    ),
+
+    error: useCallback((key) => (
+      <Error
+      key={key}
+        onClose={callbacks.closeModal}
+        errorText={"Неверный формат поля"}
+      />
+    ), []),
   };
 
   const isFirstRender = useFirstRender();
@@ -82,7 +109,9 @@ function CatalogList() {
         onChange={callbacks.onPaginate}
       />
       <List items={select.items} renderItem={renders.item} />
-      {!isFirstRender && <div ref={observedRef}></div>}
+      {!isFirstRender && (
+        <div ref={observedRef} style={{ height: "50px" }}></div>
+      )}
     </Spinner>
   );
 }

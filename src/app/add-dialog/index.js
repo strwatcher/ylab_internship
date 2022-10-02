@@ -5,7 +5,7 @@ import useStore from "@src/hooks/use-store";
 import useTranslate from "@src/hooks/use-translate";
 import React, { useCallback } from "react";
 
-function AddDialog({ onSuccess }) {
+function AddDialog({ onSuccess, onError }) {
   const store = useStore();
   const select = useSelector((state) => ({
     amount: state.addDialog.amount,
@@ -14,16 +14,22 @@ function AddDialog({ onSuccess }) {
   const callbacks = {
     closeModal: useCallback(() => {
       store.get("modals").close();
-      store.get("addDialog").setAmount(0);
+      store.get("addDialog").setAmount(1);
     }, []),
-    onAdd: useCallback(() => {
-      onSuccess(select.amount);
-      callbacks.closeModal();
-    }, [select.amount]),
     onChange: useCallback(
       (value) => store.get("addDialog").setAmount(value),
       []
     ),
+
+    onAddClick: useCallback(() => {
+      if (!/^[1-9]+$/.test(select.amount)) {
+        onError();
+      }
+      else {
+        onSuccess(select.amount);
+        callbacks.closeModal();
+      }
+    }, [select.amount])
   };
 
   const { t } = useTranslate();
@@ -34,12 +40,13 @@ function AddDialog({ onSuccess }) {
       onClose={callbacks.closeModal}
       theme={{
         contentDisplay: "flex",
-        frameMinWidth: "300px",
-        contentPadding: "20px 0",
+        frameMinWidth: "400px",
+        contentPadding: "40px 0",
+        scalable: false
       }}
     >
       <DigitInput value={select.amount} onChange={callbacks.onChange} />
-      <button onClick={callbacks.onAdd}>Добавить</button>
+      <button onClick={callbacks.onAddClick}>Добавить</button>
     </LayoutModal>
   );
 }

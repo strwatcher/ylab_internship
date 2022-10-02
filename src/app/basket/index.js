@@ -54,6 +54,7 @@ function Basket() {
       title={t("basket.title")}
       labelClose={t("basket.close")}
       onClose={callbacks.closeModal}
+      theme={{scalable: true}}
     >
       <List items={select.items} renderItem={renders.itemBasket} />
       <BasketTotal sum={select.sum} t={t} />

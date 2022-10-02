@@ -10,7 +10,7 @@ class AddDialogState extends StateModule {
    */
   initState() {
     return {
-      amount: 0,
+      amount: 1,
     };
   }
 
@@ -21,7 +21,7 @@ class AddDialogState extends StateModule {
     });
   }
 
-  
+
 
 }
 

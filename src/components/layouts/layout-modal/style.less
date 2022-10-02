@@ -5,6 +5,8 @@
 @content-padding: 70px 0;
 @content-gap: 20px;
 @frame-min-width: 960px;
+@frame-top: 50%;
+@frame-transform: translateY(-50%);
 
 .LayoutModal {
   position: fixed;
@@ -24,6 +26,8 @@
     margin: 10px auto;
     border-radius: 10px;
     overflow: hidden;
+    top: var(--frame-top, @frame-top);
+    transform: var(--frame-transform, @frame-transform);
     // max-width: 720px;
     box-shadow: 2px 5px 10px rgb(0 0 0 / 5%);
     max-width: var(--frame-min-width, @frame-min-width);
@@ -33,7 +37,7 @@
     height: 80px;
     background: #f5f5f5;
     display: flex;
-    /*align-items: stretch;*/
+    align-items: stretch;
     justify-content: space-between;
     padding: 0 30px 0 20px;
   }
@@ -55,6 +59,5 @@
     align-items: var(--content-align-items, @content-align-items);
     justify-content: var(--content-justify-content, @content-justify-content);
     gap: var(--content-gap, @content-gap);
-
   }
 }

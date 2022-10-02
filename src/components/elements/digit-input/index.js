@@ -4,8 +4,8 @@ import s from './style.module.scss';
 function DigitInput({ onChange, value }) {
   
   const callbacks = {
-    increase: useCallback(() => onChange(value + 1), [value]),
-    decrease: useCallback(() => onChange(value - 1), [value]),
+    increase: useCallback(() => onChange(parseInt(value) + 1), [value]),
+    decrease: useCallback(() => value > 1 && onChange(value - 1), [value]),
     onChange: (e) => onChange(e.target.value)
   }
 
