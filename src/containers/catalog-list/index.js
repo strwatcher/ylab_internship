@@ -5,22 +5,31 @@ import List from "@src/components/elements/list";
 import Spinner from "@src/components/elements/spinner";
 import Pagination from "@src/components/navigation/pagination";
 import { useFirstRender } from "@src/hooks/use-first-render";
-import { useInfinityScroll } from "@src/hooks/use-infinity-scroll";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
 import useTranslate from "@src/hooks/use-translate";
+import propTypes from "prop-types";
 import React, { useCallback } from "react";
 
-function CatalogList() {
+CatalogList.propTypes = {
+  stateName: propTypes.string,
+};
+
+CatalogList.defaultProps = {
+  stateName: "catalog",
+
+};
+
+function CatalogList({stateName}) {
   const store = useStore();
 
   const select = useSelector((state) => ({
-    items: state.catalog.items,
-    page: state.catalog.params.page,
-    limit: state.catalog.params.limit,
-    count: state.catalog.count,
-    waiting: state.catalog.waiting,
-    hasMore: state.catalog.hasMore,
+    items: state[stateName].items,
+    page: state[stateName].params.page,
+    limit: state[stateName].params.limit,
+    count: state[stateName].count,
+    waiting: state[stateName].waiting,
+    hasMore: state[stateName].hasMore,
   }));
 
   const { t } = useTranslate();
@@ -38,19 +47,20 @@ function CatalogList() {
     }, []),
     // Добавление в корзину
     addToBasket: useCallback(
-      (_id) =>
-        store.get("modals").open({ render: renders.dialog(_id) }),
+      (_id) => store.get("modals").open({ render: renders.dialog(_id) }),
       []
     ),
     // Пагианция
     onPaginate: useCallback(
-      (page) => store.get("catalog").setParams({ page }),
+      (page) => store.get(stateName).setParams({ page }),
+
       []
     ),
     increasePage: useCallback(
       () =>
         store
-          .get("catalog")
+          .get(stateName)
+
           .setParams(
             { page: select.page + 1 },
             { historyReplace: true, append: true }
@@ -59,11 +69,11 @@ function CatalogList() {
     ),
   };
 
-  const observedRef = useInfinityScroll(
-    select.waiting,
-    select.hasMore,
-    callbacks.increasePage
-  );
+  // const observedRef = useInfinityScroll(
+    // select.waiting,
+    // select.hasMore,
+    // callbacks.increasePage
+  // );
 
   const renders = {
     item: useCallback(
@@ -79,23 +89,27 @@ function CatalogList() {
     ),
 
     dialog: useCallback(
-      (_id) => (key) => (
-        <AddDialog
+      (_id) => (key) =>
+        (
+          <AddDialog
+            key={key}
+            onSuccess={callbacks.onAddSuccess(_id)}
+            onError={callbacks.onAddFail}
+          />
+        ),
+      []
+    ),
+
+    error: useCallback(
+      (key) => (
+        <Error
           key={key}
-          onSuccess={callbacks.onAddSuccess(_id)}
-          onError={callbacks.onAddFail}
+          onClose={callbacks.closeModal}
+          errorText={"Неверный формат поля"}
         />
       ),
       []
     ),
-
-    error: useCallback((key) => (
-      <Error
-      key={key}
-        onClose={callbacks.closeModal}
-        errorText={"Неверный формат поля"}
-      />
-    ), []),
   };
 
   const isFirstRender = useFirstRender();
@@ -109,9 +123,9 @@ function CatalogList() {
         onChange={callbacks.onPaginate}
       />
       <List items={select.items} renderItem={renders.item} />
-      {!isFirstRender && (
-        <div ref={observedRef} style={{ height: "50px" }}></div>
-      )}
+      {/* {!isFirstRender && ( */}
+        {/* // <div ref={observedRef} style={{ height: "50px" }}></div> */}
+      {/* )} */}
     </Spinner>
   );
 }

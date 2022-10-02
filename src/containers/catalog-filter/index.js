@@ -6,15 +6,24 @@ import useStore from "@src/hooks/use-store";
 import useTranslate from "@src/hooks/use-translate";
 import listToTree from "@src/utils/list-to-tree";
 import treeToList from "@src/utils/tree-to-list";
+import propTypes from 'prop-types';
 import React, { useCallback, useMemo } from "react";
 
-function CatalogFilter() {
+CatalogFilter.propTypes = {
+  stateName: propTypes.string
+}
+
+CatalogFilter.defaultProps = {
+  stateName: 'catalog'
+}
+
+function CatalogFilter({stateName}) {
   const store = useStore();
 
   const select = useSelector((state) => ({
-    sort: state.catalog.params.sort,
-    query: state.catalog.params.query,
-    category: state.catalog.params.category,
+    sort: state[stateName].params.sort,
+    query: state[stateName].params.query,
+    category: state[stateName].params.category,
     categories: state.categories.items,
   }));
 
@@ -22,17 +31,17 @@ function CatalogFilter() {
 
   const callbacks = {
     // Сортировка
-    onSort: useCallback((sort) => store.get("catalog").setParams({ sort }), []),
+    onSort: useCallback((sort) => store.get(stateName).setParams({ sort }), []),
     // Поиск
     onSearch: useCallback(
-      (query) => store.get("catalog").setParams({ query, page: 1 }),
+      (query) => store.get(stateName).setParams({ query, page: 1 }),
       []
     ),
     // Сброс
-    onReset: useCallback(() => store.get("catalog").resetParams(), []),
+    onReset: useCallback(() => store.get(stateName).resetParams(), []),
     // Фильтр по категории
     onCategory: useCallback(
-      (category) => store.get("catalog").setParams({ category }),
+      (category) => store.get(stateName).setParams({ category }),
       []
     ),
   };

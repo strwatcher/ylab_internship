@@ -22,7 +22,7 @@ function AddDialog({ onSuccess, onError }) {
     ),
 
     onAddClick: useCallback(() => {
-      if (!/^[1-9]+$/.test(select.amount)) {
+      if (!/^\d+$/.test(select.amount) || select.amount == 0) {
         onError();
       }
       else {
