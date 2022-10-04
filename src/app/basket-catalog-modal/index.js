@@ -1,3 +1,4 @@
+import BasketCatalogAdd from "@src/components/catalog/basket-catalog-add";
 import SelectableItem from "@src/components/catalog/selectable-item";
 import LayoutModal from "@src/components/layouts/layout-modal";
 import CatalogFilter from "@src/containers/catalog-filter";
@@ -7,61 +8,82 @@ import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
 import React, { useCallback } from "react";
 
-function BasketMainModal({ stateName, basketStateName }) {
+function BasketMainModal({ stateName }) {
   const store = useStore();
 
   const select = useSelector((state) => ({
-    basket: state[basketStateName],
     catalog: state[stateName],
-    // basketItems: state[basketStateName].items,
+    basketItems: state.multiselectBasket.items,
   }));
 
   useInit(
     async () => {
       store.createState("catalog", stateName);
-      store.createState("basket", basketStateName);
-      await Promise.all([
-        store.get(stateName).initParams(),
-      ]);
+      store.get("multiModality").setCatalog(stateName);
+      await store.get(stateName).initParams();
     },
     [],
-    { backForward: true }
   );
 
   const callbacks = {
-    close: () => {
-      store.get("modals").close();
+    close: useCallback(async (result) => {
+      await store.get("modals").close(result);
       store.get("multiModality").setCatalog("catalog");
-    },
-    isSelected: useCallback(
-      (item) => {
-        return !!select.basket.items.find((i) => i._id === item._id);
+      store.get("multiselectBasket").clear();
+    }, []),
+
+    success: useCallback(() => {
+      callbacks.close([...select.basketItems]);
+    }, [select.basketItems]),
+
+    addToBasket: useCallback((id) => {
+      store.get("multiselectBasket").addToBasket(id);
+    }, []),
+
+    setAmount: useCallback((id, amount) => {
+      store.get("multiselectBasket").setAmount(id, amount)
+    }, []),
+
+    itemBasketInfo: useCallback(
+      (id) => {
+        const item = select.basketItems.find((i) => id === i._id);
+        if (item) {
+          return { selected: true, amount: item.amount };
+        }
+        return { selected: false };
       },
-      [select.basket]
+      [select.basketItems]
     ),
   };
 
   const renders = {
     item: useCallback(
-      (item) =>
-        (
+      (item) => {
+        const itemInfo = callbacks.itemBasketInfo(item._id);
+        return (
           <SelectableItem
             item={item}
             link={`/articles/${item._id}`}
-            selected={callbacks.isSelected(item)}
-            // onSelect={onSelect}
+            onSelect={callbacks.addToBasket}
+            onChangeAmount={callbacks.setAmount}
+            selected={itemInfo.selected}
+            amount={itemInfo.amount}
           />
-        ),
-      [callbacks.isSelected]
+        );
+      },
+      [select.basketItems]
     ),
   };
 
-  return (select.basket && select.catalog && (
-    <LayoutModal theme={{ scalable: true }} onClose={callbacks.close}>
-      <CatalogFilter stateName={stateName} />
-      <CatalogList stateName={stateName} renderItem={renders.item} />
-    </LayoutModal>
-  ))
+  return (
+    select.catalog && (
+      <LayoutModal theme={{ scalable: true }} onClose={() => callbacks.close(null)}>
+        <CatalogFilter stateName={stateName} />
+        <CatalogList stateName={stateName} renderItem={renders.item} />
+        <BasketCatalogAdd onClick={callbacks.success}/>
+      </LayoutModal>
+    )
+  );
 }
 
 export default React.memo(BasketMainModal);

@@ -19,7 +19,7 @@ CatalogList.defaultProps = {
   basketStateName: "basket",
 };
 
-function CatalogList({ stateName, basketStateName, renderItem }) {
+function CatalogList({ stateName, renderItem }) {
   const store = useStore();
 
   const select = useSelector((state) => ({
@@ -35,26 +35,22 @@ function CatalogList({ stateName, basketStateName, renderItem }) {
   const callbacks = {
     closeModal: useCallback(() => store.get("modals").close()),
 
-    onAddSuccess: useCallback((_id) => (amount) => {
-      store.get(basketStateName).addToBasket(_id, amount);
-    }),
-
     onAddFail: useCallback(() => {
       store
         .get("modals")
         .open({ Modal: Error, props: { errorText: "Неверный формат поля" } });
       store.get("addDialog").setAmount(1);
     }, []),
+    
     // Добавление в корзину
     addToBasket: useCallback(async (_id) => {
       const result = await store.get("modals").open({
         Modal: AddDialog,
         props: {
-          // onSuccess: callbacks.onAddSuccess(_id),
           onError: callbacks.onAddFail,
         },
       });
-      store.get("basket").addToBasket(_id, result)
+      result >= 1 && store.get("basket").addToBasket(_id, result);
     }, []),
     // Пагианция
     onPaginate: useCallback(
@@ -99,16 +95,16 @@ function CatalogList({ stateName, basketStateName, renderItem }) {
 
   return (
     <Spinner active={select.waiting}>
+      <List items={select.items} renderItem={renderItem || renders.item} />
+      {/* {!isFirstRender && ( */}
+      {/* // <div ref={observedRef} style={{ height: "50px" }}></div> */}
+      {/* )} */}
       <Pagination
         count={select.count}
         page={select.page}
         limit={select.limit}
         onChange={callbacks.onPaginate}
       />
-      <List items={select.items} renderItem={renderItem || renders.item} />
-      {/* {!isFirstRender && ( */}
-      {/* // <div ref={observedRef} style={{ height: "50px" }}></div> */}
-      {/* )} */}
     </Spinner>
   );
 }

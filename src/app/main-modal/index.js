@@ -15,6 +15,7 @@ function MainModal({ stateName, renderItem }) {
 
   useInit(async () => {
     store.createState("catalog", stateName);
+    store.get("multiModality").setCatalog(stateName);
     await store.get(stateName).initParams();
   }, []);
 

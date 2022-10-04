@@ -52,7 +52,7 @@ function LayoutModal({
       <div className={cn("frame")} ref={verticalPlacementRef}>
         <div className={cn("head")}>
           <h1 className={cn("title")}>{title}</h1>
-          {headContent}
+          <div className={cn("center")}>{headContent}</div>
           <button className={cn("close")} onClick={onClose}>
             {labelClose}
           </button>

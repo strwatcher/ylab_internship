@@ -1,18 +1,28 @@
-import React, { useCallback } from 'react';
-import s from './style.module.scss';
+import React, { useCallback } from "react";
+import s from "./style.module.scss";
 
 function DigitInput({ onChange, value }) {
-  
   const callbacks = {
-    increase: useCallback(() => onChange(parseInt(value) + 1), [value]),
-    decrease: useCallback(() => value > 1 && onChange(value - 1), [value]),
-    onChange: (e) => onChange(e.target.value)
-  }
+    increase: useCallback(
+      (e) => {
+        e.stopPropagation();
+        onChange(parseInt(value) + 1);
+      },
+      [value]
+    ),
+    decrease: useCallback(
+      (e) => {
+        e.stopPropagation();
+        onChange(value - 1);
+      },
+      [value]
+    ),
+  };
 
   return (
     <div className={s.wrapper}>
       <button onClick={callbacks.decrease}>-</button>
-      <input value={value} onChange={callbacks.onChange}></input>
+      <div>{value}</div>
       <button onClick={callbacks.increase}>+</button>
     </div>
   );

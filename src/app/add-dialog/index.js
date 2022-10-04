@@ -12,8 +12,8 @@ function AddDialog({ onError }) {
   }));
 
   const callbacks = {
-    closeModal: useCallback(() => {
-      store.get("modals").close();
+    closeModal: useCallback((amount) => {
+      store.get("modals").close(amount);
       store.get("addDialog").setAmount(1);
     }, []),
     onChange: useCallback(
@@ -26,7 +26,7 @@ function AddDialog({ onError }) {
         onError();
       }
       else {
-        callbacks.closeModal();
+        callbacks.closeModal(select.amount);
       }
     }, [select.amount])
   };
@@ -36,7 +36,7 @@ function AddDialog({ onError }) {
     <LayoutModal
       title={"Добавить"}
       labelClose={t("basket.close")}
-      onClose={callbacks.closeModal}
+      onClose={() => callbacks.closeModal(0)}
       theme={{
         contentDisplay: "flex",
         frameMinWidth: "400px",

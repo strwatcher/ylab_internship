@@ -6,6 +6,7 @@ export { default as categories } from "./categories";
 export { default as locale } from "./locale";
 export { default as modals } from "./modals";
 export { default as multiModality } from "./multi-modality";
+export { default as multiselectBasket } from "./multiselect-basket";
 export { default as profile } from "./profile";
 export { default as session } from "./session";
 

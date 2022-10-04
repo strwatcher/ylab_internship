@@ -24,8 +24,6 @@ function ToolsContainer() {
     // Открытие корзины
     openModalBasket: useCallback(() => {
       store.get('modals').open({Modal: Basket});
-
-      // storeRedux.dispatch(actionsModals.open('basket'));
     }, []),
   };
 

@@ -32,20 +32,21 @@ function Basket() {
       (_id) => store.get("basket").removeFromBasket(_id),
       []
     ),
-    openCatalogToAdd: useCallback(() => {
+    openCatalogToAdd: useCallback(async () => {
       const catalogStateName = `catalog-${Date.now()}`;
-      const basketStateName = `basket-${Date.now()}`;
-      store.get("modals").open(
+      const result = await store.get("modals").open(
         {
           Modal: basketCatalogModal,
           props: {
             stateName: catalogStateName,
-            basketStateName,
             renderItem: renders.itemMain,
           },
         },
         []
       );
+      if (result) {
+        store.get("basket").merge(result);
+      }
     }),
 
     isSelected: useCallback((item, items) => {
