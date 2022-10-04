@@ -5,7 +5,7 @@ import useStore from "@src/hooks/use-store";
 import useTranslate from "@src/hooks/use-translate";
 import React, { useCallback } from "react";
 
-function AddDialog({ onSuccess, onError }) {
+function AddDialog({ onError }) {
   const store = useStore();
   const select = useSelector((state) => ({
     amount: state.addDialog.amount,
@@ -26,7 +26,6 @@ function AddDialog({ onSuccess, onError }) {
         onError();
       }
       else {
-        onSuccess(select.amount);
         callbacks.closeModal();
       }
     }, [select.amount])

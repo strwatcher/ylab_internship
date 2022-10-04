@@ -36,11 +36,12 @@ class CatalogState extends StateModule {
     // Параметры из URl. Их нужно валидирвать, приводить типы и брать толкьо нужные
     const urlParams = qs.parse(window.location.search);
     let validParams = {};
-    if (urlParams.page) validParams.page = Number(urlParams.page) || 1;
-    if (urlParams.limit) validParams.limit = Number(urlParams.limit) || 10;
-    if (urlParams.sort) validParams.sort = urlParams.sort;
-    if (urlParams.query) validParams.query = urlParams.query;
-    if (urlParams.category) validParams.category = urlParams.category;
+    const ns = this.config.name;
+    if (urlParams[ns]?.page) validParams.page = Number(urlParams[ns]?.page) || 1;
+    if (urlParams[ns]?.limit) validParams.limit = Number(urlParams[ns]?.limit) || 10;
+    if (urlParams[ns]?.sort) validParams.sort = urlParams[ns]?.sort;
+    if (urlParams[ns]?.query) validParams.query = urlParams[ns]?.query;
+    if (urlParams[ns]?.category) validParams.category = urlParams[ns]?.category;
 
     // Итоговые параметры из начальных, из URL и из переданных явно
     const newParams = { ...this.initState().params, ...validParams, ...params };
@@ -71,7 +72,7 @@ class CatalogState extends StateModule {
     options = { historyReplace: false, append: false }
   ) {
     const newParams = { ...this.getState().params, ...params };
-
+    const ns = this.config.name;
     // Установка новых параметров и признака загрузки
     this.setState(
       {
@@ -118,7 +119,7 @@ class CatalogState extends StateModule {
     );
 
     // Запоминаем параметры в URL, которые отличаются от начальных
-    let queryString = qs.stringify(diff(newParams, this.initState().params));
+    let queryString = qs.stringify(diff({[ns]: newParams}, {[ns]: this.initState().params}));
     const url = window.location.pathname + queryString + window.location.hash;
     if (options.historyReplace) {
       window.history.replaceState({}, "", url);

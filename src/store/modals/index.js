@@ -3,35 +3,43 @@ import StateModule from "@src/store/module";
 /**
  * Управление модальными окнами
  */
-class ModalsState extends StateModule{
-
+class ModalsState extends StateModule {
   initState() {
     return {
-      items: []
+      items: [],
     };
   }
 
   /**
    * Открытие модального окна по названию
    */
-  open(item){
-    this.setState({
-      ...this.getState(),
-      items: [...this.getState().items, item],
-    }, `Открытие модалки`);
-    // return new Promise((resolve, reject) => {
-// 
-    // })
+  async open(item) {
+    return new Promise((resolve) => {
+      this.setState(
+        {
+          ...this.getState(),
+          items: [...this.getState().items, { ...item, resolve, result: null }],
+        },
+        `Открытие модалки`
+      );
+    });
   }
 
   /**
    * Закрытие модального окна
    */
-  close(){
-    this.setState({
-      ...this.getState(),
-      items: this.getState().items.slice(0, -1),
-    }, `Закрытие модалки`);
+  async close(result) {
+    const modalToClose = this.getState().items.at(-1);
+    if (modalToClose.resolve) {
+      modalToClose.resolve(result);
+    }
+    this.setState(
+      {
+        ...this.getState(),
+        items: this.getState().items.slice(0, -1),
+      },
+      `Закрытие модалки`
+    );
   }
 }
 

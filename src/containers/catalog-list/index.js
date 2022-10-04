@@ -40,23 +40,22 @@ function CatalogList({ stateName, basketStateName, renderItem }) {
     }),
 
     onAddFail: useCallback(() => {
-      store.get("modals").open({ Modal: Error, props: { errorText: "Неверный формат поля"} });
+      store
+        .get("modals")
+        .open({ Modal: Error, props: { errorText: "Неверный формат поля" } });
       store.get("addDialog").setAmount(1);
     }, []),
     // Добавление в корзину
-    addToBasket: useCallback(
-      (_id) =>
-        store
-          .get("modals")
-          .open({
-            Modal: AddDialog,
-            props: {
-              onSuccess: callbacks.onAddSuccess(_id),
-              onError: callbacks.onAddFail,
-            },
-          }),
-      []
-    ),
+    addToBasket: useCallback(async (_id) => {
+      const result = await store.get("modals").open({
+        Modal: AddDialog,
+        props: {
+          // onSuccess: callbacks.onAddSuccess(_id),
+          onError: callbacks.onAddFail,
+        },
+      });
+      store.get("basket").addToBasket(_id, result)
+    }, []),
     // Пагианция
     onPaginate: useCallback(
       (page) => store.get(stateName).setParams({ page }),
