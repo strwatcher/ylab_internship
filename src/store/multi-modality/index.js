@@ -10,7 +10,8 @@ class MultiModalityState extends StateModule {
    */
   initState() {
     return {
-      catalogState: 'catalog'
+      catalogState: 'catalog',
+      basketState: 'basket'
     };
   }
 
@@ -18,6 +19,13 @@ class MultiModalityState extends StateModule {
     this.setState({
       ...this.getState(),
       catalogState: state,
+    });
+  }
+
+  setBasket(state) {
+    this.setState({
+      ...this.getState(),
+      basketState: state
     });
   }
 

@@ -28,8 +28,8 @@ class Store {
     }
   }
 
-  copyState(ref, name) {
-    this.modules[name] = new modules[ref](this, {name, ...this.config.modules[name] || {}})
+  fork(ref, name) {
+    this.modules[name] = new modules[ref](this, {name, ...this.config.modules[ref] || {}})
     this.state[name] = this.state[ref]
   }
 

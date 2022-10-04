@@ -12,8 +12,8 @@ class BasketState extends StateModule{
   initState() {
     return {
       items: [],
-        sum: 0,
-        amount: 0
+      sum: 0,
+      amount: 0,
     };
   }
 
@@ -74,6 +74,15 @@ class BasketState extends StateModule{
       sum,
       amount: items.length
     }, 'Удаление из корзины')
+  }
+
+  setBasket(basket) {
+    this.setState({
+      ...this.getState(),
+      items: [...basket.items],
+      amount: basket.amount,
+      sum: basket.sum
+    })
   }
 }
 

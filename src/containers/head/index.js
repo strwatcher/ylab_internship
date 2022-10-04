@@ -13,7 +13,6 @@ function HeadContainer(props) {
   const callbacks = {
     openMainInWindow: useCallback(() => {
       const stateName = `catalog-${Date.now()}`;
-      store.copyState("catalog", stateName);
       store.get("multiModality").setCatalog(stateName);
       store.get("modals").open({
         render: (key) => {

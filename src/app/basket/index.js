@@ -7,6 +7,7 @@ import useStore from "@src/hooks/use-store";
 import useTranslate from "@src/hooks/use-translate";
 import React, { useCallback } from "react";
 import { useStore as useStoreRedux } from "react-redux";
+import BasketCatalogModal from "../basket-catalog-modal";
 
 function Basket() {
   const store = useStore();
@@ -31,6 +32,29 @@ function Basket() {
       (_id) => store.get("basket").removeFromBasket(_id),
       []
     ),
+    openCatalogToAdd: useCallback(() => {
+      const catalogStateName = `catalog-${Date.now()}`;
+      store.fork("catalog", catalogStateName);
+      const basketStateName = `basket-${Date.now()}`;
+      store.fork("basket", basketStateName);
+      store.get("modals").open(
+        {
+          render: (key) => (
+            <BasketCatalogModal
+              key={key}
+              stateName={catalogStateName}
+              basketStateName={basketStateName}
+              renderItem={renders.itemMain}
+            />
+          ),
+        },
+        []
+      );
+    }),
+
+    isSelected: useCallback((item, items) => {
+      return !!items.find(i => i._id === item._id);
+    }, [])
   };
 
   const renders = {
@@ -47,14 +71,17 @@ function Basket() {
       ),
       []
     ),
-  };
+      };
 
   return (
     <LayoutModal
       title={t("basket.title")}
       labelClose={t("basket.close")}
       onClose={callbacks.closeModal}
-      theme={{scalable: true}}
+      theme={{ scalable: true }}
+      headContent={
+        <button onClick={callbacks.openCatalogToAdd}>Добавить товары</button>
+      }
     >
       <List items={select.items} renderItem={renders.itemBasket} />
       <BasketTotal sum={select.sum} t={t} />

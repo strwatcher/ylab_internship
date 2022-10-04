@@ -4,7 +4,6 @@ import Item from "@src/components/catalog/item";
 import List from "@src/components/elements/list";
 import Spinner from "@src/components/elements/spinner";
 import Pagination from "@src/components/navigation/pagination";
-import { useFirstRender } from "@src/hooks/use-first-render";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
 import useTranslate from "@src/hooks/use-translate";
@@ -17,10 +16,11 @@ CatalogList.propTypes = {
 
 CatalogList.defaultProps = {
   stateName: "catalog",
+  basketStateName: "basket"
 
 };
 
-function CatalogList({stateName}) {
+function CatalogList({stateName, basketStateName, renderItem}) {
   const store = useStore();
 
   const select = useSelector((state) => ({
@@ -33,12 +33,11 @@ function CatalogList({stateName}) {
   }));
 
   const { t } = useTranslate();
-
   const callbacks = {
     closeModal: useCallback(() => store.get("modals").close()),
 
     onAddSuccess: useCallback((_id) => (amount) => {
-      store.get("basket").addToBasket(_id, amount);
+      store.get(basketStateName).addToBasket(_id, amount);
     }),
 
     onAddFail: useCallback(() => {
@@ -112,7 +111,7 @@ function CatalogList({stateName}) {
     ),
   };
 
-  const isFirstRender = useFirstRender();
+  // const isFirstRender = useFirstRender();
 
   return (
     <Spinner active={select.waiting}>
@@ -122,7 +121,7 @@ function CatalogList({stateName}) {
         limit={select.limit}
         onChange={callbacks.onPaginate}
       />
-      <List items={select.items} renderItem={renders.item} />
+      <List items={select.items} renderItem={renderItem || renders.item} />
       {/* {!isFirstRender && ( */}
         {/* // <div ref={observedRef} style={{ height: "50px" }}></div> */}
       {/* )} */}

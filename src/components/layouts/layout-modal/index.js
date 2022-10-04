@@ -9,6 +9,7 @@ function LayoutModal({
   children,
   onClose,
   title,
+  headContent
 }) {
   const cn = bem("LayoutModal");
 
@@ -51,6 +52,7 @@ function LayoutModal({
       <div className={cn("frame")} ref={verticalPlacementRef}>
         <div className={cn("head")}>
           <h1 className={cn("title")}>{title}</h1>
+          {headContent}
           <button className={cn("close")} onClick={onClose}>
             {labelClose}
           </button>
@@ -65,6 +67,7 @@ LayoutModal.propTypes = {
   title: PropTypes.string,
   onClose: PropTypes.func,
   children: PropTypes.node,
+  headContent: PropTypes.node,
   labelClose: PropTypes.string,
   theme: PropTypes.object,
 };
