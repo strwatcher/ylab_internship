@@ -7,7 +7,7 @@ import useStore from "@src/hooks/use-store";
 import useTranslate from "@src/hooks/use-translate";
 import React, { useCallback } from "react";
 import { useStore as useStoreRedux } from "react-redux";
-import BasketCatalogModal from "../basket-catalog-modal";
+import basketCatalogModal from "../basket-catalog-modal";
 
 function Basket() {
   const store = useStore();
@@ -34,27 +34,23 @@ function Basket() {
     ),
     openCatalogToAdd: useCallback(() => {
       const catalogStateName = `catalog-${Date.now()}`;
-      store.fork("catalog", catalogStateName);
       const basketStateName = `basket-${Date.now()}`;
-      store.fork("basket", basketStateName);
       store.get("modals").open(
         {
-          render: (key) => (
-            <BasketCatalogModal
-              key={key}
-              stateName={catalogStateName}
-              basketStateName={basketStateName}
-              renderItem={renders.itemMain}
-            />
-          ),
+          Modal: basketCatalogModal,
+          props: {
+            stateName: catalogStateName,
+            basketStateName,
+            renderItem: renders.itemMain,
+          },
         },
         []
       );
     }),
 
     isSelected: useCallback((item, items) => {
-      return !!items.find(i => i._id === item._id);
-    }, [])
+      return !!items.find((i) => i._id === item._id);
+    }, []),
   };
 
   const renders = {
@@ -71,7 +67,7 @@ function Basket() {
       ),
       []
     ),
-      };
+  };
 
   return (
     <LayoutModal

@@ -16,11 +16,10 @@ CatalogList.propTypes = {
 
 CatalogList.defaultProps = {
   stateName: "catalog",
-  basketStateName: "basket"
-
+  basketStateName: "basket",
 };
 
-function CatalogList({stateName, basketStateName, renderItem}) {
+function CatalogList({ stateName, basketStateName, renderItem }) {
   const store = useStore();
 
   const select = useSelector((state) => ({
@@ -41,12 +40,21 @@ function CatalogList({stateName, basketStateName, renderItem}) {
     }),
 
     onAddFail: useCallback(() => {
-      store.get("modals").open({ render: renders.error });
+      store.get("modals").open({ Modal: Error, props: { errorText: "Неверный формат поля"} });
       store.get("addDialog").setAmount(1);
     }, []),
     // Добавление в корзину
     addToBasket: useCallback(
-      (_id) => store.get("modals").open({ render: renders.dialog(_id) }),
+      (_id) =>
+        store
+          .get("modals")
+          .open({
+            Modal: AddDialog,
+            props: {
+              onSuccess: callbacks.onAddSuccess(_id),
+              onError: callbacks.onAddFail,
+            },
+          }),
       []
     ),
     // Пагианция
@@ -69,9 +77,9 @@ function CatalogList({stateName, basketStateName, renderItem}) {
   };
 
   // const observedRef = useInfinityScroll(
-    // select.waiting,
-    // select.hasMore,
-    // callbacks.increasePage
+  // select.waiting,
+  // select.hasMore,
+  // callbacks.increasePage
   // );
 
   const renders = {
@@ -85,29 +93,6 @@ function CatalogList({stateName, basketStateName, renderItem}) {
         />
       ),
       [t]
-    ),
-
-    dialog: useCallback(
-      (_id) => (key) =>
-        (
-          <AddDialog
-            key={key}
-            onSuccess={callbacks.onAddSuccess(_id)}
-            onError={callbacks.onAddFail}
-          />
-        ),
-      []
-    ),
-
-    error: useCallback(
-      (key) => (
-        <Error
-          key={key}
-          onClose={callbacks.closeModal}
-          errorText={"Неверный формат поля"}
-        />
-      ),
-      []
     ),
   };
 
@@ -123,7 +108,7 @@ function CatalogList({stateName, basketStateName, renderItem}) {
       />
       <List items={select.items} renderItem={renderItem || renders.item} />
       {/* {!isFirstRender && ( */}
-        {/* // <div ref={observedRef} style={{ height: "50px" }}></div> */}
+      {/* // <div ref={observedRef} style={{ height: "50px" }}></div> */}
       {/* )} */}
     </Spinner>
   );

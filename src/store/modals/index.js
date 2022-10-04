@@ -5,7 +5,6 @@ import StateModule from "@src/store/module";
  */
 class ModalsState extends StateModule{
 
-  // items: [{render: () => jsx, onClose: result => void, onSuccess: result => void}]
   initState() {
     return {
       items: []

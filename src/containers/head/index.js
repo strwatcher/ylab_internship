@@ -15,8 +15,9 @@ function HeadContainer(props) {
       const stateName = `catalog-${Date.now()}`;
       store.get("multiModality").setCatalog(stateName);
       store.get("modals").open({
-        render: (key) => {
-          return <MainModal key={key} stateName={stateName} />;
+        Modal: MainModal,
+        props: {
+          stateName,
         },
       });
     }, []),

@@ -21,11 +21,9 @@ function ModalsManager() {
   return (
     select.modals.length >= 1 && (
       <ModalsBase>
-        {select.modals.map((item, index) =>
-          item.render(
-            index,
-          )
-        )}
+        {select.modals.map((item, index) => (
+          <item.Modal key={index} {...item.props}/>
+        ))}
       </ModalsBase>
     )
   );

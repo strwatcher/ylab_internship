@@ -23,7 +23,8 @@ function ToolsContainer() {
   const callbacks = {
     // Открытие корзины
     openModalBasket: useCallback(() => {
-      store.get('modals').open({render: (key) => <Basket key={key}/>});
+      store.get('modals').open({Modal: Basket});
+
       // storeRedux.dispatch(actionsModals.open('basket'));
     }, []),
   };

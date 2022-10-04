@@ -14,7 +14,7 @@ function MainModal({ stateName, renderItem }) {
   }));
 
   useInit(async () => {
-    store.fork("catalog", stateName);
+    store.createState("catalog", stateName);
     await store.get(stateName).initParams();
   }, []);
 

@@ -28,9 +28,9 @@ class Store {
     }
   }
 
-  fork(ref, name) {
+  createState(ref, name) {
     this.modules[name] = new modules[ref](this, {name, ...this.config.modules[ref] || {}})
-    this.state[name] = this.state[ref]
+    this.state[name] = this.modules[name].initState();
   }
 
   /**

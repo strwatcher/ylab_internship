@@ -1,10 +1,13 @@
 import LayoutModal from "@src/components/layouts/layout-modal";
+import useStore from "@src/hooks/use-store";
 import React, { useCallback } from "react";
 
-function Error({ onClose, errorText }) {
+function Error({ errorText }) {
+  const store = useStore();
+
   const callbacks = {
     onClose: useCallback(() => {
-      onClose();
+      store.get("modals").close();
     }, []),
   };
 

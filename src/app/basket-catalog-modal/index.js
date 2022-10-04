@@ -11,14 +11,17 @@ function BasketMainModal({ stateName, basketStateName }) {
   const store = useStore();
 
   const select = useSelector((state) => ({
-    basketItems: state[basketStateName].items,
+    basket: state[basketStateName],
+    catalog: state[stateName],
+    // basketItems: state[basketStateName].items,
   }));
 
   useInit(
     async () => {
+      store.createState("catalog", stateName);
+      store.createState("basket", basketStateName);
       await Promise.all([
         store.get(stateName).initParams(),
-        store.get("categories").load(),
       ]);
     },
     [],
@@ -32,9 +35,9 @@ function BasketMainModal({ stateName, basketStateName }) {
     },
     isSelected: useCallback(
       (item) => {
-        return !!select.basketItems.find((i) => i._id === item._id);
+        return !!select.basket.items.find((i) => i._id === item._id);
       },
-      [select.basketItems]
+      [select.basket]
     ),
   };
 
@@ -49,16 +52,16 @@ function BasketMainModal({ stateName, basketStateName }) {
             // onSelect={onSelect}
           />
         ),
-      []
+      [callbacks.isSelected]
     ),
   };
 
-  return (
+  return (select.basket && select.catalog && (
     <LayoutModal theme={{ scalable: true }} onClose={callbacks.close}>
       <CatalogFilter stateName={stateName} />
       <CatalogList stateName={stateName} renderItem={renders.item} />
     </LayoutModal>
-  );
+  ))
 }
 
 export default React.memo(BasketMainModal);
