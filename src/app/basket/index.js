@@ -32,7 +32,7 @@ function Basket() {
       (_id) => store.get("basket").removeFromBasket(_id),
       []
     ),
-    openCatalogToAdd: useCallback(async () => {
+    openCatalog: useCallback(async () => {
       const catalogStateName = `catalog-${Date.now()}`;
       const result = await store.get("modals").open(
         {
@@ -77,7 +77,7 @@ function Basket() {
       onClose={callbacks.closeModal}
       theme={{ scalable: true }}
       headContent={
-        <button onClick={callbacks.openCatalogToAdd}>Добавить товары</button>
+        <button onClick={callbacks.openCatalog}>Добавить товары</button>
       }
     >
       <List items={select.items} renderItem={renders.itemBasket} />

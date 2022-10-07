@@ -18,7 +18,7 @@ class ModalsState extends StateModule {
       this.setState(
         {
           ...this.getState(),
-          items: [...this.getState().items, { ...item, resolve, result: null }],
+          items: [...this.getState().items, { ...item, resolve }],
         },
         `Открытие модалки`
       );
