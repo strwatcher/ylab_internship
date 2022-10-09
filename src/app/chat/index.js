@@ -9,7 +9,7 @@ function Chat() {
   const select = useSelector((state) => ({
     messages: state.chat.messages,
     token: state.session.token,
-    author: state.profile.data
+    author: state.profile.data,
   }));
 
   useInit(() => {
@@ -19,14 +19,18 @@ function Chat() {
   const callbacks = {
     send: () => {
       const message = {
-        text: "test"
-      }
+        text: "test",
+      };
 
-      store.get("chat").post(message)
+      store.get("chat").post(message);
+    },
+    load: () => {
+      store.get("chat").getOld();
     }
-  }
+  };
   return (
     <>
+    <button onClick={callbacks.load}>Загрузить</button>
       {select.messages.map((item) => (
         <div key={item._key}>{item.text}</div>
       ))}

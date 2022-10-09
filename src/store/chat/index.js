@@ -14,7 +14,7 @@ class ChatState extends StateModule {
       socket: null,
       signed: false,
       messages: [],
-      authResolve: null,
+      resolve: null,
       token: null,
     };
   }
@@ -35,17 +35,21 @@ class ChatState extends StateModule {
     });
   }
 
-  send(method, payload) {
-    this.getState().socket?.send(JSON.stringify({ method, payload }));
+  async send(method, payload) {
+    return new Promise((resolve) => {
+      this.getState().socket?.send(JSON.stringify({ method, payload }));
+      this.setState({
+        ...this.getState(),
+        resolve,
+      });
+    });
   }
 
   async auth() {
-    return new Promise((resolve) => {
-      this.send("auth", { token: this.getState().token });
-      this.setState({
-        ...this.getState(),
-        authResolve: resolve,
-      });
+    const signed = await this.send("auth", { token: this.getState().token });
+    this.setState({
+      ...this.getState(),
+      signed,
     });
   }
 
@@ -53,33 +57,57 @@ class ChatState extends StateModule {
     while (!this.getState().signed) {
       await this.auth();
     }
-
-    callback();
+    return await callback();
   }
 
   async getLast(fromDate) {
-    this.authedOperation(() => this.send("last", { fromDate }));
+    const last = await this.authedOperation(() =>
+      this.send("last", { fromDate })
+    );
+    let messages = [...this.getState().messages];
+    last.forEach((message) => {
+      const index = messages.findIndex((i) => i._key === message._key);
+      if (index >= 0) {
+        messages[index] = message;
+      } else {
+        messages.push(message);
+      }
+    });
+    console.log(messages);
+    this.setState({
+      ...this.getState(),
+      messages,
+    });
   }
 
   async getOld(fromId) {
-    this.authedOperation(() => this.send("old", { fromId }));
+    let old = await this.authedOperation(() =>
+      this.send("old", { fromId: this.getState().messages.at(0)._id })
+    )
+
+    old = old.slice(0, old.length - 1);
+    this.setState({
+      ...this.getState(),
+      messages: [...old, ...this.getState().messages],
+    });
   }
 
   post(message) {
+    const newMessage = { ...message, _key: uuidv4(), approved: false };
+
+    this.setState({
+      ...this.getState(),
+      messages: [...this.getState().messages, { ...newMessage }],
+    });
+
     this.authedOperation(() => {
-      const newMessage = { ...message, _key: uuidv4() };
       this.send("post", { ...newMessage });
-      this.setState({
-        ...this.getState(),
-        messages: [...this.getState().messages, { ...newMessage }],
-      });
     });
   }
 
   #onopen = () => {
     console.log("opened");
-    console.log("signed: " + this.getState().signed);
-    this.getLast()
+    this.getLast();
   };
 
   #onclose = () => {
@@ -102,62 +130,28 @@ class ChatState extends StateModule {
 
   #onmessage = (e) => {
     const json = JSON.parse(e.data);
+    let result;
     console.log(json);
     switch (json.method) {
       case "auth":
-        this.#onauth(json);
-        console.log("signed: " + this.getState().signed);
+        result = json.payload.result;
         break;
       case "last":
-        this.#ongetlast(json);
+        result = json.payload.items;
+        break;
+      case "old":
+        result = json.payload.items;
         break;
       case "post":
-        this.#onpost(json);
+        this.getLast(this.getState().messages.at(-1).dateCreate);
         break;
     }
-  };
 
-  #onauth = (json) => {
-    this.getState().authResolve(json.payload.result);
-    this.setState({
-      ...this.getState(),
-      signed: json.payload.result,
-    });
-  };
-
-  #ongetlast = (json) => {
-    let messages = [...this.getState().messages];
-    json.payload.items.forEach(message => {
-      const index = messages.findIndex(i => i._id === message._id);
-      if (index >= 0) {
-        messages[index] = message;
-      }
-      else {
-        messages.push(message)
-      }
-    })
-    console.log(messages);
-    this.setState({
-      ...this.getState(),
-      messages,
-    });
-  };
-
-  #onpost = (json) => {
-    let messages = [...this.getState().messages];
-    const messageIndex = messages.findIndex(
-      (i) => i._key === json.payload._key
-    );
-    console.log(messageIndex);
-    if (messageIndex >= 0) {
-      messages[messageIndex] = json.payload;
-    } else {
-      messages = [...messages, json.payload];
+    const resolve = this.getState().resolve;
+    console.log("result is ", result);
+    if (resolve && result) {
+      resolve(result);
     }
-    this.setState({
-      ...this.getState(),
-      messages,
-    });
   };
 }
 
