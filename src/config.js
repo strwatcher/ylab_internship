@@ -15,6 +15,10 @@ const config ={
   api: {
     baseUrl: ''
   },
+
+  websockets: {
+    url: 'ws://example.front.ylab.io/chat'
+  }
 }
 
 export default config;

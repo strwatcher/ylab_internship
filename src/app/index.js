@@ -1,14 +1,14 @@
-import React from 'react';
-import {useSelector as useSelectorRedux} from 'react-redux'
-import {Routes, Route} from "react-router-dom";
-import useSelector from "@src/hooks/use-selector";
+import Protected from "@src/containers/protected";
 import useInit from "@src/hooks/use-init";
 import useStore from "@src/hooks/use-store";
-import Protected from "@src/containers/protected";
-import Main from "./main";
-import Basket from "./basket";
+import React from "react";
+import { useSelector as useSelectorRedux } from "react-redux";
+import { Route, Routes } from "react-router-dom";
 import Article from "./article";
+import Basket from "./basket";
+import Chat from "./chat";
 import Login from "./login";
+import Main from "./main";
 import Profile from "./profile";
 
 /**
@@ -16,25 +16,39 @@ import Profile from "./profile";
  * @return {React.ReactElement} Виртуальные элементы React
  */
 function App() {
-
   const store = useStore();
 
-  useInit(async ()=>{
-    await store.get('session').remind();
-  })
+  useInit(async () => {
+    await store.get("session").remind();
+  });
 
   //const modal = useSelector(state => state.modals.name);
-  const modal = useSelectorRedux(state => state.modals.name);
+  const modal = useSelectorRedux((state) => state.modals.name);
 
   return (
     <>
       <Routes>
-        <Route path={''} element={<Main/>}/>
-        <Route path={"/articles/:id"} element={<Article/>}/>
-        <Route path={"/login"} element={<Login/>}/>
-        <Route path={"/profile"} element={<Protected redirect={'/login'}><Profile/></Protected>}/>
+        <Route path={""} element={<Main />} />
+        <Route path={"/articles/:id"} element={<Article />} />
+        <Route path={"/login"} element={<Login />} />
+        <Route
+          path={"/profile"}
+          element={
+            <Protected redirect={"/login"}>
+              <Profile />
+            </Protected>
+          }
+        />
+        <Route
+          path={"/chat"}
+          element={
+            <Protected redirect={"/login"}>
+              <Chat />
+            </Protected>
+          }
+        />
       </Routes>
-      {modal === 'basket' && <Basket/>}
+      {modal === "basket" && <Basket />}
     </>
   );
 }

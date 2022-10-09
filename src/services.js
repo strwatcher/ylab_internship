@@ -1,6 +1,7 @@
-import Store from "./store";
 import APIService from "./api";
+import Store from "./store";
 import createStoreRedux from "./store-redux";
+import { WebSocketsService } from "./web-sockets";
 
 class Services {
 
@@ -38,6 +39,13 @@ class Services {
       this._storeRedux = createStoreRedux(this, this.config.storeRedux);
     }
     return this._storeRedux;
+  }
+
+  get websockets() {
+    if (!this._websockets) {
+      this._websockets = new WebSocketsService(this, this.config.websockets);
+    }
+    return this._websockets;
   }
 }
 
