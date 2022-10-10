@@ -2,9 +2,10 @@ import { joinClasses } from "@src/utils/join-classes";
 import React from "react";
 import s from "./style.module.scss";
 
-function Message({ message, mine }) {
+function Message({ message, mine }, ref) {
   return (
     <div
+      ref={ref}
       className={joinClasses(
         s.message,
         mine ? s.message_mine : s.message_others
@@ -31,4 +32,4 @@ function Message({ message, mine }) {
   );
 }
 
-export default React.memo(Message);
+export default React.memo(React.forwardRef(Message));

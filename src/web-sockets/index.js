@@ -4,14 +4,32 @@ export class WebSocketsService {
     this.config = {
       ...config,
     };
+    this.sockets = {};
   }
 
-  connect = (url, callbacks, options) => {
-    const socket = new WebSocket(url);
-    socket.onopen = callbacks.onopen;
-    socket.onclose = callbacks.onclose;
-    socket.onerror = callbacks.onerror;
-    socket.onmessage = callbacks.onmessage;
-    return socket;
+  connect = async (name, url, callbacks, options) => {
+    return new Promise((resolve) => {
+      const socket = new WebSocket(url);
+      socket.onopen = callbacks.onopen;
+      socket.onclose = callbacks.onclose;
+      socket.onerror = callbacks.onerror;
+      socket.onmessage = callbacks.onmessage;
+      this.sockets[name] = { socket, resolve };
+    });
   };
+
+  approveConnect = async (name) => {
+    if (this.sockets[name].resolve) {
+      this.sockets[name].connected = true;
+      this.sockets[name].resolve(name);
+    }
+  };
+
+  getSocket = (name) => {
+    return this.sockets[name].socket;
+  };
+
+  isConnected = (name) => {
+    return this.socket[name].connected;
+  }
 }

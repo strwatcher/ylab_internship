@@ -11,33 +11,59 @@ class ChatState extends StateModule {
    */
   initState() {
     return {
-      socket: null,
       signed: false,
+      connected: false,
       messages: [],
       resolve: null,
       token: null,
+      message: "",
+      action: "",
     };
   }
 
-  connect(token) {
+  setMessage(message) {
+    this.setState({
+      ...this.getState(),
+      message,
+    });
+  }
+
+  setWaiting(waiting) {
+    this.setState({
+      ...this.getState(),
+      waiting,
+    });
+  }
+
+  async connect(token) {
     this.setState({
       ...this.getState(),
       token,
-      socket: this.services.websockets.connect(
-        "ws://example.front.ylab.io/chat",
-        {
-          onopen: this.#onopen,
-          onclose: this.#onclose,
-          onerror: this.#onerror,
-          onmessage: this.#onmessage,
-        }
-      ),
     });
+
+    await this.services.websockets.connect(
+      "chat",
+      "ws://example.front.ylab.io/chat",
+      {
+        onopen: this.#onopen,
+        onclose: this.#onclose,
+        onerror: this.#onerror,
+        onmessage: this.#onmessage,
+      }
+    );
+
+    this.setState({
+      ...this.getState(),
+      connected: true,
+    });
+    console.log(this.getState().connected);
   }
 
   async send(method, payload) {
     return new Promise((resolve) => {
-      this.getState().socket?.send(JSON.stringify({ method, payload }));
+      this.services.websockets
+        .getSocket("chat")
+        .send(JSON.stringify({ method, payload }));
       this.setState({
         ...this.getState(),
         resolve,
@@ -76,10 +102,12 @@ class ChatState extends StateModule {
     this.setState({
       ...this.getState(),
       messages,
+      action: "last"
     });
   }
 
-  async getOld(fromId) {
+  async getOld() {
+    this.setWaiting(true);
     let old = await this.authedOperation(() =>
       this.send("old", { fromId: this.getState().messages.at(0)._id })
     );
@@ -88,20 +116,21 @@ class ChatState extends StateModule {
     this.setState({
       ...this.getState(),
       messages: [...old, ...this.getState().messages],
+      waiting: false,
+      action: "old"
     });
   }
 
-  post(message, username) {
-    let newMessage = { ...message, _key: uuidv4() };
+  post(message) {
+    let newMessage = { text: message.text, _key: uuidv4() };
 
     this.setState({
       ...this.getState(),
       messages: [
         ...this.getState().messages,
-        { ...newMessage, mine: true, author: { username } },
+        { ...newMessage, mine: true, author: { username: message.username } },
       ],
     });
-
     this.authedOperation(() => {
       this.send("post", { ...newMessage });
     });
@@ -109,6 +138,8 @@ class ChatState extends StateModule {
 
   #onopen = () => {
     console.log("opened");
+    console.log(this);
+    this.services.websockets.approveConnect("chat");
     this.getLast();
   };
 
@@ -117,6 +148,7 @@ class ChatState extends StateModule {
     this.setState({
       ...this.getState(),
       signed: false,
+      connected: false,
     });
     this.connect(this.getState().token);
   };
@@ -126,13 +158,14 @@ class ChatState extends StateModule {
     this.setState({
       ...this.getState(),
       signed: false,
+      connected: false,
     });
     this.connect(this.getState().token);
   };
 
   #onmessage = (e) => {
     const json = JSON.parse(e.data);
-    console.log(json)
+    console.log(json);
     let result;
     switch (json.method) {
       case "auth":
@@ -148,6 +181,7 @@ class ChatState extends StateModule {
         this.getLast(this.getState().messages.at(-1).dateCreate);
         break;
     }
+
 
     const resolve = this.getState().resolve;
     if (resolve && result) {
