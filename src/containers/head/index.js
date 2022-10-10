@@ -1,15 +1,15 @@
-import React from "react";
-import propTypes from "prop-types";
-import useTranslate from "@src/hooks/use-translate";
 import LayoutHead from "@src/components/layouts/layout-head";
 import LocaleSelect from "@src/containers/locale-select";
+import useTranslate from "@src/hooks/use-translate";
+import propTypes from "prop-types";
+import React from "react";
 
 function HeadContainer(props) {
 
   const {t} = useTranslate();
 
   return (
-    <LayoutHead title={t(props.title)}>
+    <LayoutHead title={t(props.title)} fixed={props.fixed}>
       <LocaleSelect/>
     </LayoutHead>
   );
@@ -17,6 +17,7 @@ function HeadContainer(props) {
 
 HeadContainer.propTypes = {
   title: propTypes.string,
+  fixed: propTypes.bool
 }
 
 HeadContainer.defaultProps = {

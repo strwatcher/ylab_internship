@@ -1,12 +1,12 @@
-import React from 'react';
+import { cn as bem } from "@bem-react/classname";
 import propTypes from "prop-types";
+import React from 'react';
 import './style.less';
-import {cn as bem} from "@bem-react/classname";
 
-function LayoutHead({title, children}){
+function LayoutHead({title, children, fixed}){
   const cn = bem('LayoutHead');
   return (
-    <div className={cn()}>
+    <div className={cn('', {fixed})}>
       <h1 className={cn('title')}>{title}</h1>
       <div className={cn('side')}>{children}</div>
     </div>

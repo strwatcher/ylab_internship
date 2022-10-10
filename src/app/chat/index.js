@@ -1,3 +1,8 @@
+import Form from "@src/components/chat/form";
+import List from "@src/components/chat/list";
+import Message from "@src/components/chat/message";
+import Layout from "@src/components/layouts/layout";
+import HeadContainer from "@src/containers/head";
 import useInit from "@src/hooks/use-init";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
@@ -12,7 +17,8 @@ function Chat() {
     author: state.profile.data,
   }));
 
-  useInit(() => {
+  useInit(async () => {
+    await store.get("profile").load();
     store.get("chat").connect(select.token);
   }, []);
 
@@ -22,20 +28,27 @@ function Chat() {
         text: "test",
       };
 
-      store.get("chat").post(message);
+      store.get("chat").post(message, select.author.username);
     },
     load: () => {
       store.get("chat").getOld();
-    }
+    },
   };
   return (
-    <>
-    <button onClick={callbacks.load}>Загрузить</button>
-      {select.messages.map((item) => (
-        <div key={item._key}>{item.text}</div>
-      ))}
-      <button onClick={callbacks.send}>Create message</button>
-    </>
+    <Layout>
+      <HeadContainer title={"Чат"} fixed/>
+      <List
+        messages={select.messages}
+        render={(message) => (
+          <Message
+            key={message._key}
+            message={message}
+            mine={message.mine || message.author._id === select.author._id}
+          />
+        )}
+      />
+      <Form />
+    </Layout>
   );
 }
 
