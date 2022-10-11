@@ -24,7 +24,7 @@ function Message({ message, mine }, ref) {
         <div
           className={joinClasses(
             s.status,
-            message._id ? s.status_approved : s.status_sent
+            mine ? (message._id ? s.status_approved : s.status_sent) : ''
           )}
         />
       </div>

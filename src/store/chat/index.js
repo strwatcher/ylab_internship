@@ -56,7 +56,6 @@ class ChatState extends StateModule {
       ...this.getState(),
       connected: true,
     });
-    console.log(this.getState().connected);
   }
 
   async send(method, payload) {
@@ -80,7 +79,7 @@ class ChatState extends StateModule {
   }
 
   async authedOperation(callback) {
-    while (!this.getState().signed) {
+    if (!this.getState().signed) {
       await this.auth();
     }
     return await callback();
@@ -99,10 +98,12 @@ class ChatState extends StateModule {
         messages.push(message);
       }
     });
+
+    messages = messages.sort((a, b) => new Date(a) - new Date(b));
     this.setState({
       ...this.getState(),
       messages,
-      action: "last"
+      action: "last",
     });
   }
 
@@ -115,9 +116,9 @@ class ChatState extends StateModule {
     old = old.slice(0, old.length - 1);
     this.setState({
       ...this.getState(),
-      messages: [...old, ...this.getState().messages],
+      messages: old.concat(this.getState().messages),
       waiting: false,
-      action: "old"
+      action: "old",
     });
   }
 
@@ -130,15 +131,14 @@ class ChatState extends StateModule {
         ...this.getState().messages,
         { ...newMessage, mine: true, author: { username: message.username } },
       ],
+      action: "post",
     });
-    this.authedOperation(() => {
-      this.send("post", { ...newMessage });
-    });
+
+    this.authedOperation(() => this.send("post", { ...newMessage }));
   }
 
   #onopen = () => {
     console.log("opened");
-    console.log(this);
     this.services.websockets.approveConnect("chat");
     this.getLast();
   };
@@ -181,7 +181,6 @@ class ChatState extends StateModule {
         this.getLast(this.getState().messages.at(-1).dateCreate);
         break;
     }
-
 
     const resolve = this.getState().resolve;
     if (resolve && result) {

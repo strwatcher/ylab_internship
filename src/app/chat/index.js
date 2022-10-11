@@ -7,19 +7,18 @@ import { useInfinityScroll } from "@src/hooks/use-infinity-scroll";
 import useInit from "@src/hooks/use-init";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useLayoutEffect, useRef } from "react";
 
 function Chat() {
   const store = useStore();
-
   const select = useSelector((state) => ({
     messages: state.chat.messages,
-    token: state.session.token,
-    author: state.profile.data,
     message: state.chat.message,
     waiting: state.chat.waiting,
     connected: state.chat.connected,
-    action: state.chat.action
+    action: state.chat.action,
+    token: state.session.token,
+    author: state.profile.data,
   }));
 
   const callbacks = {
@@ -28,55 +27,68 @@ function Chat() {
     }, []),
 
     send: useCallback(() => {
+      store.get("chat").setMessage("");
       store
         .get("chat")
         .post({ text: select.message, username: select.author.username });
-
-      store.get("chat").setMessage("");
-      lastMessage.current?.scrollIntoView();
     }, [select.author, select.message]),
 
     load: useCallback(async () => {
-      console.log(select.connected);
       if (select.connected && select.messages.length) {
+        refs.prevFirst.current = refs.first.current;
         await store.get("chat").getOld();
-        firstMessage.current?.scrollIntoView();
       }
     }, [select.connected, select.messages]),
   };
+
+  // refs to controll scroll
+  const refs = {
+    load: useInfinityScroll(select.waiting, true, callbacks.load),
+    first: useRef(null),
+    prevFirst: useRef(null),
+    last: useRef(null),
+    list: useRef(null)
+  }
 
   useInit(async () => {
     await store.get("profile").load();
     await store.get("chat").connect(select.token);
   }, []);
 
-  const firstMessage = useRef(null);
-  const lastMessage = useRef(null);
-  const chatRef = useCallback(
-    (node) => {
-      const bottom =
-        node?.scrollHeight - node?.scrollTop <= node?.clientHeight * 1.2;
-      if (bottom && select.action !== 'old') {
-        lastMessage.current?.scrollIntoView();
-      }
-    },
-    [select.messages]
-  );
-  const topRef = useInfinityScroll(select.waiting, true, callbacks.load);
+  useLayoutEffect(() => {
+    switch (select.action) {
+      case "old":
+        refs.prevFirst.current?.scrollIntoView();
+        break;
+
+      case "last":
+        const bottom =
+          refs.list.current?.scrollHeight - refs.list.current?.scrollTop <=
+          refs.list.current?.clientHeight * 1.4;
+
+        if (bottom) {
+          refs.last.current?.scrollIntoView();
+        }
+        break;
+
+      case "post":
+        refs.last.current?.scrollIntoView();
+    }
+  }, [select.action, select.messages]);
 
   return (
     <Layout>
       <HeadContainer title={"Чат"} fixed />
       <List
         messages={select.messages}
-        chatRef={chatRef}
-        topRef={topRef}
+        listRef={refs.list}
+        loadRef={refs.load}
         render={(message, index) => {
           let ref;
           if (index === 0) {
-            ref = firstMessage;
+            ref = refs.first;
           } else if (index === select.messages.length - 1) {
-            ref = lastMessage;
+            ref = refs.last;
           }
           return (
             <Message

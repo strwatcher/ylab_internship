@@ -7,7 +7,7 @@ export class WebSocketsService {
     this.sockets = {};
   }
 
-  connect = async (name, url, callbacks, options) => {
+  connect = async (name, url, callbacks) => {
     return new Promise((resolve) => {
       const socket = new WebSocket(url);
       socket.onopen = callbacks.onopen;
@@ -28,8 +28,4 @@ export class WebSocketsService {
   getSocket = (name) => {
     return this.sockets[name].socket;
   };
-
-  isConnected = (name) => {
-    return this.socket[name].connected;
-  }
 }

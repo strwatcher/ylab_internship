@@ -20,9 +20,11 @@
 .head {
   display: flex;
   gap: 20px;
+  justify-content: space-between;
 }
 
 .body {
+  word-break: break-all;
 }
 
 .bottom {
