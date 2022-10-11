@@ -33,6 +33,7 @@ function Chat() {
 
     send: useCallback(() => {
       store.get("chat").setMessage("");
+      if (/^[\s]*$/.test(select.message)) return;
       store
         .get("chat")
         .post({ text: select.message, username: select.author.username });
