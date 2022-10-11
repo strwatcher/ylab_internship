@@ -2,15 +2,20 @@ import Form from "@src/components/chat/form";
 import List from "@src/components/chat/list";
 import Message from "@src/components/chat/message";
 import Layout from "@src/components/layouts/layout";
-import HeadContainer from "@src/containers/head";
+import Head from "@src/containers/head";
+import Tools from "@src/containers/tools";
+import Top from "@src/containers/top";
 import { useInfinityScroll } from "@src/hooks/use-infinity-scroll";
 import useInit from "@src/hooks/use-init";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
+import useTranslate from "@src/hooks/use-translate";
 import React, { useCallback, useLayoutEffect, useRef } from "react";
 
 function Chat() {
   const store = useStore();
+  const { t } = useTranslate();
+
   const select = useSelector((state) => ({
     messages: state.chat.messages,
     message: state.chat.message,
@@ -41,19 +46,41 @@ function Chat() {
     }, [select.connected, select.messages]),
   };
 
+  const renders = {
+    message: useCallback(
+      (message, index) => {
+        let ref;
+        if (index === 0) {
+          ref = refs.first;
+        } else if (index === select.messages.length - 1) {
+          ref = refs.last;
+        }
+        return (
+          <Message
+            ref={ref}
+            key={message._key}
+            message={message}
+            mine={message.mine || message.author._id === select.author._id}
+          />
+        );
+      },
+      [select.messages, select.author]
+    ),
+  };
+
+  useInit(async () => {
+    await store.get("profile").load();
+    await store.get("chat").connect(select.token);
+  }, []);
+
   // refs to controll scroll
   const refs = {
     load: useInfinityScroll(select.waiting, true, callbacks.load),
     first: useRef(null),
     prevFirst: useRef(null),
     last: useRef(null),
-    list: useRef(null)
-  }
-
-  useInit(async () => {
-    await store.get("profile").load();
-    await store.get("chat").connect(select.token);
-  }, []);
+    list: useRef(null),
+  };
 
   useLayoutEffect(() => {
     switch (select.action) {
@@ -62,48 +89,40 @@ function Chat() {
         break;
 
       case "last":
+        // bottom is when we under 1.7 of clientHeight of chat element
         const bottom =
           refs.list.current?.scrollHeight - refs.list.current?.scrollTop <=
-          refs.list.current?.clientHeight * 1.4;
+          refs.list.current?.clientHeight * 1.7;
 
         if (bottom) {
           refs.last.current?.scrollIntoView();
         }
         break;
-
       case "post":
         refs.last.current?.scrollIntoView();
+        break;
     }
   }, [select.action, select.messages]);
 
   return (
     <Layout>
-      <HeadContainer title={"Чат"} fixed />
+      <Top />
+      <Head title={t("chat.title")} />
+      <Tools />
       <List
         messages={select.messages}
         listRef={refs.list}
         loadRef={refs.load}
-        render={(message, index) => {
-          let ref;
-          if (index === 0) {
-            ref = refs.first;
-          } else if (index === select.messages.length - 1) {
-            ref = refs.last;
-          }
-          return (
-            <Message
-              ref={ref}
-              key={message._key}
-              message={message}
-              mine={message.mine || message.author._id === select.author._id}
-            />
-          );
-        }}
+        render={renders.message}
       />
       <Form
         onChange={callbacks.setMessage}
         send={callbacks.send}
         value={select.message}
+        text={{
+          placeholder: t("chat.placeholder"),
+          send: t("chat.send"),
+        }}
       />
     </Layout>
   );

@@ -1,17 +1,17 @@
 import React from "react";
 import s from "./style.module.scss";
 
-function Form({ value, onChange, send }) {
+function Form({ value, onChange, send, text }) {
   return (
     <div className={s.form}>
       <input
         className={s.input}
         value={value}
-        placeholder={"Ваше сообщение..."}
+        placeholder={text.placeholder}
         onChange={onChange}
       ></input>
       <button className={s.send} onClick={send}>
-        Отправить
+        {text.send}
       </button>
     </div>
   );

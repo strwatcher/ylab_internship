@@ -9,7 +9,7 @@ function HeadContainer(props) {
   const {t} = useTranslate();
 
   return (
-    <LayoutHead title={t(props.title)} fixed={props.fixed}>
+    <LayoutHead title={t(props.title)}>
       <LocaleSelect/>
     </LayoutHead>
   );
@@ -17,7 +17,6 @@ function HeadContainer(props) {
 
 HeadContainer.propTypes = {
   title: propTypes.string,
-  fixed: propTypes.bool
 }
 
 HeadContainer.defaultProps = {

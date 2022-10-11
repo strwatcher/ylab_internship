@@ -13,6 +13,7 @@ class ChatState extends StateModule {
     return {
       signed: false,
       connected: false,
+      waiting: false,
       messages: [],
       resolve: null,
       token: null,

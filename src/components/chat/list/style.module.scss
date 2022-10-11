@@ -1,15 +1,11 @@
 .list {
-
   display: flex;
   flex-direction: column;
   gap: 20px;
   padding: 0 20px;
 
 
-  height: 85vh;
+  height: 70vh;
   overflow-y: auto;
-  &_item {
-
-  }
 }
 
