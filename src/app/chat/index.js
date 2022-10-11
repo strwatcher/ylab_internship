@@ -93,6 +93,8 @@ function Chat() {
     switch (select.action) {
       case "old":
         refs.prevFirst.current?.scrollIntoView();
+        // this offset is eq to gap in messages list
+        refs.list.current.scrollTop -= 20;
         break;
 
       case "last":
