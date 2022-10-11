@@ -5,7 +5,6 @@ function Form({ value, onChange, send, text }) {
   const callbacks = {
     onEnter: useCallback(e => {
       if (e.key === "Enter") {
-        console.log(e.key)
         send();
       }
     }, [send]) 

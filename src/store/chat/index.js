@@ -144,13 +144,13 @@ class ChatState extends StateModule {
   }
 
   #onopen = () => {
-    console.log("opened");
+    // console.log("opened");
     this.services.websockets.approveConnect("chat");
     this.getLast();
   };
 
   #onclose = () => {
-    console.log("closed");
+    // console.log("closed");
     this.setState({
       ...this.getState(),
       signed: false,
@@ -160,7 +160,7 @@ class ChatState extends StateModule {
   };
 
   #onerror = () => {
-    console.log("error");
+    // console.log("error");
     this.setState({
       ...this.getState(),
       signed: false,
@@ -171,7 +171,7 @@ class ChatState extends StateModule {
 
   #onmessage = (e) => {
     const json = JSON.parse(e.data);
-    console.log(json);
+    // console.log(json);
     let result;
     switch (json.method) {
       case "auth":

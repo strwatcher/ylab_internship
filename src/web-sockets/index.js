@@ -30,7 +30,7 @@ export class WebSocketsService {
   };
 
   disconnect = (name) => {
-    this.sockets[name].socket.onclose = () => {console.log("closed permanently")} 
+    this.sockets[name].socket.onclose = null;/*() => {console.log("closed permanently")}*/ 
     this.sockets[name].socket.close();
   }
 }

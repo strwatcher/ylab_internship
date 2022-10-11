@@ -64,7 +64,6 @@ function CatalogList() {
   };
 
   const isFirstRender = useFirstRender(() => {
-    console.log(`It's first render`);
   });
 
   return (
