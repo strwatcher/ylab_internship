@@ -21,7 +21,9 @@ class ChatState extends StateModule {
       action: "",
     };
   }
-
+  clear() {
+    this.setState({...this.initState()})
+  }
   setMessage(message) {
     this.setState({
       ...this.getState(),
@@ -52,11 +54,14 @@ class ChatState extends StateModule {
         onmessage: this.#onmessage,
       }
     );
-
     this.setState({
       ...this.getState(),
       connected: true,
     });
+  }
+
+  disconnect() {
+    this.services.websockets.disconnect("chat");
   }
 
   async send(method, payload) {

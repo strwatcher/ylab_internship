@@ -10,7 +10,7 @@ import useInit from "@src/hooks/use-init";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
 import useTranslate from "@src/hooks/use-translate";
-import React, { useCallback, useLayoutEffect, useRef } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 
 function Chat() {
   const store = useStore();
@@ -69,9 +69,16 @@ function Chat() {
   };
 
   useInit(async () => {
+    store.get("chat").connect(select.token);
     await store.get("profile").load();
-    await store.get("chat").connect(select.token);
   }, []);
+
+  useEffect(() => {
+    return () => {
+      store.get("chat").clear();
+      store.get("chat").disconnect()
+    }
+  }, [])
 
   // refs to controll scroll
   const refs = {

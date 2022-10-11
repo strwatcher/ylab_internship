@@ -28,4 +28,9 @@ export class WebSocketsService {
   getSocket = (name) => {
     return this.sockets[name].socket;
   };
+
+  disconnect = (name) => {
+    this.sockets[name].socket.onclose = () => {console.log("closed permanently")} 
+    this.sockets[name].socket.close();
+  }
 }
