@@ -1,0 +1,16 @@
+.form {
+  padding: 20px;
+  min-height: 80px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px
+}
+
+.input {
+  padding: 10px;
+}
+
+.send {
+
+}

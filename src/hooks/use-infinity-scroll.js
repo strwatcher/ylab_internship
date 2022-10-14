@@ -13,7 +13,7 @@ export function useInfinityScroll(fetching, hasMore, onIntersection) {
       });
       if (node) observer.current.observe(node);
     },
-    [fetching, hasMore]
+    [fetching, hasMore, onIntersection]
   );
 
   return observedRef;

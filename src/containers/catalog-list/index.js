@@ -91,7 +91,9 @@ function CatalogList({ stateName, renderItem }) {
     ),
   };
 
-  // const isFirstRender = useFirstRender();
+  const isFirstRender = useFirstRender(() => {
+    console.log(`It's first render`);
+  });
 
   return (
     <Spinner active={select.waiting}>

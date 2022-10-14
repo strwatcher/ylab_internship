@@ -12,13 +12,13 @@ function ToolsContainer() {
   const store = useStore();
   // const storeRedux = useStoreRedux();
 
-  const select = useSelector(state => ({
+  const select = useSelector((state) => ({
     amount: state.basket.amount,
     sum: state.basket.sum,
-    lang: state.locale.lang
+    lang: state.locale.lang,
   }));
 
-  const {t} = useTranslate();
+  const { t } = useTranslate();
 
   const callbacks = {
     // Открытие корзины
@@ -28,16 +28,24 @@ function ToolsContainer() {
   };
 
   const options = {
-    menu: useMemo(() => ([
-      {key: 1, title: t('menu.main'), link: '/'},
-    ]), [t]),
-  }
+    menu: useMemo(
+      () => [
+        { key: 1, title: t("menu.main"), link: "/" },
+        { key: 2, title: t("chat.title"), link: "/chat" },
+      ],
+      [t]
+    ),
+  };
 
   return (
     <LayoutFlex flex="between" indent="big">
-      <Menu items={options.menu}/>
-      <BasketSimple onOpen={callbacks.openModalBasket} amount={select.amount} sum={select.sum}
-                    t={t}/>
+      <Menu items={options.menu} />
+      <BasketSimple
+        onOpen={callbacks.openModalBasket}
+        amount={select.amount}
+        sum={select.sum}
+        t={t}
+      />
     </LayoutFlex>
   );
 }

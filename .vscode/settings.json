@@ -15,5 +15,8 @@
       "command": "editor.action.formatDocument",
       "includeFileExtensions": [".js"]
     }
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
