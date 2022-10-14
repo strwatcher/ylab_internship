@@ -8,7 +8,6 @@ import useTranslate from "@src/hooks/use-translate";
 import React, { useCallback, useMemo } from "react";
 
 function ToolsContainer() {
-
   const store = useStore();
   // const storeRedux = useStoreRedux();
 
@@ -23,7 +22,7 @@ function ToolsContainer() {
   const callbacks = {
     // Открытие корзины
     openModalBasket: useCallback(() => {
-      store.get('modals').open({Modal: Basket});
+      store.get("modals").open({ Modal: Basket });
     }, []),
   };
 
@@ -32,6 +31,7 @@ function ToolsContainer() {
       () => [
         { key: 1, title: t("menu.main"), link: "/" },
         { key: 2, title: t("chat.title"), link: "/chat" },
+        { key: 3, title: "Рисование", link: "/drawing" },
       ],
       [t]
     ),

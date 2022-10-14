@@ -1,11 +1,12 @@
-import ModalsManager from '@src/containers/modals-manager';
+import ModalsManager from "@src/containers/modals-manager";
 import Protected from "@src/containers/protected";
 import useInit from "@src/hooks/use-init";
 import useStore from "@src/hooks/use-store";
-import React from 'react';
+import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Article from "./article";
 import Chat from "./chat";
+import Drawing from "./drawing";
 import Login from "./login";
 import Main from "./main";
 import Profile from "./profile";
@@ -46,6 +47,7 @@ function App() {
             </Protected>
           }
         />
+        <Route path={"/drawing"} element={<Drawing />} />
       </Routes>
       <ModalsManager />
     </>
