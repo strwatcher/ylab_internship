@@ -18,7 +18,7 @@ export class WebSocketsService {
     });
   };
 
-  approveConnect = async (name) => {
+  approveConnect = (name) => {
     if (this.sockets[name].resolve) {
       this.sockets[name].connected = true;
       this.sockets[name].resolve(name);
