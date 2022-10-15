@@ -1,15 +1,11 @@
-import propTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 
 import s from "./style.module.scss";
 
-Canvas.propTypes = {
-  width: propTypes.number,
-  height: propTypes.number
-};
-
-function Canvas({ width, height }) {
-  return <canvas className={s.canvas}></canvas>;
+function Canvas({width, height}, ref) {
+  return (
+    <canvas ref={ref} className={s.canvas} width={width} height={height} />
+  );
 }
 
-export default React.memo(Canvas);
+export default React.memo(React.forwardRef(Canvas));
