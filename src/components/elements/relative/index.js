@@ -3,7 +3,7 @@ import propTypes from "prop-types";
 
 import s from "./style.module.scss";
 
-Resized.propTypes = {
+Relative.propTypes = {
   render: propTypes.func,
   theme: propTypes.shape({
     height: propTypes.string,
@@ -11,14 +11,14 @@ Resized.propTypes = {
   }),
 };
 
-Resized.defaultProps = {
+Relative.defaultProps = {
   theme: {
     height: "85vh",
     width: "100%",
   },
 };
 
-function Resized({ render, theme }) {
+function Relative({ render, theme }) {
   const [width, setWidth] = React.useState(0);
   const [height, setHeight] = React.useState(0);
   const wrapperRef = React.useRef(null);
@@ -37,16 +37,16 @@ function Resized({ render, theme }) {
   }, []);
 
   React.useEffect(() => {
-    wrapperRef.current.style.setProperty("--height", theme.height);
-    wrapperRef.current.style.setProperty("--width", theme.width);
+    theme.height && wrapperRef.current.style.setProperty("--height", theme.height);
+    theme.width && wrapperRef.current.style.setProperty("--width", theme.width);
     callbacks.resize();
   }, [theme]);
 
   return (
-    <div className={s.Resized} ref={wrapperRef}>
+    <div className={s.wrapper} ref={wrapperRef}>
       {render(width, height)}
     </div>
   );
 }
 
-export default React.memo(Resized);
+export default React.memo(Relative);

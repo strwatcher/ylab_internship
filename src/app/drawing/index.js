@@ -1,17 +1,17 @@
 import Canvas from "@src/components/drawing/canvas";
-import Resized from "@src/components/elements/resized";
+import Relative from "@src/components/elements/relative";
 import Layout from "@src/components/layouts/layout";
+import CanvasDrawer from "@src/containers/canvas-drawer";
 import Tools from "@src/containers/tools";
 import React from "react";
 
 function Drawing() {
-  const canvasRef = React.useRef(null);
   return (
     <Layout>
       <Tools />
-      <Resized
+      <Relative
         render={(width, height) => (
-          <Canvas ref={canvasRef} width={width} height={height} />
+          <CanvasDrawer width={width} height={height} />
         )}
         theme={{
           width: '100%',
