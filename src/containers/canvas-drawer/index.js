@@ -14,6 +14,7 @@ function CanvasDrawer({ width, height }) {
   const select = useSelector((state) => ({
     shapes: state.drawing.shapes,
     origin: state.drawing.origin,
+    scale: state.drawing.scale,
   }));
   const [ctx, setCtx] = React.useState(null);
   const [isMoving, setIsMoving] = React.useState(false);
@@ -33,17 +34,21 @@ function CanvasDrawer({ width, height }) {
         );
     }),
 
-    scroll: (e) => {
-      if (e.shiftKey) {
-        console.log(e.shiftKey);
-
-      }
-      else {
-        const direction = Math.sign(e.deltaY);
-        const offset = direction * -50;
-        store.get("drawing").moveOrigin({ x: 0, y: offset });
-      }
-    },
+    scroll: React.useCallback(
+      (e) => {
+        if (e.shiftKey) {
+          console.log(e);
+          const direction = Math.sign(e.deltaY);
+          const ratio = direction === -1 ? 1.5 : 1 / 1.5;
+          store.get("drawing").scale(ratio);
+        } else {
+          const direction = Math.sign(e.deltaY);
+          const offset = direction * -50;
+          store.get("drawing").moveOrigin({ x: 0, y: offset });
+        }
+      },
+      [width, height]
+    ),
 
     mouseDown: (e) => setIsMoving(true),
 
@@ -60,7 +65,9 @@ function CanvasDrawer({ width, height }) {
     setCtx(ref.current.getContext("2d"));
 
     document.addEventListener("wheel", callbacks.scroll);
-  }, []);
+
+    return () => document.removeEventListener("wheel", callbacks.scroll);
+  }, [callbacks.scroll]);
 
   React.useEffect(() => {
     if (ctx) {
@@ -69,16 +76,16 @@ function CanvasDrawer({ width, height }) {
         if (
           // shape.x > select.origin.x - shape.size &&
           // shape.x < width + select.origin.x &&
-          shape.x - select.origin.x + shape.size >= 0 &&
-          shape.x - select.origin.x <= width &&
-          shape.y - select.origin.y + shape.size >= 0 &&
-          shape.y - select.origin.y <= height
+          (shape.x - select.origin.x + shape.size) * select.scale >= 0 &&
+          (shape.x - select.origin.x) * select.scale <= width &&
+          (shape.y - select.origin.y + shape.size) * select.scale >= 0 &&
+          (shape.y - select.origin.y) * select.scale <= height
         ) {
-          draw(ctx, select.origin, shape);
+          draw(ctx, select.origin, select.scale, shape);
         }
       });
     }
-  }, [select.shapes, select.origin]);
+  }, [select.shapes, select.origin, select.scale]);
 
   return (
     <>

@@ -18,7 +18,7 @@ export const clear = (ctx, width, height, baseColor) => {
   ctx.fillStyle = oldFillStyle;
 }
 
-export const draw = (ctx, origin, obj, theme = {}) => {
+export const draw = (ctx, origin, scale, obj, theme = {}) => {
   const oldStrokeStyle = ctx.strokeStyle;
   const oldFillStyle = ctx.fillStyle;
   if (theme.strokeStyle) {
@@ -30,7 +30,7 @@ export const draw = (ctx, origin, obj, theme = {}) => {
 
   switch (obj.type) {
     case "rect":
-      drawRect(ctx, obj.x - origin.x, obj.y - origin.y, obj.size, obj.fill);
+      drawRect(ctx, (obj.x - origin.x) * scale, (obj.y - origin.y) * scale, (obj.size) * scale, obj.fill);
       break;
 
     case "circle":

@@ -15,8 +15,15 @@ class DrawingState extends StateModule {
       origin: {
         x: this.getState().origin.x + offset.x,
         y: this.getState().origin.y + offset.y,
-      }
-    })
+      },
+    });
+  }
+
+  scale(ratio) {
+    this.setState({
+      ...this.getState(),
+      scale: ratio * this.getState().scale,
+    });
   }
 
   addRandomShape(minX, minY, maxX, maxY, minS, maxS, fill) {
