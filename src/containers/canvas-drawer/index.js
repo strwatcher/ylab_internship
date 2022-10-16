@@ -16,8 +16,8 @@ function CanvasDrawer({ width, height }) {
     origin: state.drawing.origin,
   }));
   const [ctx, setCtx] = React.useState(null);
+  const [isMoving, setIsMoving] = React.useState(false);
   const ref = React.useRef(null);
-  console.log(select.origin);
   const callbacks = {
     addShape: React.useCallback(() => {
       store
@@ -34,10 +34,25 @@ function CanvasDrawer({ width, height }) {
     }),
 
     scroll: (e) => {
-      const direction = Math.sign(e.deltaY);
-      const offset = direction * -50;
-      console.log(offset);
-      store.get("drawing").moveOrigin({ x: 0, y: offset });
+      if (e.shiftKey) {
+        console.log(e.shiftKey);
+
+      }
+      else {
+        const direction = Math.sign(e.deltaY);
+        const offset = direction * -50;
+        store.get("drawing").moveOrigin({ x: 0, y: offset });
+      }
+    },
+
+    mouseDown: (e) => setIsMoving(true),
+
+    mouseUp: (e) => setIsMoving(false),
+
+    mouseMove: (e) => {
+      if (isMoving) {
+        store.get("drawing").moveOrigin({ x: -e.movementX, y: -e.movementY });
+      }
     },
   };
 
@@ -51,18 +66,15 @@ function CanvasDrawer({ width, height }) {
     if (ctx) {
       clear(ctx, width, height, "white");
       select.shapes.forEach((shape) => {
-        console.log(shape.y + select.origin.y + shape.size);
-        console.log(height);
         if (
           // shape.x > select.origin.x - shape.size &&
           // shape.x < width + select.origin.x &&
+          shape.x - select.origin.x + shape.size >= 0 &&
+          shape.x - select.origin.x <= width &&
           shape.y - select.origin.y + shape.size >= 0 &&
           shape.y - select.origin.y <= height
         ) {
-          console.log(true);
           draw(ctx, select.origin, shape);
-        } else {
-          console.log(false);
         }
       });
     }
@@ -70,7 +82,14 @@ function CanvasDrawer({ width, height }) {
 
   return (
     <>
-      <Canvas ref={ref} width={width} height={height} />
+      <Canvas
+        ref={ref}
+        width={width}
+        height={height}
+        mouseMove={callbacks.mouseMove}
+        mouseDown={callbacks.mouseDown}
+        mouseUp={callbacks.mouseUp}
+      />
       <button onClick={callbacks.addShape}>new shape</button>
     </>
   );
