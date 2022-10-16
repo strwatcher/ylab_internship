@@ -4,9 +4,9 @@ const drawRect = (ctx, x, y, size, fill) => {
   fill ? ctx.fill() : ctx.stroke();
 };
 
-const drawCircle = (ctx, x, y, radius, fill) => {
+const drawCircle = (ctx, x, y, size, fill) => {
   ctx.beginPath();
-  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  ctx.arc(x, y, size, 0, 2 * Math.PI);
   fill ? ctx.fill() : ctx.stroke();
 };
 
@@ -18,7 +18,7 @@ export const clear = (ctx, width, height, baseColor) => {
   ctx.fillStyle = oldFillStyle;
 }
 
-export const draw = (ctx, origin, scale, obj, theme = {}) => {
+export const draw = (ctx, obj, theme = {}) => {
   const oldStrokeStyle = ctx.strokeStyle;
   const oldFillStyle = ctx.fillStyle;
   if (theme.strokeStyle) {
@@ -30,11 +30,11 @@ export const draw = (ctx, origin, scale, obj, theme = {}) => {
 
   switch (obj.type) {
     case "rect":
-      drawRect(ctx, (obj.x - origin.x) * scale, (obj.y - origin.y) * scale, (obj.size) * scale, obj.fill);
+      drawRect(ctx, obj.x, obj.y, obj.size, obj.fill);
       break;
 
     case "circle":
-      drawCircle(ctx, obj.x - origin.x, obj.y - origin.y, obj.radius, obj.fill);
+      drawCircle(ctx, obj.x, obj.y, obj.size, obj.fill);
       break;
   }
 

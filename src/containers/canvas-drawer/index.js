@@ -21,23 +21,12 @@ function CanvasDrawer({ width, height }) {
   const ref = React.useRef(null);
   const callbacks = {
     addShape: React.useCallback(() => {
-      store
-        .get("drawing")
-        .addRandomShape(
-          select.origin.x,
-          select.origin.y,
-          width + select.origin.x,
-          height + select.origin.y,
-          10,
-          100,
-          false
-        );
+      store.get("drawing").addRandomShape(width, height, 10, 100, false);
     }),
 
     scroll: React.useCallback(
       (e) => {
         if (e.shiftKey) {
-          console.log(e);
           const direction = Math.sign(e.deltaY);
           const ratio = direction === -1 ? 1.5 : 1 / 1.5;
           store.get("drawing").scale(ratio);
@@ -72,18 +61,18 @@ function CanvasDrawer({ width, height }) {
   React.useEffect(() => {
     if (ctx) {
       clear(ctx, width, height, "white");
-      select.shapes.forEach((shape) => {
-        if (
-          // shape.x > select.origin.x - shape.size &&
-          // shape.x < width + select.origin.x &&
-          (shape.x - select.origin.x + shape.size) * select.scale >= 0 &&
-          (shape.x - select.origin.x) * select.scale <= width &&
-          (shape.y - select.origin.y + shape.size) * select.scale >= 0 &&
-          (shape.y - select.origin.y) * select.scale <= height
-        ) {
-          draw(ctx, select.origin, select.scale, shape);
-        }
-      });
+      select.shapes
+        .map((shape) => store.get("drawing").transformShape(shape))
+        .forEach((shape) => {
+          if (
+            shape.x + shape.size >= 0 &&
+            shape.x <= width &&
+            shape.y + shape.size >= 0 &&
+            shape.y <= height
+          ) {
+            draw(ctx, shape);
+          }
+        });
     }
   }, [select.shapes, select.origin, select.scale]);
 
