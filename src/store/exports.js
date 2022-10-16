@@ -10,4 +10,4 @@ export { default as multiModality } from "./multi-modality";
 export { default as multiselectBasket } from "./multiselect-basket";
 export { default as profile } from "./profile";
 export { default as session } from "./session";
-
+export { default as drawing } from "./drawing";
