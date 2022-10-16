@@ -4,6 +4,7 @@ import Canvas from "@src/components/drawing/canvas";
 import { clear, draw } from "./drawing";
 import useStore from "@src/hooks/use-store";
 import useSelector from "@src/hooks/use-selector";
+import LayoutPanel from "@src/components/layouts/layout-panel";
 
 CanvasDrawer.propTypes = {};
 
@@ -22,16 +23,19 @@ function CanvasDrawer({ width, height }) {
   const callbacks = {
     addShape: React.useCallback(() => {
       store.get("drawing").addRandomShape(width, height, 10, 100, false);
-    }),
+    }, [width, height]),
+
+    clearCanvas: React.useCallback(() => {
+      store.get("drawing").clear();
+    }, []),
 
     scroll: React.useCallback(
       (e) => {
+        const direction = Math.sign(e.deltaY);
         if (e.shiftKey) {
-          const direction = Math.sign(e.deltaY);
           const ratio = direction === -1 ? 1.5 : 1 / 1.5;
-          store.get("drawing").scale(ratio);
+          store.get("drawing").scale(ratio, width, height);
         } else {
-          const direction = Math.sign(e.deltaY);
           const offset = direction * -50;
           store.get("drawing").moveOrigin({ x: 0, y: offset });
         }
@@ -86,7 +90,10 @@ function CanvasDrawer({ width, height }) {
         mouseDown={callbacks.mouseDown}
         mouseUp={callbacks.mouseUp}
       />
-      <button onClick={callbacks.addShape}>new shape</button>
+      <LayoutPanel>
+        <button onClick={callbacks.addShape}>Новая фигура</button>
+        <button onClick={callbacks.clearCanvas}>Отчистить</button>
+      </LayoutPanel>
     </>
   );
 }

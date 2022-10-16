@@ -1,4 +1,5 @@
 import StateModule from "@src/store/module";
+import { max } from "lodash";
 
 class DrawingState extends StateModule {
   initState() {
@@ -7,6 +8,12 @@ class DrawingState extends StateModule {
       origin: { x: 0, y: 0 },
       scale: 1,
     };
+  }
+
+  clear() {
+    this.setState({
+      ...this.initState()
+    })
   }
 
   transformShape(shape) {
@@ -22,13 +29,26 @@ class DrawingState extends StateModule {
     this.setState({
       ...this.getState(),
       origin: {
-        x: this.getState().origin.x + offset.x,
-        y: this.getState().origin.y + offset.y,
+        x: this.getState().origin.x + offset.x / this.getState().scale,
+        y: this.getState().origin.y + offset.y / this.getState().scale,
       },
     });
   }
 
-  scale(ratio) {
+  scale(ratio, w, h) {
+    if (ratio < 1) {
+      const offset = {
+        x: (-(w - w * ratio) / 2) * (1 / ratio),
+        y: (-(h - h * ratio) / 2) * (1 / ratio),
+      };
+      this.moveOrigin(offset);
+    } else if (ratio > 1) {
+      const offset = {
+        x: (w - w * (1 / ratio)) / 2,
+        y: (h - h * (1 / ratio)) / 2,
+      };
+      this.moveOrigin(offset);
+    }
     this.setState({
       ...this.getState(),
       scale: ratio * this.getState().scale,
@@ -48,23 +68,20 @@ class DrawingState extends StateModule {
   generateShape(maxX, maxY, minS, maxS, fill) {
     const types = ["rect", "circle"];
     const type = types[Math.floor(Math.random() * types.length)];
-    const size = Math.floor(Math.random() * (maxS - minS)) + minS;
-    const x =
-      (Math.floor(Math.random() * (maxX + this.getState().origin.x - size)) +
-        this.getState().origin.x +
-        size) *
-      (1 / this.getState().scale);
-    const y =
-      (Math.floor(Math.random() * (maxY + this.getState().origin.y - size)) +
-        this.getState().origin.y +
-        size) *
-      (1 / this.getState().scale);
 
+    const oX = this.getState().origin.x;
+    const oY = this.getState().origin.y;
+    const scale = this.getState().scale;
+    const size =
+      (Math.floor(Math.random() * (maxS - minS)) + minS) * (1 / scale);
+    const x = Math.floor(Math.random() * (maxX * (1 / scale))) + oX;
+
+    const y = Math.floor(Math.random() * (maxY * (1 / scale))) + oY;
     return {
       type,
       x,
       y,
-      size: size * (1 / this.getState().scale),
+      size: size,
       fill,
     };
   }
