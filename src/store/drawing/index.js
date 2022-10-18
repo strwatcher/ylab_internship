@@ -12,8 +12,8 @@ class DrawingState extends StateModule {
 
   clear() {
     this.setState({
-      ...this.initState()
-    })
+      ...this.initState(),
+    });
   }
 
   transformShape(shape) {
@@ -35,23 +35,48 @@ class DrawingState extends StateModule {
     });
   }
 
-  scale(ratio, w, h) {
+  scale(ratio, w, h, mouseOffset) {
     if (ratio < 1) {
       const offset = {
-        x: (-(w - w * ratio) / 2) * (1 / ratio),
-        y: (-(h - h * ratio) / 2) * (1 / ratio),
+        x: (-((w - w * ratio) /*- mouseOffset.x*/) / 2) * (1 / ratio),
+        y: (-((h - h * ratio) /*- mouseOffset.y*/) / 2) * (1 / ratio),
       };
       this.moveOrigin(offset);
     } else if (ratio > 1) {
       const offset = {
-        x: (w - w * (1 / ratio)) / 2,
-        y: (h - h * (1 / ratio)) / 2,
+        x: (w - w * (1 / ratio)) /*- mouseOffset.x*/ / 2,
+        y: (h - h * (1 / ratio)) /*- mouseOffset.y*/ / 2,
       };
       this.moveOrigin(offset);
     }
     this.setState({
       ...this.getState(),
       scale: ratio * this.getState().scale,
+    });
+  }
+
+  animate(dt, bY) {
+    const shapes = this.getState().shapes.map((shape) =>
+      shape.acc > 0 &&
+      shape.y <
+        bY / this.getState().scale + this.getState().origin.y - shape.size
+        ? {
+            ...shape,
+            speed: shape.speed + dt * shape.acc,
+            y: shape.y + dt * shape.speed,
+          }
+        : {
+            ...shape,
+            y:
+              bY / this.getState().scale +
+              this.getState().origin.y -
+              shape.size,
+            speed: 0
+          }
+    );
+    this.setState({
+      ...this.getState(),
+      shapes,
     });
   }
 
@@ -65,8 +90,9 @@ class DrawingState extends StateModule {
     });
   }
 
-  generateShape(maxX, maxY, minS, maxS, fill) {
+  generateShape(maxX, maxY, minS, maxS, acc = 0) {
     const types = ["rect", "circle"];
+    const colors = ["red", "blue", "black", "green"];
     const type = types[Math.floor(Math.random() * types.length)];
 
     const oX = this.getState().origin.x;
@@ -77,12 +103,18 @@ class DrawingState extends StateModule {
     const x = Math.floor(Math.random() * (maxX * (1 / scale))) + oX;
 
     const y = Math.floor(Math.random() * (maxY * (1 / scale))) + oY;
+
+    const fill = Math.random() < 0.5;
+    const color = colors[Math.floor(Math.random() * colors.length)];
     return {
       type,
       x,
       y,
       size: size,
       fill,
+      color,
+      speed: 0,
+      acc,
     };
   }
 }

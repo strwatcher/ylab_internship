@@ -1,7 +1,7 @@
 import Canvas from "@src/components/drawing/canvas";
 import Relative from "@src/components/elements/relative";
 import Layout from "@src/components/layouts/layout";
-import CanvasDrawer from "@src/containers/canvas-drawer";
+import CanvasControls from "@src/containers/canvas-controls";
 import Tools from "@src/containers/tools";
 import React from "react";
 
@@ -10,8 +10,8 @@ function Drawing() {
     <Layout>
       <Tools />
       <Relative
-        render={(width, height) => (
-          <CanvasDrawer width={width} height={height} />
+        render={(width, height, origin) => (
+          <CanvasControls width={width} height={height} origin={origin}/>
         )}
         theme={{
           width: '100%',

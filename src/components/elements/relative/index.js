@@ -21,12 +21,15 @@ Relative.defaultProps = {
 function Relative({ render, theme }) {
   const [width, setWidth] = React.useState(0);
   const [height, setHeight] = React.useState(0);
+  const [origin, setOrigin] = React.useState({})
   const wrapperRef = React.useRef(null);
 
   const callbacks = {
     resize: () => {
       setWidth(wrapperRef.current.clientWidth);
       setHeight(wrapperRef.current.clientHeight);
+      console.log(wrapperRef.current)
+      setOrigin({x: wrapperRef.current.offsetLeft, y: wrapperRef.current.offsetTop})
     },
   };
 
@@ -44,7 +47,7 @@ function Relative({ render, theme }) {
 
   return (
     <div className={s.wrapper} ref={wrapperRef}>
-      {render(width, height)}
+      {render(width, height, origin)}
     </div>
   );
 }

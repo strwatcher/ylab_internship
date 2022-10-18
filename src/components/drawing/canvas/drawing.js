@@ -16,16 +16,15 @@ export const clear = (ctx, width, height, baseColor) => {
   ctx.beginPath();
   ctx.fillRect(0, 0, width, height);
   ctx.fillStyle = oldFillStyle;
-}
+};
 
-export const draw = (ctx, obj, theme = {}) => {
+export const draw = (ctx, obj) => {
   const oldStrokeStyle = ctx.strokeStyle;
   const oldFillStyle = ctx.fillStyle;
-  if (theme.strokeStyle) {
-    ctx.strokeStyle = theme.stroke;
-  }
-  if (theme.fillStyle) {
-    ctx.fillStyle = theme.fill;
+  if (obj.fill) {
+    ctx.fillStyle = obj.color;
+  } else {
+    ctx.strokeStyle = obj.color;
   }
 
   switch (obj.type) {
@@ -41,3 +40,4 @@ export const draw = (ctx, obj, theme = {}) => {
   ctx.strokeStyle = oldStrokeStyle;
   ctx.fillStyle = oldFillStyle;
 };
+

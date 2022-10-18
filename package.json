@@ -6,7 +6,9 @@
   "scripts": {
     "start": "webpack serve",
     "build": "cross-env NODE_ENV=production webpack",
-    "test": "jest"
+    "test": "jest",
+    "gcont": "npx generate-react-cli component --type=container",
+    "gcomp": "npx generate-react-cli component"
   },
   "repository": {
     "type": "git",

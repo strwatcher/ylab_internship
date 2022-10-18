@@ -9,7 +9,7 @@ const path = require('path');
 
 // Опции webpack
 let config = {
-  context: path.join(__dirname, '/src'), // Директория с исходным кодом приложения
+  context: path.join(__dirname, '/src'), // Директория с исходным кодом приложения,
   entry: `index.js`, // Главный файл приложения
   output: {
     path: path.join(__dirname, 'dist'), // Куда и как делать сборку
