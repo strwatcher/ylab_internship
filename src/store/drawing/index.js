@@ -1,6 +1,4 @@
-import { Square } from "@src/drawing/square";
 import StateModule from "@src/store/module";
-import { max } from "lodash";
 
 class DrawingState extends StateModule {
   initState() {
@@ -51,19 +49,6 @@ class DrawingState extends StateModule {
     this.setState({
       ...this.getState(),
       shapes: [...shapes],
-    });
-  }
-
-  animate(dt, bY) {
-    const shapes = this.getState().shapes.map((shape) =>
-      shape.fall(
-        dt,
-        bY / this.getState().scale + this.getState().origin.y - shape.height
-      )
-    );
-    this.setState({
-      ...this.getState(),
-      shapes,
     });
   }
 

@@ -40,11 +40,11 @@ export class BaseShape {
     return this._y;
   }
 
-  draw(context, width, height, drawCallback) {
+  draw(context, vcWidth, height, drawCallback) {
     if (
       !(
         this.x + this.width >= 0 &&
-        this.x <= width &&
+        this.x <= vcWidth &&
         this.y + this.height >= 0 &&
         this.y <= height
       )

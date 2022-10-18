@@ -1,4 +1,3 @@
-import { useAnimationFrame } from "@src/hooks/use-animation-frame";
 import React from "react";
 import s from "./style.module.scss";
 

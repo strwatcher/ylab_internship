@@ -28,7 +28,6 @@ function Relative({ render, theme }) {
     resize: () => {
       setWidth(wrapperRef.current.clientWidth);
       setHeight(wrapperRef.current.clientHeight);
-      console.log(wrapperRef.current)
       setOrigin({x: wrapperRef.current.offsetLeft, y: wrapperRef.current.offsetTop})
     },
   };
