@@ -1,4 +1,5 @@
 import APIService from "./api";
+import DrawingService from "./drawing";
 import Store from "./store";
 import createStoreRedux from "./store-redux";
 import { WebSocketsService } from "./web-sockets";
@@ -46,6 +47,14 @@ class Services {
       this._websockets = new WebSocketsService(this, this.config.websockets);
     }
     return this._websockets;
+  }
+
+  get drawing() {
+    if(!this._drawing) {
+      this._drawing = new DrawingService(this, this.config.drawing);
+    }
+
+    return this._drawing
   }
 }
 

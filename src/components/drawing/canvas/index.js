@@ -1,8 +1,16 @@
-import React, { useState } from "react";
-import {draw, clear} from "./drawing"
+import { useAnimationFrame } from "@src/hooks/use-animation-frame";
+import React from "react";
 import s from "./style.module.scss";
 
-function Canvas({ width, height, shapes, mouseMove, mouseDown, mouseUp }) {
+function Canvas({
+  width,
+  height,
+  shapes,
+  clear,
+  mouseMove,
+  mouseDown,
+  mouseUp,
+}) {
   const [ctx, setCtx] = React.useState(null);
   const ref = React.useRef(null);
 
@@ -12,16 +20,9 @@ function Canvas({ width, height, shapes, mouseMove, mouseDown, mouseUp }) {
 
   React.useEffect(() => {
     if (ctx) {
-      clear(ctx, width, height, "white");
+      clear(ctx);
       shapes.forEach((shape) => {
-        if (
-          shape.x + shape.size >= 0 &&
-          shape.x <= width &&
-          shape.y + shape.size >= 0 &&
-          shape.y <= height
-        ) {
-          draw(ctx, shape);
-        }
+        shape.draw(ctx, width, height);
       });
     }
   }, [shapes]);

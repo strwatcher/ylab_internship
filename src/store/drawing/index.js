@@ -1,3 +1,4 @@
+import { Square } from "@src/drawing/square";
 import StateModule from "@src/store/module";
 import { max } from "lodash";
 
@@ -14,15 +15,6 @@ class DrawingState extends StateModule {
     this.setState({
       ...this.initState(),
     });
-  }
-
-  transformShape(shape) {
-    return {
-      ...shape,
-      x: (shape.x - this.getState().origin.x) * this.getState().scale,
-      y: (shape.y - this.getState().origin.y) * this.getState().scale,
-      size: shape.size * this.getState().scale,
-    };
   }
 
   moveOrigin(offset) {
@@ -55,24 +47,19 @@ class DrawingState extends StateModule {
     });
   }
 
+  setShapes(shapes) {
+    this.setState({
+      ...this.getState(),
+      shapes: [...shapes],
+    });
+  }
+
   animate(dt, bY) {
     const shapes = this.getState().shapes.map((shape) =>
-      shape.acc > 0 &&
-      shape.y <
-        bY / this.getState().scale + this.getState().origin.y - shape.size
-        ? {
-            ...shape,
-            speed: shape.speed + dt * shape.acc,
-            y: shape.y + dt * shape.speed,
-          }
-        : {
-            ...shape,
-            y:
-              bY / this.getState().scale +
-              this.getState().origin.y -
-              shape.size,
-            speed: 0
-          }
+      shape.fall(
+        dt,
+        bY / this.getState().scale + this.getState().origin.y - shape.height
+      )
     );
     this.setState({
       ...this.getState(),
@@ -80,42 +67,21 @@ class DrawingState extends StateModule {
     });
   }
 
-  addRandomShape(maxX, maxY, minS, maxS, fill) {
+  addRandomShape(maxX, maxY, minS, maxS, acc) {
+    const shape = this.services.drawing.genSquare(
+      maxX,
+      maxY,
+      minS,
+      maxS,
+      acc,
+      this.getState().origin.x,
+      this.getState().origin.y,
+      this.getState().scale
+    );
     this.setState({
       ...this.getState(),
-      shapes: [
-        ...this.getState().shapes,
-        this.generateShape(maxX, maxY, minS, maxS, fill),
-      ],
+      shapes: [...this.getState().shapes, shape],
     });
-  }
-
-  generateShape(maxX, maxY, minS, maxS, acc = 0) {
-    const types = ["rect", "circle"];
-    const colors = ["red", "blue", "black", "green"];
-    const type = types[Math.floor(Math.random() * types.length)];
-
-    const oX = this.getState().origin.x;
-    const oY = this.getState().origin.y;
-    const scale = this.getState().scale;
-    const size =
-      (Math.floor(Math.random() * (maxS - minS)) + minS) * (1 / scale);
-    const x = Math.floor(Math.random() * (maxX * (1 / scale))) + oX;
-
-    const y = Math.floor(Math.random() * (maxY * (1 / scale))) + oY;
-
-    const fill = Math.random() < 0.5;
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    return {
-      type,
-      x,
-      y,
-      size: size,
-      fill,
-      color,
-      speed: 0,
-      acc,
-    };
   }
 }
 
