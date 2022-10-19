@@ -26,20 +26,18 @@ class DrawingState extends StateModule {
   }
 
   scale(ratio, w, h, mouseOffset) {
-    if (mouseOffset.x > w || mouseOffset.x < 0 || mouseOffset.y > h || mouseOffset.y < 0) return;
-    if (ratio < 1) {
-      const offset = {
-        x: -(mouseOffset.x - mouseOffset.x * ratio) * (1 / ratio),
-        y: -(mouseOffset.y - mouseOffset.y * ratio) * (1 / ratio)
-      };
-      this.moveOrigin(offset);
-    } else if (ratio > 1) {
-      const offset = {
-        x: mouseOffset.x - mouseOffset.x * (1/ ratio),
-        y: mouseOffset.y - mouseOffset.y * (1 / ratio)
-      };
-      this.moveOrigin(offset);
-    }
+    if (
+      mouseOffset.x > w ||
+      mouseOffset.x < 0 ||
+      mouseOffset.y > h ||
+      mouseOffset.y < 0
+    )
+      return;
+    const offset = {
+      x: mouseOffset.x - mouseOffset.x * (1 / ratio),
+      y: mouseOffset.y - mouseOffset.y * (1 / ratio),
+    };
+    this.moveOrigin(offset);
     this.setState({
       ...this.getState(),
       scale: ratio * this.getState().scale,
