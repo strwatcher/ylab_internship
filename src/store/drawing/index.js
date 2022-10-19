@@ -25,19 +25,12 @@ class DrawingState extends StateModule {
     });
   }
 
-  scale(ratio, w, h, mouseOffset) {
-    if (
-      mouseOffset.x > w ||
-      mouseOffset.x < 0 ||
-      mouseOffset.y > h ||
-      mouseOffset.y < 0
-    )
-      return;
-      const offset = {
-        x: mouseOffset.x - mouseOffset.x * (1 / ratio),
-        y: mouseOffset.y - mouseOffset.y * (1 / ratio),
-      };
-      this.moveOrigin(offset);
+  scale(ratio, mouseOffset) {
+    const offset = {
+      x: mouseOffset.x - mouseOffset.x * (1 / ratio),
+      y: mouseOffset.y - mouseOffset.y * (1 / ratio),
+    };
+    this.moveOrigin(offset);
     this.setState({
       ...this.getState(),
       scale: ratio * this.getState().scale,
@@ -51,20 +44,11 @@ class DrawingState extends StateModule {
     });
   }
 
-  addRandomShape(maxX, maxY, minS, maxS, acc) {
-    const shape = this.services.drawing.genSquare(
-      maxX,
-      maxY,
-      minS,
-      maxS,
-      acc,
-      this.getState().origin.x,
-      this.getState().origin.y,
-      this.getState().scale
-    );
+  addRandomShape(minS, maxS, acc) {
+    const shape = this.services.drawing.genSquare(minS, maxS, acc);
     this.setState({
       ...this.getState(),
-      shapes: [...this.getState().shapes, shape],
+      shapes: [...this.getState().shapes, {shape, local: false, id: Date.now()}],
     });
   }
 }
