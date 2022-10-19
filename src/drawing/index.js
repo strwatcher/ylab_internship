@@ -8,6 +8,14 @@ class DrawingService {
     };
   }
 
+  init(canvas, width, height) {
+    this.canvas = canvas;
+    this.width = width;
+    this.height = height;
+
+    this.context = canvas.getContext("2d");
+  }
+
   genSquare(maxX, maxY, minS, maxS, acc, oX, oY, scale) {
     const colors = ["red", "blue", "black", "green"];
     const size =
@@ -20,12 +28,19 @@ class DrawingService {
     return new Square(x, y, size, color, null, 0, acc);
   }
 
-  clearDrawingArea(context, width, height, baseColor="white") {
+  clearDrawingArea(context, width, height, baseColor = "white") {
     context.fillStyle = baseColor;
     context.beginPath();
     context.fillRect(0, 0, width, height);
     context.closePath();
   }
+
+  // clearDrawingArea(baseColor = "white") {
+  //   this.context.fillStyle = baseColor;
+  //   this.context.beginPath();
+  //   this.context.fillRect(0, 0, this.width, this.height);
+  //   this.context.closePath();
+  // }
 }
 
 export default DrawingService;
