@@ -19,7 +19,7 @@ function CanvasControls({ width, height, origin }) {
     scale: state.drawing.scale,
   }));
   const [isMoving, setIsMoving] = React.useState(false);
-  const [shapesCopy, setShapesCopy] = React.useState([]);
+  const [localShapes, setLocalShapes] = React.useState([]);
 
   const callbacks = {
     clearCanvas: React.useCallback(
@@ -28,14 +28,14 @@ function CanvasControls({ width, height, origin }) {
     ),
 
     addShape: React.useCallback(() => {
-      store.get("drawing").setShapes(shapesCopy);
+      store.get("drawing").setShapes(localShapes);
       store.get("drawing").addRandomShape(width, height, 10, 100, 0);
-    }, [width, height, shapesCopy]),
+    }, [width, height, localShapes]),
 
     addFallingShape: React.useCallback(() => {
-      store.get("drawing").setShapes(shapesCopy);
+      store.get("drawing").setShapes(localShapes);
       store.get("drawing").addRandomShape(width, height / 2, 10, 100, 0.0098);
-    }, [shapesCopy, width, height]),
+    }, [localShapes, width, height]),
 
     clear: React.useCallback(() => {
       store.get("drawing").clear();
@@ -61,7 +61,6 @@ function CanvasControls({ width, height, origin }) {
     mouseDown: e => setIsMoving(true),
     mouseUp: e => setIsMoving(false),
     mouseMove: e => {
-      // console.log("calculated: ", e.clientX - origin.x, " ", e.clientY - origin.y)
       if (isMoving) {
         store.get("drawing").moveOrigin({ x: -e.movementX, y: -e.movementY });
       }
@@ -74,8 +73,8 @@ function CanvasControls({ width, height, origin }) {
 
     animate: React.useCallback(
       (dt) => {
-        setShapesCopy(
-          shapesCopy.map((shape) =>
+        setLocalShapes(
+          localShapes.map((shape) =>
             shape.fall(
               dt,
               height / select.scale + select.origin.y - shape.height
@@ -83,13 +82,13 @@ function CanvasControls({ width, height, origin }) {
           )
         );
       },
-      [shapesCopy, height, select.scale, select.origin]
+      [localShapes, height, select.scale, select.origin]
     ),
   };
   
   // Устанавливаем копию массива фигур в локальный стейт
   React.useLayoutEffect(() => {
-    setShapesCopy(select.shapes);
+    setLocalShapes(select.shapes);
   }, [select.shapes]);
 
   // Скроллинг и зуминг
@@ -102,17 +101,10 @@ function CanvasControls({ width, height, origin }) {
   // Анимация фигур
   useAnimationFrame(callbacks.animate);
 
-  // Трансформация фигур для скейла и скролла
-  const transformedShapes = React.useMemo(() => {
-    return shapesCopy.map((shape) =>
-      shape.normalize(select.origin, select.scale)
-    );
-  }, [shapesCopy, select.scale, select.origin]);
-
   return (
     <>
       <Canvas
-        shapes={transformedShapes}
+        shapes={localShapes}
         width={width}
         height={height}
         mouseMove={callbacks.mouseMove}
@@ -120,6 +112,8 @@ function CanvasControls({ width, height, origin }) {
         mouseUp={callbacks.mouseUp}
         wheel={callbacks.wheel}
         clear={callbacks.clearCanvas}
+        origin={select.origin}
+        scale={select.scale}
       />
       <LayoutPanel>
         <button onClick={callbacks.addShape}>Новая фигура</button>

@@ -17,15 +17,10 @@ export class Square extends BaseShape {
     );
   }
   
-  normalize(origin, scale) {
-    const base = super.normalize(origin, scale);
-    return Square.fromBase(base);
-  }
-
-  draw(context, width, height) {
-    super.draw(context, width, height, () => {
+  draw(context, vcWidth, vcHeight, origin, scale) {
+    super.draw(context, vcWidth, vcHeight, origin, scale, (dimensions) => {
       context.beginPath();
-      context.rect(this.x, this.y, this.width, this.height);
+      context.rect(dimensions.x, dimensions.y, dimensions.width, dimensions.height);
       context.closePath();
       if (this.fill) {
         context.fill();

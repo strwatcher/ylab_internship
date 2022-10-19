@@ -40,13 +40,14 @@ export class BaseShape {
     return this._y;
   }
 
-  draw(context, vcWidth, height, drawCallback) {
+  draw(context, vcWidth, vcHeight, origin, scale, drawCallback) {
+    const dimensions = this.normalize(origin, scale)
     if (
       !(
-        this.x + this.width >= 0 &&
-        this.x <= vcWidth &&
-        this.y + this.height >= 0 &&
-        this.y <= height
+        dimensions.x + dimensions.width >= 0 &&
+        dimensions.x <= vcWidth &&
+        dimensions.y + dimensions.height >= 0 &&
+        dimensions.y <= vcHeight
       )
     ) {
       return;
@@ -58,7 +59,7 @@ export class BaseShape {
     if (this.stroke) {
       context.strokeStyle = this.stroke;
     }
-    drawCallback();
+    drawCallback(dimensions);
   }
 
   normalize(origin, scale) {
@@ -67,16 +68,12 @@ export class BaseShape {
     const x = (this.x - origin.x) * scale;
     const y = (this.y - origin.y) * scale;
 
-    return new BaseShape(
+    return {
       x,
       y,
       width,
       height,
-      this.fill,
-      this.stroke,
-      this.speed,
-      this.acc
-    );
+    };
   }
 
   fall(dt, bottom) {

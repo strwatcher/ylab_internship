@@ -33,11 +33,11 @@ class DrawingState extends StateModule {
       mouseOffset.y < 0
     )
       return;
-    const offset = {
-      x: mouseOffset.x - mouseOffset.x * (1 / ratio),
-      y: mouseOffset.y - mouseOffset.y * (1 / ratio),
-    };
-    this.moveOrigin(offset);
+      const offset = {
+        x: mouseOffset.x - mouseOffset.x * (1 / ratio),
+        y: mouseOffset.y - mouseOffset.y * (1 / ratio),
+      };
+      this.moveOrigin(offset);
     this.setState({
       ...this.getState(),
       scale: ratio * this.getState().scale,

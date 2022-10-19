@@ -6,6 +6,8 @@ function Canvas({
   height,
   shapes,
   clear,
+  origin,
+  scale,
   mouseMove,
   mouseDown,
   mouseUp,
@@ -21,7 +23,7 @@ function Canvas({
     if (ctx) {
       clear(ctx);
       shapes.forEach((shape) => {
-        shape.draw(ctx, width, height);
+        shape.draw(ctx, width, height, origin, scale);
       });
     }
   }, [shapes]);
