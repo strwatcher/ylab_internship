@@ -6,7 +6,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Article from "./article";
 import Chat from "./chat";
-import Drawing from "./drawing";
+import DrawingPage from "./drawing";
 import Login from "./login";
 import Main from "./main";
 import Profile from "./profile";
@@ -47,7 +47,7 @@ function App() {
             </Protected>
           }
         />
-        <Route path={"/drawing"} element={<Drawing />} />
+        <Route path={"/drawing"} element={<DrawingPage />} />
       </Routes>
       <ModalsManager />
     </>

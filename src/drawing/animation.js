@@ -16,7 +16,7 @@ export class AnimationController {
     this.request = requestAnimationFrame(this.#animate);
   }
 
-  destruct() {
+  destructor() {
     cancelAnimationFrame(this.request);
   }
 }
