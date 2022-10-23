@@ -4,7 +4,7 @@ import propTypes from "prop-types";
 import s from "./style.module.scss";
 
 LayoutPanel.propTypes = {
-  children: propTypes.node,
+  children: propTypes.arrayOf(propTypes.node),
 };
 
 LayoutPanel.defaultProps = {};

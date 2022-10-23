@@ -6,6 +6,7 @@ function Drawing({
   shapes,
   origin,
   scale,
+  selected
 }) {
   const services = useServices();
   const dom = React.useRef(null);
@@ -15,8 +16,8 @@ function Drawing({
   }, []);
 
   React.useEffect(() =>  {
-    services.drawing.change(shapes, scale, origin)
-  }, [shapes, scale, origin])
+    services.drawing.change(shapes, scale, origin, selected)
+  }, [shapes, scale, origin, selected])
 
   return (
     <div

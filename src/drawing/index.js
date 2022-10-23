@@ -1,5 +1,6 @@
 import { AnimationController } from "./animation";
 import { Square } from "./square";
+import { isIntersected } from "./utils";
 
 class DrawingService {
   constructor(services, config = {}) {
@@ -57,8 +58,12 @@ class DrawingService {
 
   draw() {
     this.clearDrawingArea();
-    this.shapes.forEach((shape) => {
-      shape.shape.draw(
+    this.shapes.forEach((obj) => {
+      obj.id === this.selected?.id
+        ? (obj.shape.stroke = "orange")
+        : (obj.shape.stroke = "white");
+      
+      obj.shape.draw(
         this.context,
         this.width,
         this.height,
@@ -68,18 +73,27 @@ class DrawingService {
     });
   }
 
-  change(shapes, scale, origin) {
+  change(shapes, scale, origin, selected) {
+    const selectedShape = selected ? [selected] : [];
+    const selectedId = selected ? selected.id : 0;
     this.shapes = shapes.length
-      ? (this.shapes = [...this.shapes, ...shapes.filter((shape) => !this.shapes.find((s) => s.id === shape.id))])
+      ? (this.shapes = [
+          ...this.shapes.filter(shape => selectedId !== shape.id),
+          ...shapes.filter(
+          (shape) => !this.shapes.find((s) => s.id === shape.id) && shape.id !== selectedId
+          ),
+          ...selectedShape
+        ])
       : (this.shapes = shapes);
+
     this.scale = scale;
     this.origin = origin;
+    this.selected = selected
     this.draw();
-    console.log(this.shapes.length);
   }
 
   genSquare(minS, maxS, acc) {
-    const colors = ["red", "blue", "black", "green"];
+    const colors = ["#ff0000", "#0000ff", "#000000", "#00ff00"];
     const size =
       (Math.floor(Math.random() * (maxS - minS)) + minS) * (1 / this.scale);
     const x =
@@ -102,7 +116,7 @@ class DrawingService {
   }
 
   #resize = () => {
-    const size = this.dom.getBoundingClientRect();
+    // const size = this.dom.getBoundingClientRect();
 
     this.width = this.dom.offsetWidth;
     this.height = this.dom.offsetHeight;
@@ -115,7 +129,12 @@ class DrawingService {
     this.canvas.style.height = `${this.height} px`;
   };
 
-  #mouseDown = () => (this.grabbing = true);
+  #mouseDown = (e) => {
+    this.#select({
+      x: e.clientX - e.target.offsetLeft,
+      y: e.clientY - e.target.offsetTop,
+    });
+  };
   #mouseUp = () => (this.grabbing = false);
   #mouseMove = (e) => {
     if (this.grabbing) {
@@ -150,6 +169,28 @@ class DrawingService {
     }));
     this.shapes = transformedShapes;
     this.draw();
+  };
+
+  #select = ({ x, y }) => {
+    let isSelected = false;
+    for (const obj of this.shapes.reverse()) {
+      const shape = obj.shape;
+      if (
+        isIntersected(
+          { x, y, width: 0, height: 0 },
+          { x: shape.x, y: shape.y, width: shape.width, height: shape.height }
+        )
+      ) {
+        shape.stroke = "orange"
+        this.services.store.get("drawing").setSelected({ shape, id: obj.id });
+        isSelected = true; 
+        break;
+      }
+    }
+
+    if (!isSelected) {
+      this.services.store.get("drawing").setSelected(null);
+    }
   };
 }
 

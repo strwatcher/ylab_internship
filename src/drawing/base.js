@@ -1,3 +1,5 @@
+import { isIntersected } from "./utils";
+
 export class BaseShape {
   constructor(
     x,
@@ -22,6 +24,10 @@ export class BaseShape {
     this.acc = acc;
   }
 
+  fromOld() {
+    return new BaseShape(this.x, this.y, this.width, this.height, this.fill, this.stroke, this.speed, this.acc) 
+  }
+
   set x(nX) {
     this._x = nX;
     this.rX = nX + this.width;
@@ -41,13 +47,11 @@ export class BaseShape {
   }
 
   draw(context, vcWidth, vcHeight, origin, scale, drawCallback) {
-    const dimensions = this.normalize(origin, scale)
+    const dimensions = this.normalize(origin, scale);
     if (
-      !(
-        dimensions.x + dimensions.width >= 0 &&
-        dimensions.x <= vcWidth &&
-        dimensions.y + dimensions.height >= 0 &&
-        dimensions.y <= vcHeight
+      !isIntersected(
+        { ...dimensions },
+        { x: 0, y: 0, width: vcWidth, height: vcHeight }
       )
     ) {
       return;
@@ -98,5 +102,25 @@ export class BaseShape {
       speed,
       this.acc
     );
+  }
+
+  setPosition({x, y}) {
+    const shape = this.fromOld();
+    shape.x = x;
+    shape.y = y;
+    return shape;
+  }
+
+  setSize({width, height}) {
+    const shape = this.fromOld();
+    shape.width = width;
+    shape.height = height;
+    return shape;
+  }
+
+  setColor(color) {
+    const shape = this.fromOld();
+    shape.fill = color;
+    return shape;
   }
 }

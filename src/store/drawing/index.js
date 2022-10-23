@@ -1,4 +1,5 @@
 import StateModule from "@src/store/module";
+import { shape } from "prop-types";
 
 class DrawingState extends StateModule {
   initState() {
@@ -6,6 +7,7 @@ class DrawingState extends StateModule {
       shapes: [],
       origin: { x: 0, y: 0 },
       scale: 1,
+      selected: null,
     };
   }
 
@@ -48,7 +50,65 @@ class DrawingState extends StateModule {
     const shape = this.services.drawing.genSquare(minS, maxS, acc);
     this.setState({
       ...this.getState(),
-      shapes: [...this.getState().shapes, {shape, local: false, id: Date.now()}],
+      shapes: [...this.getState().shapes, { shape, id: Date.now() }],
+    });
+  }
+
+  setSelected(obj) {
+    if (obj) {
+      const shape = obj.shape;
+      const id = obj.id;
+      const props = {
+        x: shape.x,
+        y: shape.y,
+        size: shape.width,
+        color: shape.fill,
+      };
+      this.setState({
+        ...this.getState(),
+        selected: { shape, props, id },
+      });
+    } else {
+      this.setState({
+        ...this.getState(),
+        selected: null,
+      });
+    }
+  }
+
+  setSelectedProps({ x, y, size, color }) {
+    const shape = this.getState().selected.shape;
+
+    this.setState({
+      ...this.getState(),
+      selected: {
+        ...this.getState().selected,
+        shape,
+        props: {
+          x: parseInt(x) || shape.x,
+          y: parseInt(y) || shape.y,
+          size: parseInt(size) || shape.width,
+          color: color || shape.fill,
+        },
+      },
+    });
+  }
+
+  submitSelectedProps() {
+    const selected = this.getState().selected;
+    const props = selected.props;
+    console.log(props);
+    const shape = selected.shape
+      .setPosition({ x: props.x, y: props.y })
+      .setSize({ width: props.size, height: props.size })
+      .setColor(props.color);
+
+    this.setState({
+      ...this.getState(),
+      selected: {
+        ...selected,
+        shape,
+      },
     });
   }
 }
