@@ -25,7 +25,7 @@ class DrawingService {
     this.dom.appendChild(this.canvas);
 
     this.context = this.canvas.getContext("2d");
-    this.animation = new AnimationController(this.#animate);
+    this.animation = new AnimationController(this.draw);
 
     this.shapes = [];
     this.grabbing = false;
@@ -56,40 +56,53 @@ class DrawingService {
     this.services.store.get("drawing").setShapes(this.shapes);
   }
 
-  draw() {
+  draw = (dt) => {
     this.clearDrawingArea();
-    this.shapes.forEach((obj) => {
+
+    this.shapes = this.shapes.map((obj) => {
       obj.id === this.selected?.id
         ? (obj.shape.stroke = "orange")
         : (obj.shape.stroke = "white");
-      
-      obj.shape.draw(
+
+      const transformed = {
+        ...obj,
+        shape: obj.shape.fall(
+          dt,
+          this.height / this.scale + this.origin.y - obj.shape.height
+        ),
+      };
+
+      transformed.shape.draw(
         this.context,
         this.width,
         this.height,
         this.origin,
         this.scale
       );
+
+      return transformed;
     });
-  }
+  };
 
   change(shapes, scale, origin, selected) {
     const selectedShape = selected ? [selected] : [];
     const selectedId = selected ? selected.id : 0;
     this.shapes = shapes.length
       ? (this.shapes = [
-          ...this.shapes.filter(shape => selectedId !== shape.id),
+          ...this.shapes.filter((shape) => selectedId !== shape.id),
           ...shapes.filter(
-          (shape) => !this.shapes.find((s) => s.id === shape.id) && shape.id !== selectedId
+            (shape) =>
+              !this.shapes.find((s) => s.id === shape.id) &&
+              shape.id !== selectedId
           ),
-          ...selectedShape
+          ...selectedShape,
         ])
       : (this.shapes = shapes);
 
     this.scale = scale;
     this.origin = origin;
-    this.selected = selected
-    this.draw();
+    this.selected = selected;
+    // this.draw();
   }
 
   genSquare(minS, maxS, acc) {
@@ -130,12 +143,18 @@ class DrawingService {
   };
 
   #mouseDown = (e) => {
-    this.#select({
+    const res = this.#select({
       x: e.clientX - e.target.offsetLeft,
       y: e.clientY - e.target.offsetTop,
     });
+    if (!res) {
+      this.grabbing = true;
+      this.services.store.get("drawing").setSelected(null);
+    }
   };
-  #mouseUp = () => (this.grabbing = false);
+  #mouseUp = () => {
+    this.grabbing = false;
+  };
   #mouseMove = (e) => {
     if (this.grabbing) {
       this.services.store
@@ -159,37 +178,23 @@ class DrawingService {
     }
   };
 
-  #animate = (dt) => {
-    const transformedShapes = this.shapes.map((shape) => ({
-      ...shape,
-      shape: shape.shape.fall(
-        dt,
-        this.height / this.scale + this.origin.y - shape.shape.height
-      ),
-    }));
-    this.shapes = transformedShapes;
-    this.draw();
-  };
-
   #select = ({ x, y }) => {
-    let isSelected = false;
     for (const obj of this.shapes.reverse()) {
       const shape = obj.shape;
       if (
         isIntersected(
-          { x, y, width: 0, height: 0 },
+          {
+            x: x / this.scale + this.origin.x,
+            y: y / this.scale + this.origin.y,
+            width: 0,
+            height: 0,
+          },
           { x: shape.x, y: shape.y, width: shape.width, height: shape.height }
         )
       ) {
-        shape.stroke = "orange"
         this.services.store.get("drawing").setSelected({ shape, id: obj.id });
-        isSelected = true; 
-        break;
+        return true;
       }
-    }
-
-    if (!isSelected) {
-      this.services.store.get("drawing").setSelected(null);
     }
   };
 }

@@ -78,6 +78,7 @@ class DrawingState extends StateModule {
 
   setSelectedProps({ x, y, size, color }) {
     const shape = this.getState().selected.shape;
+    const props = this.getState().selected.props;
 
     this.setState({
       ...this.getState(),
@@ -85,19 +86,20 @@ class DrawingState extends StateModule {
         ...this.getState().selected,
         shape,
         props: {
-          x: parseInt(x) || shape.x,
-          y: parseInt(y) || shape.y,
-          size: parseInt(size) || shape.width,
-          color: color || shape.fill,
+          x: parseInt(x) || props.x,
+          y: parseInt(y) || props.y,
+          size: parseInt(size) || props.size,
+          color: color || props.color,
         },
       },
     });
+
+    this.submitSelectedProps();
   }
 
   submitSelectedProps() {
     const selected = this.getState().selected;
     const props = selected.props;
-    console.log(props);
     const shape = selected.shape
       .setPosition({ x: props.x, y: props.y })
       .setSize({ width: props.size, height: props.size })

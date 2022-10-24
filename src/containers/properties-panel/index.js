@@ -1,7 +1,6 @@
 import React from "react";
-import propTypes from "prop-types";
 import LayoutPanel from "@src/components/layouts/layout-panel";
-import SimpleInput from "@src/components/elements/simple-input";
+import Input from "@src/components/elements/input";
 
 PropertiesPanel.propTypes = {};
 
@@ -9,50 +8,53 @@ PropertiesPanel.defaultProps = {};
 
 function PropertiesPanel({ objectProps, onChange, onSubmit }) {
   const callbacks = {
-    onColorChange: React.useCallback((e) => {
-      onChange({color: e.target.value})
+    onColorChange: React.useCallback((color) => {
+      onChange({color})
     }, []),
-    onXChange: React.useCallback((e) => {
-      onChange({x: e.target.value})
+    onXChange: React.useCallback((x) => {
+      onChange({x})
     }, []),
-    onYChange: React.useCallback((e) => {
-      onChange({y: e.target.value})
+    onYChange: React.useCallback((y) => {
+      onChange({y})
     }, []),
-    onSizeChange: React.useCallback((e) => {
-      onChange({size: e.target.value})
+    onSizeChange: React.useCallback((size) => {
+      onChange({size})
     }, []),
   }
   return (
     <LayoutPanel>
-      <SimpleInput
+      <Input
         type="color"
         title={"Цвет заливки"}
         name={"fillColor"}
         value={objectProps?.color}
         onChange={callbacks.onColorChange}
+        theme={"default"}
       />
-      <SimpleInput
+      <Input
         type="number"
         title={"Координата x"}
         name={"xCoord"}
         value={objectProps?.x}
         onChange={callbacks.onXChange}
+        theme={"default"}
       />
-      <SimpleInput
+      <Input
         type="number"
         title={"Координата y"}
         name={"yCoord"}
         value={objectProps?.y}
         onChange={callbacks.onYChange}
+        theme={"default"}
       />
-      <SimpleInput
+      <Input
         type="number"
         title={"Размер"}
         name={"size"}
         value={objectProps?.size}
         onChange={callbacks.onSizeChange}
+        theme={"default"}
       />
-      <button onClick={onSubmit}>Применить</button>
     </LayoutPanel>
   );
 }

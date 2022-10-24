@@ -1,8 +1,19 @@
-.Input{
-    font-size: 16px;
-    padding: 2px;
+.Input-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
-.Input_theme_big{
-    width: 300px;
+.Input {
+  font-size: 16px;
+  padding: 2px;
+}
+
+.Input_theme_default {
+}
+
+.Input_theme_big {
+  width: 300px;
 }
