@@ -28,7 +28,10 @@ class DrawingService {
     this.animation = new AnimationController(this.draw);
 
     this.shapes = [];
-    this.grabbing = false;
+
+    this.action = {
+      type: ""
+    }
 
     this.shapesSyncInterval = setInterval(() => {
       this.syncShapes();
@@ -143,7 +146,6 @@ class DrawingService {
 
   #resize = () => {
     this.offset = { x: this.dom.offsetLeft, y: this.dom.offsetTop };
-    console.log(this.dom);
     this.width = this.dom.offsetWidth;
     this.height = this.dom.offsetHeight;
 
@@ -184,8 +186,8 @@ class DrawingService {
     } else if (this.moving) {
       this.services.store.get("drawing").setSelected(
         this.selected.setPosition({
-          x: e.x - this.offset.x,
-          y: e.y - this.offset.y,
+          x: (e.x - this.offset.x) / this.scale + this.origin.x,
+          y: (e.y - this.offset.y) / this.scale + this.origin.y,
         })
       );
     }

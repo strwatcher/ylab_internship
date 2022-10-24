@@ -71,10 +71,12 @@ class DrawingState extends StateModule {
   }
 
   setSelectedProps(props) {
-    this.setState({
-      ...this.getState(),
-      selectedProps: { ...this.getState().selectedProps, ...props },
-    });
+    if (props) {
+      this.setState({
+        ...this.getState(),
+        selectedProps: { ...this.getState().selectedProps, ...props },
+      });
+    }
   }
 }
 

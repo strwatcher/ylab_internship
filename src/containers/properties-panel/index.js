@@ -8,8 +8,8 @@ PropertiesPanel.defaultProps = {};
 
 function PropertiesPanel({ onChange, selectedProps }) {
   const callbacks = {
-    onColorChange: React.useCallback((color) => {
-      onChange({color});
+    onColorChange: React.useCallback((fill) => {
+      onChange({fill});
     }, []),
     onXChange: React.useCallback((x) => {
       onChange({x: parseInt(x)});
