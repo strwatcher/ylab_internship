@@ -2,6 +2,7 @@ import { isIntersected } from "./utils";
 
 export class BaseShape {
   constructor(
+    id,
     x,
     y,
     width,
@@ -11,10 +12,9 @@ export class BaseShape {
     speed = 0,
     acc = 0
   ) {
-    this._x = x;
-    this._y = y;
-    this.rX = x + width;
-    this.bY = y + height;
+    this.x = x;
+    this.y = y;
+    this._id = id;
 
     this.width = width;
     this.height = height;
@@ -26,6 +26,7 @@ export class BaseShape {
 
   fromOld() {
     return new BaseShape(
+      this._id,
       this.x,
       this.y,
       this.width,
@@ -37,22 +38,8 @@ export class BaseShape {
     );
   }
 
-  set x(nX) {
-    this._x = nX;
-    this.rX = nX + this.width;
-  }
-
-  set y(nY) {
-    this._y = nY;
-    this.bY = nY + this.height;
-  }
-
-  get x() {
-    return this._x;
-  }
-
-  get y() {
-    return this._y;
+  get id() {
+    return this._id;
   }
 
   draw(context, vcWidth, vcHeight, origin, scale, drawCallback) {
@@ -101,16 +88,10 @@ export class BaseShape {
         y = bottom;
       }
     }
-    return new BaseShape(
-      this.x,
-      y,
-      this.width,
-      this.height,
-      this.fill,
-      this.stroke,
-      speed,
-      this.acc
-    );
+    const base = this.fromOld();
+    base.y = y;
+    base.speed = speed;
+    return base;
   }
 
   setPosition({ x, y }) {
@@ -130,6 +111,12 @@ export class BaseShape {
   setColor(color) {
     const shape = this.fromOld();
     shape.fill = color;
+    return shape;
+  }
+
+  setAcc(acc) {
+    const shape = this.fromOld();
+    shape.acc = acc;
     return shape;
   }
 }

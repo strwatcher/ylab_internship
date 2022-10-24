@@ -1,12 +1,13 @@
 import { BaseShape } from "./base";
 
 export class Square extends BaseShape {
-  constructor(x, y, size, fill, stroke, speed, acc) {
-    super(x, y, size, size, fill, stroke, speed, acc);
+  constructor(id, x, y, size, fill, stroke, speed, acc) {
+    super(id, x, y, size, size, fill, stroke, speed, acc);
   }
 
   static fromBase(base) {
     return new Square(
+      base.id,
       base.x,
       base.y,
       base.width,
@@ -51,6 +52,11 @@ export class Square extends BaseShape {
   }
   setPosition({ x, y }) {
     const base = super.setPosition({ x, y });
+    return Square.fromBase(base);
+  }
+
+  setAcc(acc) {
+    const base = super.setAcc(acc);
     return Square.fromBase(base);
   }
 }

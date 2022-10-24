@@ -12,7 +12,7 @@ function Input(props) {
 
   // Задержка для вызова props.onChange
   const changeThrottle = useCallback(
-    debounce((value) => props.onChange(value, props.name), 600),
+    debounce(value => props.onChange(value, props.name), 600),
     [props.onChange, props.name]
   );
 

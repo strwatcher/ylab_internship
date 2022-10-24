@@ -36,7 +36,7 @@ class DrawingService {
 
     this.selectedSyncInterval = setInterval(() => {
       this.syncSelected();
-    }, 100);
+    }, 300);
 
     this.#resize();
   }
@@ -62,37 +62,22 @@ class DrawingService {
 
   syncSelected() {
     if (this.selected) {
-      const obj = this.shapes.find((obj) => obj.id === this.selected.id);
-      this.services.store.get("drawing").setSelected({
-        ...this.selected,
-        shape: obj.shape,
-        props: {
-          x: obj.shape.x,
-          y: obj.shape.y,
-          size: obj.shape.width,
-          color: obj.shape.fill,
-        },
-      });
+      const obj = this.shapes.find((shape) => shape.id === this.selected.id);
+      this.services.store.get("drawing").setSelectedProps(obj);
     }
   }
 
   draw = (dt) => {
     this.clearDrawingArea();
 
-    this.shapes = this.shapes.map((obj) => {
-      obj.id === this.selected?.id
-        ? (obj.shape.stroke = "orange")
-        : (obj.shape.stroke = "white");
+    this.shapes = this.shapes.map((shape) => {
+      shape.id === this.selected?.id
+        ? (shape.stroke = "orange")
+        : (shape.stroke = "white");
 
-      const transformed = {
-        ...obj,
-        shape: obj.shape.fall(
-          dt,
-          this.height - obj.shape.height
-        ),
-      };
+      const transformed = shape.fall(dt, this.height - shape.height);
 
-      transformed.shape.draw(
+      transformed.draw(
         this.context,
         this.width,
         this.height,
@@ -104,21 +89,32 @@ class DrawingService {
     });
   };
 
-  change(shapes, scale, origin, selected) {
-    const selectedShape = selected ? [selected] : [];
-    const selectedId = selected ? selected.id : 0;
-    const local = this.shapes.filter((shape) => selectedId !== shape.id);
-    const glob = shapes.filter(
-      (shape) =>
-        !this.shapes.find((s) => s.id === shape.id) && shape.id !== selectedId
+  changeShapes(shapes) {
+    const global = shapes.filter(
+      (shape) => !this.shapes.find((s) => s.id === shape.id)
     );
     this.shapes = shapes.length
-      ? (this.shapes = [...local, ...glob, ...selectedShape])
+      ? (this.shapes = [...this.shapes, ...global])
       : (this.shapes = shapes);
+  }
 
+  changeSelected(selected, selectedProps) {
+    if (selected) {
+      this.selected = selected
+        .setPosition({ x: selectedProps.x, y: selectedProps.y })
+        .setSize({ width: selectedProps.width, height: selectedProps.height })
+        .setAcc(selectedProps.acc)
+        .setColor(selectedProps.fill);
+      this.shapes = [
+        ...this.shapes.filter((shape) => shape.id !== selected.id),
+        this.selected,
+      ];
+    }
+  }
+
+  changeMetrics(scale, origin) {
     this.scale = scale;
     this.origin = origin;
-    this.selected = selected;
   }
 
   genSquare(minS, maxS, acc) {
@@ -134,7 +130,8 @@ class DrawingService {
       this.origin.y;
 
     const color = colors[Math.floor(Math.random() * colors.length)];
-    return new Square(x, y, size, color, null, 0, acc);
+    const id = Date.now();
+    return new Square(id, x, y, size, color, null, 0, acc);
   }
 
   clearDrawingArea(baseColor = "white") {
@@ -145,8 +142,8 @@ class DrawingService {
   }
 
   #resize = () => {
-    // const size = this.dom.getBoundingClientRect();
-
+    this.offset = { x: this.dom.offsetLeft, y: this.dom.offsetTop };
+    console.log(this.dom);
     this.width = this.dom.offsetWidth;
     this.height = this.dom.offsetHeight;
 
@@ -167,19 +164,33 @@ class DrawingService {
     });
     if (!res) {
       this.grabbing = true;
+      this.selected = null;
       this.services.store.get("drawing").setSelected(null);
+    } else {
+      this.moving = true;
     }
   };
+
   #mouseUp = () => {
     this.grabbing = false;
+    this.moving = false;
   };
+
   #mouseMove = (e) => {
     if (this.grabbing) {
       this.services.store
         .get("drawing")
         .moveOrigin({ x: -e.movementX, y: -e.movementY });
+    } else if (this.moving) {
+      this.services.store.get("drawing").setSelected(
+        this.selected.setPosition({
+          x: e.x - this.offset.x,
+          y: e.y - this.offset.y,
+        })
+      );
     }
   };
+
   #wheel = (e) => {
     const direction = Math.sign(e.deltaY);
     if (e.shiftKey) {
@@ -187,8 +198,8 @@ class DrawingService {
       this.services.store
         .get("drawing")
         .scale(ratio * window.devicePixelRatio, {
-          x: e.clientX - e.target.offsetLeft,
-          y: e.clientY - e.target.offsetTop,
+          x: e.x,
+          y: e.y,
         });
     } else {
       const offset = direction * -50;
@@ -197,8 +208,7 @@ class DrawingService {
   };
 
   #select = ({ x, y }) => {
-    for (const obj of [...this.shapes].reverse()) {
-      const shape = obj.shape;
+    for (const shape of [...this.shapes].reverse()) {
       if (
         isIntersected(
           {
@@ -210,7 +220,7 @@ class DrawingService {
           { x: shape.x, y: shape.y, width: shape.width, height: shape.height }
         )
       ) {
-        this.services.store.get("drawing").setSelected({ shape, id: obj.id });
+        this.services.store.get("drawing").setSelected(shape);
         return true;
       }
     }

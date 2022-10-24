@@ -8,6 +8,7 @@ class DrawingState extends StateModule {
       origin: { x: 0, y: 0 },
       scale: 1,
       selected: null,
+      selectedProps: null,
     };
   }
 
@@ -50,67 +51,29 @@ class DrawingState extends StateModule {
     const shape = this.services.drawing.genSquare(minS, maxS, acc);
     this.setState({
       ...this.getState(),
-      shapes: [...this.getState().shapes, { shape, id: Date.now() }],
+      shapes: [...this.getState().shapes, shape],
     });
   }
 
-  setSelected(obj) {
-    if (obj) {
-      const shape = obj.shape;
-      const id = obj.id;
-      const props = {
-        x: shape.x,
-        y: shape.y,
-        size: shape.width,
-        color: shape.fill,
-      };
+  setSelected(shape) {
+    if (shape) {
       this.setState({
         ...this.getState(),
-        selected: { shape, props, id },
+        selected: shape,
+        selectedProps: { ...shape },
       });
-    } else {
+    } else
       this.setState({
         ...this.getState(),
         selected: null,
+        selectedProps: null,
       });
-    }
   }
 
-  setSelectedProps({ x, y, size, color }) {
-    const shape = this.getState().selected.shape;
-    const props = this.getState().selected.props;
-
+  setSelectedProps(props) {
     this.setState({
       ...this.getState(),
-      selected: {
-        ...this.getState().selected,
-        shape,
-        props: {
-          x: parseInt(x) || props.x,
-          y: parseInt(y) || props.y,
-          size: parseInt(size) || props.size,
-          color: color || props.color,
-        },
-      },
-    });
-
-    this.submitSelectedProps();
-  }
-
-  submitSelectedProps() {
-    const selected = this.getState().selected;
-    const props = selected.props;
-    const shape = selected.shape
-      .setPosition({ x: props.x, y: props.y })
-      .setSize({ width: props.size, height: props.size })
-      .setColor(props.color);
-
-    this.setState({
-      ...this.getState(),
-      selected: {
-        ...selected,
-        shape,
-      },
+      selectedProps: { ...this.getState().selectedProps, ...props },
     });
   }
 }

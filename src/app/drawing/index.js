@@ -14,6 +14,7 @@ function DrawingPage() {
     scale: state.drawing.scale,
     origin: state.drawing.origin,
     selected: state.drawing.selected,
+    selectedProps: state.drawing.selectedProps
   }));
 
   const callbacks = {
@@ -23,11 +24,8 @@ function DrawingPage() {
     clear: React.useCallback(() => {
       store.get("drawing").clear();
     }, []),
-    onChange: React.useCallback((props) => {
-      store.get("drawing").setSelectedProps(props);
-    }, []),
-    submit: React.useCallback(() => {
-      store.get("drawing").submitSelectedProps();
+    onChange: React.useCallback((obj) => {
+      store.get("drawing").setSelectedProps(obj);
     }, []),
   };
 
@@ -35,16 +33,16 @@ function DrawingPage() {
     <Layout>
       <Tools />
       <PropertiesPanel
-        selected={!!select.selected}
-        objectProps={select.selected?.props}
+        selected={select.selected}
+        selectedProps={select.selectedProps}
         onChange={callbacks.onChange}
-        onSubmit={callbacks.submit}
       />
       <Drawing
         shapes={select.shapes}
         origin={select.origin}
         scale={select.scale}
         selected={select.selected}
+        selectedProps={select.selectedProps}
       />
       <LayoutPanel>
         <button onClick={() => callbacks.addShape(0)}>Новая фигура</button>
