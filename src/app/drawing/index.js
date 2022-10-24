@@ -34,11 +34,12 @@ function DrawingPage() {
   return (
     <Layout>
       <Tools />
-     {select.selected && <PropertiesPanel
-        objectProps={select.selected.props}
+      <PropertiesPanel
+        selected={!!select.selected}
+        objectProps={select.selected?.props}
         onChange={callbacks.onChange}
         onSubmit={callbacks.submit}
-      />}
+      />
       <Drawing
         shapes={select.shapes}
         origin={select.origin}

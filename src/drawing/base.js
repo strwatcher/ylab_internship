@@ -25,7 +25,16 @@ export class BaseShape {
   }
 
   fromOld() {
-    return new BaseShape(this.x, this.y, this.width, this.height, this.fill, this.stroke, this.speed, this.acc) 
+    return new BaseShape(
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+      this.fill,
+      this.stroke,
+      this.speed,
+      this.acc
+    );
   }
 
   set x(nX) {
@@ -84,9 +93,9 @@ export class BaseShape {
     let speed = this.speed;
     let y = this.y;
     if (this.acc > 0) {
-      if (this.y < bottom) {
+      y = this.y + dt * this.speed;
+      if (y < bottom) {
         speed = this.speed + dt * this.acc;
-        y = this.y + dt * this.speed;
       } else {
         speed = 0;
         y = bottom;
@@ -104,14 +113,14 @@ export class BaseShape {
     );
   }
 
-  setPosition({x, y}) {
+  setPosition({ x, y }) {
     const shape = this.fromOld();
     shape.x = x;
     shape.y = y;
     return shape;
   }
 
-  setSize({width, height}) {
+  setSize({ width, height }) {
     const shape = this.fromOld();
     shape.width = width;
     shape.height = height;

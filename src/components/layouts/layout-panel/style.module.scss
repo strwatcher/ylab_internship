@@ -1,9 +1,11 @@
 .LayoutPanel {
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   padding: 20px;
   gap: 20px;
+  min-height: 100px;
+  box-sizing: border-box;
 
 
   & > * {
