@@ -1,41 +1,30 @@
-import useServices from "@src/hooks/use-services";
+import Core from "@src/drawing/core";
 import React from "react";
 import s from "./style.module.scss";
 
-function Drawing({
-  shapes,
-  origin,
-  scale,
-  selected,
-  selectedProps
-}) {
-  const services = useServices();
+function Drawing({ shapes, origin, scale, selected, onChange }) {
+  const core = React.useMemo(() => new Core(), [])
   const dom = React.useRef(null);
+
   React.useEffect(() => {
-    services.drawing.mount(dom.current);
-    return () => services.drawing.unmount();
+    core.mount(dom.current, onChange)
+    return () => core.unmount();
   }, []);
 
-  React.useEffect(() =>  {
-    services.drawing.changeShapes(shapes)
+  React.useEffect(() => {
+    core.changeShapes(shapes);
   }, [shapes]);
 
-
-  React.useEffect(() =>  {
-    services.drawing.changeMetrics(scale, origin)
+  React.useEffect(() => {
+    core.changeMetrics(scale, origin)
   }, [scale, origin]);
 
-  React.useEffect(() =>  {
-    services.drawing.changeSelected(selected, selectedProps)
-  }, [selected, selectedProps]);
+  React.useEffect(() => {
+    core.changeSelected(selected);
+  }, [selected]);
 
 
-  return (
-    <div
-      ref={dom}
-      className={s.canvas}
-    />
-  );
+  return <div ref={dom} className={s.canvas} />;
 }
 
 export default React.memo(Drawing);

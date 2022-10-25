@@ -1,5 +1,4 @@
 import StateModule from "@src/store/module";
-import { shape } from "prop-types";
 
 class DrawingState extends StateModule {
   initState() {
@@ -9,34 +8,21 @@ class DrawingState extends StateModule {
       scale: 1,
       selected: null,
       selectedProps: null,
+      width: 0,
+      height: 0,
     };
+  }
+
+  setSome(val) {
+    this.setState({
+      ...this.getState(),
+      ...val,
+    });
   }
 
   clear() {
     this.setState({
       ...this.initState(),
-    });
-  }
-
-  moveOrigin(offset) {
-    this.setState({
-      ...this.getState(),
-      origin: {
-        x: this.getState().origin.x + offset.x / this.getState().scale,
-        y: this.getState().origin.y + offset.y / this.getState().scale,
-      },
-    });
-  }
-
-  scale(ratio, mouseOffset) {
-    const offset = {
-      x: mouseOffset.x - mouseOffset.x * (1 / ratio),
-      y: mouseOffset.y - mouseOffset.y * (1 / ratio),
-    };
-    this.moveOrigin(offset);
-    this.setState({
-      ...this.getState(),
-      scale: ratio * this.getState().scale,
     });
   }
 
@@ -47,36 +33,32 @@ class DrawingState extends StateModule {
     });
   }
 
-  addRandomShape(minS, maxS, acc) {
-    const shape = this.services.drawing.genSquare(minS, maxS, acc);
+  addRandomShape(minS, maxS, mx, my, w, h, acc, scale) {
+    const shape = this.services.drawing.genSquare(
+      minS,
+      maxS,
+      mx,
+      my,
+      w,
+      h,
+      acc,
+      scale
+    );
     this.setState({
       ...this.getState(),
       shapes: [...this.getState().shapes, shape],
     });
   }
 
-  setSelected(shape) {
-    if (shape) {
-      this.setState({
-        ...this.getState(),
-        selected: shape,
-        selectedProps: { ...shape },
-      });
-    } else
-      this.setState({
-        ...this.getState(),
-        selected: null,
-        selectedProps: null,
-      });
-  }
-
-  setSelectedProps(props) {
-    if (props) {
-      this.setState({
-        ...this.getState(),
-        selectedProps: { ...this.getState().selectedProps, ...props },
-      });
+  changeSelected(...attributes) {
+    let res = this.getState().selected;
+    for (const attr of attributes) {
+      res = res.setAttr(attr.name, attr.value);
     }
+    this.setState({
+      ...this.getState(),
+      selected: res,
+    });
   }
 }
 

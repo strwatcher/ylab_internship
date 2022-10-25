@@ -6,34 +6,37 @@ PropertiesPanel.propTypes = {};
 
 PropertiesPanel.defaultProps = {};
 
-function PropertiesPanel({ onChange, selectedProps }) {
+function PropertiesPanel({ onChange, selected }) {
   const callbacks = {
     onColorChange: React.useCallback((fill) => {
-      onChange({fill});
+      onChange({ name: "fill", value: fill });
     }, []),
     onXChange: React.useCallback((x) => {
-      onChange({x: parseInt(x)});
+      onChange({ name: "x", value: parseInt(x) });
     }, []),
     onYChange: React.useCallback((y) => {
-      onChange({y: parseInt(y)});
+      onChange({ name: "y", value: parseInt(y) });
     }, []),
     onSizeChange: React.useCallback((size) => {
       const parsedSize = parseInt(size);
-      onChange({width: parsedSize, height: parsedSize});
+      onChange(
+        { name: "width", value: parsedSize },
+        { name: "height", value: "parsedSize" }
+      );
     }, []),
     onAccChange: React.useCallback((acc) => {
-      onChange({acc: parseFloat(acc)})
-    }, [])
+      onChange({ name: "acc", value: parseFloat(acc) });
+    }, []),
   };
   return (
     <LayoutPanel>
-      {!!selectedProps && (
+      {!!selected && (
         <>
           <Input
             type="color"
             title={"Цвет заливки"}
             name={"fillColor"}
-            value={selectedProps.fill}
+            value={selected.fill}
             onChange={callbacks.onColorChange}
             theme={"default"}
           />
@@ -41,7 +44,7 @@ function PropertiesPanel({ onChange, selectedProps }) {
             type="number"
             title={"Координата x"}
             name={"xCoord"}
-            value={selectedProps.x}
+            value={selected.x}
             onChange={callbacks.onXChange}
             theme={"default"}
           />
@@ -49,7 +52,7 @@ function PropertiesPanel({ onChange, selectedProps }) {
             type="number"
             title={"Координата y"}
             name={"yCoord"}
-            value={selectedProps.y}
+            value={selected.y}
             onChange={callbacks.onYChange}
             theme={"default"}
           />
@@ -57,7 +60,7 @@ function PropertiesPanel({ onChange, selectedProps }) {
             type="number"
             title={"Размер"}
             name={"size"}
-            value={selectedProps.width}
+            value={selected.width}
             onChange={callbacks.onSizeChange}
             theme={"default"}
           />
@@ -65,10 +68,10 @@ function PropertiesPanel({ onChange, selectedProps }) {
             type="number"
             title={"Ускорение"}
             name={"acc"}
-            value={selectedProps.acc}
+            value={selected.acc}
             onChange={callbacks.onAccChange}
             theme={"default"}
-            />
+          />
         </>
       )}
     </LayoutPanel>

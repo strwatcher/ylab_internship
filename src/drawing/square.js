@@ -42,21 +42,8 @@ export class Square extends BaseShape {
     return Square.fromBase(base);
   }
 
-  setSize({width, height}) {
-    const base = super.setSize({ width, height });
-    return Square.fromBase(base);
-  }
-  setColor(color) {
-    const base = super.setColor(color);
-    return Square.fromBase(base);
-  }
-  setPosition({ x, y }) {
-    const base = super.setPosition({ x, y });
-    return Square.fromBase(base);
-  }
-
-  setAcc(acc) {
-    const base = super.setAcc(acc);
+  setAttr(name, attr) {
+    const base = super.setAttr(name, attr);
     return Square.fromBase(base);
   }
 }

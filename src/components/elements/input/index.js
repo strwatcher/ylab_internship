@@ -3,16 +3,18 @@ import propTypes from "prop-types";
 import { cn as bem } from "@bem-react/classname";
 import debounce from "lodash.debounce";
 import "./style.css";
+import { useRef } from "react";
 
 function Input(props) {
   const cn = bem("Input");
+  const inputRef = useRef(null);
 
   // Внутренний стейт по умолчанию с переданным value
   const [value, change] = useState(props.value);
 
   // Задержка для вызова props.onChange
   const changeThrottle = useCallback(
-    debounce(value => props.onChange(value, props.name), 600),
+    debounce((value) => props.onChange(value, props.name), 600),
     [props.onChange, props.name]
   );
 
@@ -27,13 +29,16 @@ function Input(props) {
 
   // Обновление стейта, если передан новый value
   useEffect(() => {
-    change(props.value);
+    if (inputRef.current !== document.activeElement) {
+      change(props.value);
+    }
   }, [props.value]);
 
   return (
     <div className={cn("wrapper")}>
       {props.title && <label htmlFor={props.name}>{props.title}</label>}
       <input
+        ref={inputRef}
         id={props.name}
         className={cn({ theme: props.theme })}
         name={props.name}

@@ -14,18 +14,37 @@ function DrawingPage() {
     scale: state.drawing.scale,
     origin: state.drawing.origin,
     selected: state.drawing.selected,
-    selectedProps: state.drawing.selectedProps
+    selectedProps: state.drawing.selectedProps,
+    width: state.drawing.width,
+    height: state.drawing.height,
   }));
 
   const callbacks = {
-    addShape: React.useCallback((acc) => {
-      store.get("drawing").addRandomShape(10, 100, acc);
-    }, []),
+    addShape: React.useCallback(
+      (acc) => {
+        store
+          .get("drawing")
+          .addRandomShape(
+            10,
+            100,
+            select.origin.x,
+            select.origin.y,
+            select.width,
+            select.height,
+            acc,
+            select.scale
+          );
+      },
+      [select.origin, select.width, select.height, select.scale]
+    ),
     clear: React.useCallback(() => {
       store.get("drawing").clear();
     }, []),
     onChange: React.useCallback((obj) => {
-      store.get("drawing").setSelectedProps(obj);
+      store.get("drawing").changeSelected(obj);
+    }, []),
+    onDrawingChange: React.useCallback((obj) => {
+      store.get("drawing").setSome(obj);
     }, []),
   };
 
@@ -43,6 +62,7 @@ function DrawingPage() {
         scale={select.scale}
         selected={select.selected}
         selectedProps={select.selectedProps}
+        onChange={callbacks.onDrawingChange}
       />
       <LayoutPanel>
         <button onClick={() => callbacks.addShape(0)}>Новая фигура</button>

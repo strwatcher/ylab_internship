@@ -94,29 +94,10 @@ export class BaseShape {
     return base;
   }
 
-  setPosition({ x, y }) {
-    const shape = this.fromOld();
-    shape.x = x;
-    shape.y = y;
-    return shape;
-  }
 
-  setSize({ width, height }) {
+  setAttr(name, attr) {
     const shape = this.fromOld();
-    shape.width = width;
-    shape.height = height;
-    return shape;
-  }
-
-  setColor(color) {
-    const shape = this.fromOld();
-    shape.fill = color;
-    return shape;
-  }
-
-  setAcc(acc) {
-    const shape = this.fromOld();
-    shape.acc = acc;
-    return shape;
+    shape[name] = attr;
+    return shape; 
   }
 }
