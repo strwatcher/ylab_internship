@@ -69,14 +69,14 @@ class Core {
   draw = (dt) => {
     this.clearDrawingArea();
 
-    this.shapes = this.shapes.map((shape) => {
+    this.shapes.map((shape) => {
       shape.id === this.selected?.id
         ? (shape.stroke = "#FD673A")
         : (shape.stroke = "transparent");
 
-      const transformed = shape.fall(dt, this.height - shape.height);
+      // const transformed = shape.fall(dt, this.height - shape.height);
 
-      transformed.draw(
+      shape.draw(
         this.context,
         this.width,
         this.height,
@@ -84,7 +84,7 @@ class Core {
         this.scale
       );
 
-      return transformed;
+      // return transformed;
     });
   };
 

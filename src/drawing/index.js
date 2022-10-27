@@ -1,5 +1,6 @@
 import { Square } from "./square";
 import {v4 as uuid} from "uuid"
+import { Leaf } from "./leafs";
 
 class DrawingService {
   constructor(services, config = {}) {
@@ -18,7 +19,9 @@ class DrawingService {
 
     const color = this.config.colors[Math.floor(Math.random() * this.config.colors.length)];
     const id = uuid();
-    return new Square(id, x, y, size, color, null, 0, acc);
+    const leaf = new Leaf(id, x, y, size, size, null, 0);
+    return leaf;
+    // return new Square(id, x, y, size, color, null, 0, acc);
   }
 }
 
