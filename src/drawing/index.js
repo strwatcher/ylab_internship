@@ -1,4 +1,5 @@
 import { Square } from "./square";
+import {v4 as uuid} from "uuid"
 
 class DrawingService {
   constructor(services, config = {}) {
@@ -16,7 +17,7 @@ class DrawingService {
     const y = Math.floor(Math.random() * (h * (1 / scale))) + my;
 
     const color = this.config.colors[Math.floor(Math.random() * this.config.colors.length)];
-    const id = Date.now();
+    const id = uuid();
     return new Square(id, x, y, size, color, null, 0, acc);
   }
 }

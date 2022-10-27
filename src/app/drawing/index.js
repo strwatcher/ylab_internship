@@ -14,7 +14,6 @@ function DrawingPage() {
     scale: state.drawing.scale,
     origin: state.drawing.origin,
     selected: state.drawing.selected,
-    selectedProps: state.drawing.selectedProps,
     width: state.drawing.width,
     height: state.drawing.height,
   }));
@@ -53,7 +52,6 @@ function DrawingPage() {
       <Tools />
       <PropertiesPanel
         selected={select.selected}
-        selectedProps={select.selectedProps}
         onChange={callbacks.onChange}
       />
       <Drawing
@@ -61,7 +59,6 @@ function DrawingPage() {
         origin={select.origin}
         scale={select.scale}
         selected={select.selected}
-        selectedProps={select.selectedProps}
         onChange={callbacks.onDrawingChange}
       />
       <LayoutPanel>

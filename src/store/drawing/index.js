@@ -7,29 +7,25 @@ class DrawingState extends StateModule {
       origin: { x: 0, y: 0 },
       scale: 1,
       selected: null,
-      selectedProps: null,
       width: 0,
       height: 0,
     };
   }
 
-  setSome(val) {
+  setSome(props) {
     this.setState({
       ...this.getState(),
-      ...val,
+      ...props,
     });
   }
 
   clear() {
     this.setState({
-      ...this.initState(),
-    });
-  }
-
-  setShapes(shapes) {
-    this.setState({
       ...this.getState(),
-      shapes: [...shapes],
+      shapes: [],
+      origin: { x: 0, y: 0 },
+      scale: 1,
+      selected: null,
     });
   }
 

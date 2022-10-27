@@ -71,8 +71,8 @@ class Core {
 
     this.shapes = this.shapes.map((shape) => {
       shape.id === this.selected?.id
-        ? (shape.stroke = "orange")
-        : (shape.stroke = "white");
+        ? (shape.stroke = "#FD673A")
+        : (shape.stroke = "transparent");
 
       const transformed = shape.fall(dt, this.height - shape.height);
 
@@ -127,10 +127,14 @@ class Core {
     this.onChange({ width: this.width, height: this.height });
 
     this.dpr = window.devicePixelRatio;
-    this.canvas.width = this.width;
-    this.canvas.height = this.height;
+    // this.context.restore();
+    console.log(this.dpr)
+    this.context.scale(this.dpr, this.dpr);
+    // this.context.save();
+    this.canvas.width = this.width / this.dpr;
+    this.canvas.height = this.height /  this.dpr;
     this.canvas.style.width = `${this.width} px`;
-    this.canvas.style.height = `${this.height} px`;
+    this.canvas.style.setProperty("height", this.height + "px")
   };
 
   #mouseDown = (e) => {

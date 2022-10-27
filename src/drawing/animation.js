@@ -3,7 +3,6 @@ export class AnimationController {
     this.prevTime = null;
     this.request = null;
     this.callback = callback;
- 
     this.request = requestAnimationFrame(this.#animate);
   }
 
@@ -14,7 +13,7 @@ export class AnimationController {
     }
     this.prevTime = time;
     this.request = requestAnimationFrame(this.#animate);
-  }
+  };
 
   destructor() {
     cancelAnimationFrame(this.request);
