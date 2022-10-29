@@ -1,8 +1,7 @@
 import { BaseShape } from "../base";
-import { images } from "./assets";
 
 export class Leaf extends BaseShape {
-  constructor(id, x, y, width, height, speed) {
+  constructor(id, x, y, width, height, speed, img) {
     super(id, x, y, width, height, "transparent", null, speed, 0);
     this.angle = 0;
     this.offsets = [
@@ -14,6 +13,7 @@ export class Leaf extends BaseShape {
     ];
     this.curOffset = this.getRandomOffset();
     this.stepsAfterChange = 0;
+    this.img = img;
   }
 
   static fromBase(base) {
@@ -43,7 +43,7 @@ export class Leaf extends BaseShape {
       context.translate(-offset.x, -offset.y);
 
       context.drawImage(
-        images[0],
+        this.img,
         dimensions.x,
         dimensions.y,
         dimensions.height,
@@ -80,6 +80,7 @@ export class Leaf extends BaseShape {
     const base = super.setAttr(name, attr);
     const leaf = Leaf.fromBase(base);
     leaf.angle = this.angle;
+    leaf.img = this.img;
     return leaf;
   }
 }
