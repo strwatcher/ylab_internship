@@ -4,14 +4,8 @@ export class Leaf extends BaseShape {
   constructor(id, x, y, width, height, speed, img) {
     super(id, x, y, width, height, "transparent", null, speed, 0);
     this.angle = 0;
-    this.offsets = [
-      { x: 5, y: 3 },
-      { x: 2, y: 4 },
-      { x: -3, y: 4 },
-      { x: -5, y: 2 },
-      { x: 7, y: 4 },
-    ];
-    this.curOffset = this.getRandomOffset();
+    this.rotationSpeed = 1;
+    this.curOffset = this.getRandomOffset(-10, 10, 0, 10);
     this.stepsAfterChange = 0;
     this.img = img;
   }
@@ -27,8 +21,16 @@ export class Leaf extends BaseShape {
     );
   }
 
-  getRandomOffset() {
-    return this.offsets[Math.floor(Math.random() * this.offsets.length)];
+  getRandomOffset(minX, maxX, minY, maxY) {
+    const offset = {
+      x: Math.floor(Math.random() * (maxX - minX)) + minX,
+      y: Math.floor(Math.random() * (maxY - minY)) + minY,
+    };
+    return offset;
+  }
+
+  getRandomAngle(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
   }
 
   draw(context, vcWidth, vcHeight, origin, scale) {
@@ -39,7 +41,7 @@ export class Leaf extends BaseShape {
         y: dimensions.y + dimensions.height / 2,
       };
       context.translate(offset.x, offset.y);
-      context.rotate((this.angle * 180) / Math.PI);
+      context.rotate((this.angle * Math.PI) / 180);
       context.translate(-offset.x, -offset.y);
 
       context.drawImage(
@@ -64,11 +66,12 @@ export class Leaf extends BaseShape {
   }
 
   fall(dt) {
-    this.angle += (dt / 100000) % 360;
+    this.angle += this.rotationSpeed % 360;
     const changeDirection = Math.random() < this.stepsAfterChange * 0.00001;
     if (changeDirection) {
       this.stepsAfterChange = 0;
-      this.curOffset = this.getRandomOffset();
+      this.curOffset = this.getRandomOffset(-10, 10, 5, 10);
+      this.rotationSpeed = this.getRandomAngle(-1.5, 1.5);
       console.log("changed");
     }
     this.stepsAfterChange += 1;
@@ -81,6 +84,7 @@ export class Leaf extends BaseShape {
     const leaf = Leaf.fromBase(base);
     leaf.angle = this.angle;
     leaf.img = this.img;
+
     return leaf;
   }
 }

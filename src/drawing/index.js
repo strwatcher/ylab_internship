@@ -21,7 +21,12 @@ class DrawingService {
     const color =
       this.config.colors[Math.floor(Math.random() * this.config.colors.length)];
     const id = uuid();
-    const leaf = new Leaf(id, x, y, size, size, 0, getRand());
+    const image = getRand();
+    const imgRatio = image.width / image.height;
+
+    const width = size;
+    const height = size * imgRatio;
+    const leaf = new Leaf(id, x, y, width, height, 0, image);
     return leaf;
     // return new Square(id, x, y, size, color, null, 0, acc);
   }
