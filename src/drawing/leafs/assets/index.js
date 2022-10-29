@@ -10,3 +10,4 @@ export const images = urls.map(url => {
   image.src = url;
   return image;
 })
+

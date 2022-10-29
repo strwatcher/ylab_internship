@@ -1,5 +1,5 @@
 import { Square } from "./square";
-import {v4 as uuid} from "uuid"
+import { v4 as uuid } from "uuid";
 import { Leaf } from "./leafs";
 
 class DrawingService {
@@ -17,9 +17,11 @@ class DrawingService {
 
     const y = Math.floor(Math.random() * (h * (1 / scale))) + my;
 
-    const color = this.config.colors[Math.floor(Math.random() * this.config.colors.length)];
+    const color =
+      this.config.colors[Math.floor(Math.random() * this.config.colors.length)];
+    const selectedStroke = this.config.colors[2];
     const id = uuid();
-    const leaf = new Leaf(id, x, y, size, size, null, 0);
+    const leaf = new Leaf(id, x, y, size, size, selectedStroke, 0);
     return leaf;
     // return new Square(id, x, y, size, color, null, 0, acc);
   }

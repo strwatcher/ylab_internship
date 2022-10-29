@@ -4,7 +4,6 @@ import { images } from "./assets";
 export class Leaf extends BaseShape {
   constructor(id, x, y, width, height, stroke, speed) {
     super(id, x, y, width, height, "transparent", stroke, speed, 0);
-    console.log(images);
   }
 
   static fromBase(base) {
@@ -13,6 +12,7 @@ export class Leaf extends BaseShape {
       base.x,
       base.y,
       base.width,
+      base.height,
       base.stroke,
       base.speed
     );
@@ -27,6 +27,21 @@ export class Leaf extends BaseShape {
         dimensions.height,
         dimensions.width
       );
+
+      context.beginPath();
+      context.rect(
+        dimensions.x,
+        dimensions.y,
+        dimensions.height + 2,
+        dimensions.width + 2
+      );
+      context.closePath();
+      context.stroke();
     });
+  }
+
+  setAttr(name, attr) {
+    const base = super.setAttr(name, attr);
+    return Leaf.fromBase(base);
   }
 }
