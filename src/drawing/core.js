@@ -2,7 +2,7 @@ import { AnimationController } from "./animation";
 import { isIntersected } from "./utils";
 
 class Core {
-  constructor() {}
+  constructor() { }
 
   mount(dom, onChange) {
     this.dom = dom;
@@ -74,7 +74,7 @@ class Core {
         ? (shape.stroke = "#FD673A")
         : (shape.stroke = "transparent");
 
-      // const transformed = shape.fall(dt, this.height - shape.height);
+      const transformed = shape.fall(dt, this.height - shape.height);
 
       shape.draw(
         this.context,
@@ -84,7 +84,7 @@ class Core {
         this.scale
       );
 
-      // return transformed;
+      return transformed;
     });
   };
 
@@ -128,13 +128,13 @@ class Core {
 
     this.dpr = window.devicePixelRatio;
     // this.context.restore();
-    console.log(this.dpr)
+    console.log(this.dpr);
     this.context.scale(this.dpr, this.dpr);
     // this.context.save();
     this.canvas.width = this.width / this.dpr;
-    this.canvas.height = this.height /  this.dpr;
+    this.canvas.height = this.height / this.dpr;
     this.canvas.style.width = `${this.width} px`;
-    this.canvas.style.setProperty("height", this.height + "px")
+    this.canvas.style.setProperty("height", this.height + "px");
   };
 
   #mouseDown = (e) => {

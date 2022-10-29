@@ -19,9 +19,8 @@ class DrawingService {
 
     const color =
       this.config.colors[Math.floor(Math.random() * this.config.colors.length)];
-    const selectedStroke = this.config.colors[2];
     const id = uuid();
-    const leaf = new Leaf(id, x, y, size, size, selectedStroke, 0);
+    const leaf = new Leaf(id, x, y, size, size, 0);
     return leaf;
     // return new Square(id, x, y, size, color, null, 0, acc);
   }
