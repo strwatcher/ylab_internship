@@ -24,26 +24,11 @@ export class BaseShape {
     this.acc = acc;
   }
 
-  fromOld() {
-    return new BaseShape(
-      this._id,
-      this.x,
-      this.y,
-      this.width,
-      this.height,
-      this.fill,
-      this.stroke,
-      this.speed,
-      this.acc
-    );
-  }
-
   get id() {
     return this._id;
   }
 
-  draw(context, vcWidth, vcHeight, origin, scale, drawCallback) {
-    const dimensions = this.normalize(origin, scale);
+  draw(context, vcWidth, vcHeight, dimensions, drawCallback) {
     if (
       !isIntersected(
         { ...dimensions },
@@ -62,7 +47,7 @@ export class BaseShape {
     drawCallback(dimensions);
   }
 
-  normalize(origin, scale) {
+  normalize(scale, origin) {
     const width = this.width * scale;
     const height = this.height * scale;
     const x = (this.x - origin.x) * scale;
@@ -78,26 +63,23 @@ export class BaseShape {
 
   fall(dt, bottom) {
     let speed = this.speed;
-    let y = this.y;
-    if (this.acc > 0) {
-      y = this.y + dt * this.speed;
-      if (y < bottom) {
-        speed = this.speed + dt * this.acc;
-      } else {
-        speed = 0;
-        y = bottom;
-      }
+    let y = this.y + dt * this.speed;
+    if (y < bottom) {
+      speed = this.speed + dt * this.acc;
+    } else {
+      speed = 0;
+      y = bottom;
     }
-    const base = this.fromOld();
-    base.y = y;
-    base.speed = speed;
-    return base;
-  }
 
+    const shape = this.fromOld();
+    shape.y = y;
+    shape.speed = speed;
+    return shape;
+  }
 
   setAttr(name, attr) {
     const shape = this.fromOld();
     shape[name] = attr;
-    return shape; 
+    return shape;
   }
 }

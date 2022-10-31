@@ -19,23 +19,46 @@ function DrawingPage() {
   }));
 
   const callbacks = {
+    addLeaf: React.useCallback(() => {
+      store
+        .get("drawing")
+        .addLeaf(
+          30,
+          50,
+          select.origin.x,
+          select.origin.y,
+          select.width,
+          0,
+          select.scale
+        );
+    }, [select.width, select.scale, select.origin]),
+
     addShape: React.useCallback(
-      (acc) => {
+      (acc, width, height) => {
         store
           .get("drawing")
-          .addRandomShape(
-            10,
+          .addRandomSquare(
+            30,
             100,
             select.origin.x,
             select.origin.y,
-            select.width,
-            select.height,
+            width,
+            height,
             acc,
             select.scale
           );
       },
-      [select.origin, select.width, select.height, select.scale]
+      [select.origin, select.scale]
     ),
+
+    addShapeFull: React.useCallback(() => {
+      callbacks.addShape(0, select.width, select.height);
+    }, [select.width, select.height]),
+
+    addShapeTop: React.useCallback(() => {
+      callbacks.addShape(0.0098, select.width, 0);
+    }, [select.width]),
+
     clear: React.useCallback(() => {
       store.get("drawing").clear();
     }, []),
@@ -62,10 +85,9 @@ function DrawingPage() {
         onChange={callbacks.onDrawingChange}
       />
       <LayoutPanel>
-        <button onClick={() => callbacks.addShape(0)}>Новая фигура</button>
-        <button onClick={() => callbacks.addShape(0.0098)}>
-          Падающая фигура
-        </button>
+        <button onClick={callbacks.addShapeFull}>Новая фигура</button>
+        <button onClick={callbacks.addShapeTop}>Падающая фигура</button>
+        <button onClick={callbacks.addLeaf}>Падающий листик</button>
         <button onClick={callbacks.clear}>Отчистить</button>
       </LayoutPanel>
     </Layout>

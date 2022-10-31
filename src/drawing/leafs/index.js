@@ -2,7 +2,7 @@ import { BaseShape } from "../base";
 
 export class Leaf extends BaseShape {
   constructor(id, x, y, width, height, speed, img) {
-    super(id, x, y, width, height, "transparent", null, speed, 0);
+    super(id, x, y, width, height, null, null, speed, 0);
     this.angle = 0;
     this.rotationSpeed = 1;
     this.curOffset = this.getRandomOffset(-10, 10, 0, 10);
@@ -10,14 +10,15 @@ export class Leaf extends BaseShape {
     this.img = img;
   }
 
-  static fromBase(base) {
+  fromOld() {
     return new Leaf(
-      base.id,
-      base.x,
-      base.y,
-      base.width,
-      base.height,
-      base.speed
+      this.id,
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+      this.speed,
+      this.img
     );
   }
 
@@ -33,8 +34,9 @@ export class Leaf extends BaseShape {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
-  draw(context, vcWidth, vcHeight, origin, scale) {
-    super.draw(context, vcWidth, vcHeight, origin, scale, (dimensions) => {
+  draw(context, vcWidth, vcHeight, scale, origin) {
+    const dimensions = this.normalize(scale, origin);
+    super.draw(context, vcWidth, vcHeight, dimensions, (dimensions) => {
       context.save();
       const offset = {
         x: dimensions.x + dimensions.width / 2,
@@ -65,26 +67,30 @@ export class Leaf extends BaseShape {
     });
   }
 
-  fall(dt) {
-    this.angle += this.rotationSpeed % 360;
+  fall(dt, bottom) {
+    const angle = this.angle + (this.rotationSpeed % 360);
+    let stepsAfterChange = this.stepsAfterChange;
+    let curOffset = this.curOffset;
+    let rotationSpeed = this.rotationSpeed;
+
     const changeDirection = Math.random() < this.stepsAfterChange * 0.00001;
     if (changeDirection) {
-      this.stepsAfterChange = 0;
-      this.curOffset = this.getRandomOffset(-10, 10, 5, 10);
-      this.rotationSpeed = this.getRandomAngle(-1.5, 1.5);
+      stepsAfterChange = 0;
+      curOffset = this.getRandomOffset(-10, 10, 5, 10);
+      rotationSpeed = this.getRandomAngle(-1.5, 1.5);
       console.log("changed");
     }
-    this.stepsAfterChange += 1;
-    this.x += this.curOffset.x / dt;
-    this.y += this.curOffset.y / dt;
-  }
+    stepsAfterChange += 1;
+    const x = this.x + curOffset.x / dt;
+    const y = this.y + curOffset.y / dt;
 
-  setAttr(name, attr) {
-    const base = super.setAttr(name, attr);
-    const leaf = Leaf.fromBase(base);
-    leaf.angle = this.angle;
-    leaf.img = this.img;
-
+    const leaf = this.fromOld();
+    leaf.angle = angle;
+    leaf.stepsAfterChange = stepsAfterChange;
+    leaf.curOffset = curOffset;
+    leaf.rotationSpeed = rotationSpeed;
+    leaf.x = x;
+    leaf.y = y;
     return leaf;
   }
 }

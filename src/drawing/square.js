@@ -5,21 +5,22 @@ export class Square extends BaseShape {
     super(id, x, y, size, size, fill, stroke, speed, acc);
   }
 
-  static fromBase(base) {
+  fromOld() {
     return new Square(
-      base.id,
-      base.x,
-      base.y,
-      base.width,
-      base.fill,
-      base.stroke,
-      base.speed,
-      base.acc
+      this.id,
+      this.x,
+      this.y,
+      this.width,
+      this.fill,
+      this.stroke,
+      this.speed,
+      this.acc
     );
   }
 
-  draw(context, vcWidth, vcHeight, origin, scale) {
-    super.draw(context, vcWidth, vcHeight, origin, scale, (dimensions) => {
+  draw(context, vcWidth, vcHeight, scale, origin) {
+    const dimensions = super.normalize(scale, origin);
+    super.draw(context, vcWidth, vcHeight, dimensions, (dimensions) => {
       context.beginPath();
       context.rect(
         dimensions.x,
@@ -35,15 +36,5 @@ export class Square extends BaseShape {
         context.stroke();
       }
     });
-  }
-
-  fall(dt, bottom) {
-    const base = super.fall(dt, bottom);
-    return Square.fromBase(base);
-  }
-
-  setAttr(name, attr) {
-    const base = super.setAttr(name, attr);
-    return Square.fromBase(base);
   }
 }

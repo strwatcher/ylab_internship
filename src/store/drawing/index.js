@@ -29,7 +29,7 @@ class DrawingState extends StateModule {
     });
   }
 
-  addRandomShape(minS, maxS, mx, my, w, h, acc, scale) {
+  addRandomSquare(minS, maxS, mx, my, w, h, acc, scale) {
     const shape = this.services.drawing.genSquare(
       minS,
       maxS,
@@ -43,6 +43,15 @@ class DrawingState extends StateModule {
     this.setState({
       ...this.getState(),
       shapes: [...this.getState().shapes, shape],
+    });
+  }
+
+  addLeaf(minS, maxS, mx, my, w, h, scale) {
+    const leaf = this.services.drawing.genLeaf(minS, maxS, mx, my, w, h, scale);
+
+    this.setState({
+      ...this.getState(),
+      shapes: [...this.getState().shapes, leaf],
     });
   }
 

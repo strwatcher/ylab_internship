@@ -1,8 +1,9 @@
+import { transform } from "lodash";
 import { AnimationController } from "./animation";
 import { isIntersected } from "./utils";
 
 class Core {
-  constructor() { }
+  constructor() {}
 
   mount(dom, onChange) {
     this.dom = dom;
@@ -69,19 +70,17 @@ class Core {
   draw = (dt) => {
     this.clearDrawingArea();
 
-    this.shapes.map((shape) => {
+    this.shapes = this.shapes.map((shape) => {
       shape.id === this.selected?.id
         ? (shape.stroke = "#FD673A")
         : (shape.stroke = "transparent");
-
       const transformed = shape.fall(dt, this.height - shape.height);
-
       shape.draw(
         this.context,
         this.width,
         this.height,
-        this.origin,
-        this.scale
+        this.scale,
+        this.origin
       );
 
       return transformed;
