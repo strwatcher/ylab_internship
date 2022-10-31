@@ -74,7 +74,11 @@ class Core {
       shape.id === this.selected?.id
         ? (shape.stroke = "#FD673A")
         : (shape.stroke = "transparent");
-      const transformed = shape.fall(dt, this.height - shape.height);
+      const transformed = shape.fall(
+        dt,
+        this.height - shape.height,
+        this.scale
+      );
       shape.draw(
         this.context,
         this.width,
