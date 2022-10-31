@@ -31,6 +31,8 @@ function Input(props) {
   useEffect(() => {
     if (inputRef.current !== document.activeElement) {
       change(props.value);
+    } else {
+      change("");
     }
   }, [props.value]);
 
