@@ -77,6 +77,7 @@ class Core {
       const transformed = shape.fall(
         dt,
         this.height - shape.height,
+        this.origin.y - shape.height,
         this.scale
       );
       shape.draw(

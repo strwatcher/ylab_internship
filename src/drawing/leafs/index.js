@@ -67,7 +67,7 @@ export class Leaf extends BaseShape {
     });
   }
 
-  fall(dt, bottom, scale) {
+  fall(dt, bottom, top, scale) {
     const angle = this.angle + (this.rotationSpeed % 360);
     let stepsAfterChange = this.stepsAfterChange;
     let curOffset = this.curOffset;
@@ -78,12 +78,14 @@ export class Leaf extends BaseShape {
       stepsAfterChange = 0;
       curOffset = this.getRandomOffset(-10, 10, 5, 10);
       rotationSpeed = this.getRandomAngle(-1.5, 1.5);
-      console.log("changed");
     }
     stepsAfterChange += 1;
     const x = this.x + curOffset.x / dt / scale;
-    const y = this.y + curOffset.y / dt / scale;
+    let y = this.y + curOffset.y / dt / scale;
 
+    if (y > bottom + this.height) {
+      y = top - this.height;
+    }
     const leaf = this.fromOld();
     leaf.angle = angle;
     leaf.stepsAfterChange = stepsAfterChange;
