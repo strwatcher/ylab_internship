@@ -46,12 +46,25 @@ class DrawingState extends StateModule {
     });
   }
 
-  addLeaf(minS, maxS, mx, my, w, h, scale) {
-    const leaf = this.services.drawing.genLeaf(minS, maxS, mx, my, w, h, scale);
+  addLeafs(minS, maxS, mx, my, w, h, scale, count) {
+    let leafs = [];
+    for (let i = 0; i < count; i += 1) {
+      const leaf = this.services.drawing.genLeaf(
+        minS,
+        maxS,
+        mx,
+        my,
+        w,
+        h,
+        scale
+      );
+      leafs.push(leaf);
+    }
+    console.log();
 
     this.setState({
       ...this.getState(),
-      shapes: [...this.getState().shapes, leaf],
+      shapes: [...this.getState().shapes, ...leafs],
     });
   }
 

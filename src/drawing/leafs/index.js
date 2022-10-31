@@ -5,7 +5,7 @@ export class Leaf extends BaseShape {
     super(id, x, y, width, height, null, null, speed, 0);
     this.angle = 0;
     this.rotationSpeed = 1;
-    this.curOffset = this.getRandomOffset(-10, 10, 0, 10);
+    this.curOffset = this.getRandomOffset(-10, 10, 10, 10);
     this.stepsAfterChange = 0;
     this.img = img;
   }

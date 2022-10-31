@@ -19,17 +19,18 @@ function DrawingPage() {
   }));
 
   const callbacks = {
-    addLeaf: React.useCallback(() => {
+    addLeafs: React.useCallback(() => {
       store
         .get("drawing")
-        .addLeaf(
+        .addLeafs(
           30,
           50,
           select.origin.x,
           select.origin.y,
           select.width,
-          0,
-          select.scale
+          200,
+          select.scale,
+          100
         );
     }, [select.width, select.scale, select.origin]),
 
@@ -70,6 +71,12 @@ function DrawingPage() {
     }, []),
   };
 
+  React.useEffect(() => {
+    //  const leafsInterval = setInterval(() => {
+    //   callbacks.addLeafs();
+    //  }, 5000);
+    //   return () => clearInterval(leafsInterval);
+  }, [callbacks.addLeafs]);
   return (
     <Layout>
       <Tools />
@@ -87,7 +94,7 @@ function DrawingPage() {
       <LayoutPanel>
         <button onClick={callbacks.addShapeFull}>Новая фигура</button>
         <button onClick={callbacks.addShapeTop}>Падающая фигура</button>
-        <button onClick={callbacks.addLeaf}>Падающий листик</button>
+        <button onClick={callbacks.addLeafs}>Падающий листик</button>
         <button onClick={callbacks.clear}>Отчистить</button>
       </LayoutPanel>
     </Layout>
