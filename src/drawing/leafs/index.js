@@ -8,10 +8,6 @@ export class Leaf extends BaseShape {
     this.curOffset = this.getRandomOffset(-10, 10, 10, 10);
     this.stepsAfterChange = 0;
     this.img = img;
-    this.boundX = this.x;
-    this.boundY = this.y;
-    this.boundWidth = this.width;
-    this.boundHeight = this.height;
   }
 
   fromOld() {
@@ -40,16 +36,6 @@ export class Leaf extends BaseShape {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
-  normalize(scale, origin) {
-    return {
-      ...super.normalize(scale, origin),
-      boundX: (this.boundX - origin.x) * scale,
-      boundY: (this.boundY - origin.y) * scale,
-      boundWidth: this.boundWidth * scale,
-      boundHeight: this.boundHeight * scale,
-    };
-  }
-
   draw(context, vcWidth, vcHeight, scale, origin) {
     const dimensions = this.normalize(scale, origin);
     super.draw(context, vcWidth, vcHeight, dimensions, (dimensions) => {
@@ -73,10 +59,10 @@ export class Leaf extends BaseShape {
       context.restore();
       context.beginPath();
       context.rect(
-        dimensions.boundX,
-        dimensions.boundY,
-        dimensions.boundWidth,
-        dimensions.boundHeight
+        dimensions.x,
+        dimensions.y,
+        dimensions.width,
+        dimensions.height
       );
       context.closePath();
       context.stroke();
@@ -114,9 +100,6 @@ export class Leaf extends BaseShape {
     leaf.rotationSpeed = rotationSpeed;
     leaf.x = x;
     leaf.y = y;
-
-    leaf.boundX = x;
-    leaf.boundY = y;
     return leaf;
   }
 }

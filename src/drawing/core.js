@@ -1,4 +1,3 @@
-import { transform } from "lodash";
 import { AnimationController } from "./animation";
 import { isIntersected } from "./utils";
 
