@@ -74,6 +74,7 @@ class Core {
       shape.id === this.selected?.id
         ? (shape.stroke = "#FD673A")
         : (shape.stroke = "transparent");
+
       const transformed = shape.fall(
         dt,
         this.height - shape.height,
@@ -162,14 +163,18 @@ class Core {
         acc: this.selected.acc,
       };
 
-      this.onChange({ selected: this.selected.setAttr("acc", 0) });
+      this.onChange({
+        selected: this.selected.setAttr("acc", 0).setAttr("selected", true),
+      });
     }
   };
 
   #mouseUp = () => {
     if (this.action.type === "grab" || this.action.type === "select") {
       this.onChange({
-        selected: this.selected.setAttr("acc", this.action.acc),
+        selected: this.selected
+          .setAttr("acc", this.action.acc)
+          .setAttr("selected", false),
       });
     }
     this.action = {
@@ -189,7 +194,8 @@ class Core {
       this.onChange({
         selected: this.selected
           .setAttr("x", (e.x - this.offset.x) / this.scale + this.origin.x)
-          .setAttr("y", (e.y - this.offset.y) / this.scale + this.origin.y),
+          .setAttr("y", (e.y - this.offset.y) / this.scale + this.origin.y)
+          .setAttr("selected", true),
       });
     }
   };

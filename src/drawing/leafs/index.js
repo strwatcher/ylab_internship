@@ -8,10 +8,14 @@ export class Leaf extends BaseShape {
     this.curOffset = this.getRandomOffset(-10, 10, 10, 10);
     this.stepsAfterChange = 0;
     this.img = img;
+    this.boundX = this.x;
+    this.boundY = this.y;
+    this.boundWidth = this.width;
+    this.boundHeight = this.height;
   }
 
   fromOld() {
-    return new Leaf(
+    const leaf = new Leaf(
       this.id,
       this.x,
       this.y,
@@ -20,6 +24,8 @@ export class Leaf extends BaseShape {
       this.speed,
       this.img
     );
+    leaf.angle = this.angle;
+    return leaf;
   }
 
   getRandomOffset(minX, maxX, minY, maxY) {
@@ -32,6 +38,16 @@ export class Leaf extends BaseShape {
 
   getRandomAngle(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  normalize(scale, origin) {
+    return {
+      ...super.normalize(scale, origin),
+      boundX: (this.boundX - origin.x) * scale,
+      boundY: (this.boundY - origin.y) * scale,
+      boundWidth: this.boundWidth * scale,
+      boundHeight: this.boundHeight * scale,
+    };
   }
 
   draw(context, vcWidth, vcHeight, scale, origin) {
@@ -54,20 +70,24 @@ export class Leaf extends BaseShape {
         dimensions.width
       );
 
+      context.restore();
       context.beginPath();
       context.rect(
-        dimensions.x,
-        dimensions.y,
-        dimensions.height + 2,
-        dimensions.width + 2
+        dimensions.boundX,
+        dimensions.boundY,
+        dimensions.boundWidth,
+        dimensions.boundHeight
       );
       context.closePath();
       context.stroke();
-      context.restore();
     });
   }
 
   fall(dt, bottom, top, scale) {
+    console.log(this.selected);
+    if (this.selected) {
+      return this;
+    }
     const angle = this.angle + (this.rotationSpeed % 360);
     let stepsAfterChange = this.stepsAfterChange;
     let curOffset = this.curOffset;
@@ -86,6 +106,7 @@ export class Leaf extends BaseShape {
     if (y > bottom + this.height) {
       y = top - this.height;
     }
+
     const leaf = this.fromOld();
     leaf.angle = angle;
     leaf.stepsAfterChange = stepsAfterChange;
@@ -93,6 +114,9 @@ export class Leaf extends BaseShape {
     leaf.rotationSpeed = rotationSpeed;
     leaf.x = x;
     leaf.y = y;
+
+    leaf.boundX = x;
+    leaf.boundY = y;
     return leaf;
   }
 }

@@ -15,13 +15,13 @@ export class BaseShape {
     this.x = x;
     this.y = y;
     this._id = id;
-
     this.width = width;
     this.height = height;
     this.fill = fill;
     this.stroke = stroke;
     this.speed = speed;
     this.acc = acc;
+    this.selected = false;
   }
 
   get id() {
