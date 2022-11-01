@@ -32,13 +32,9 @@ class DrawingService {
     const y = Math.floor(Math.random() * (h * (1 / scale))) + my;
 
     const id = uuid();
-    const image = getRand();
-    const imgRatio = image.width / image.height;
+    const imageUrl = getRand();
 
-    const width = size;
-    const height = size * imgRatio;
-
-    const leaf = new Leaf(id, x, y, width, height, 0, image);
+    const leaf = new Leaf(id, x, y, size, 0, imageUrl);
     return leaf;
   }
 }

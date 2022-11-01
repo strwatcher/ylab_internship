@@ -1,42 +1,42 @@
 import { BaseShape } from "../base";
+import { random } from "@src/utils/random";
 
 export class Leaf extends BaseShape {
-  constructor(id, x, y, width, height, speed, img) {
-    super(id, x, y, width, height, null, null, speed, 0);
+  constructor(id, x, y, size, speed, imgUrl) {
+    super(id, x, y, size, size, null, null, speed, 0);
     this.angle = 0;
     this.rotationSpeed = 1;
-    this.curOffset = this.getRandomOffset(-10, 10, 10, 10);
+    this.curOffset = { x: random(-10, 10), y: random(5, 10) };
     this.stepsAfterChange = 0;
-    this.img = img;
+
+    if (imgUrl !== "") {
+      this.image = new Image();
+      this.imageLoaded = false;
+      this.image.onload = () => {
+        const ratio = this.image.width / this.image.height;
+        this.width = size;
+        this.height = size * ratio;
+        this.imageLoaded = true;
+      };
+      this.image.src = imgUrl;
+    } else {
+      this.imageLoaded = true;
+    }
+
+    this.timeSpent = 0;
   }
 
   fromOld() {
-    const leaf = new Leaf(
-      this.id,
-      this.x,
-      this.y,
-      this.width,
-      this.height,
-      this.speed,
-      this.img
-    );
+    const leaf = new Leaf(this.id, this.x, this.y, this.size, this.speed, "");
     leaf.angle = this.angle;
+    leaf.image = this.image;
+    leaf.width = this.width;
+    leaf.height = this.height;
     return leaf;
   }
 
-  getRandomOffset(minX, maxX, minY, maxY) {
-    const offset = {
-      x: Math.floor(Math.random() * (maxX - minX)) + minX,
-      y: Math.floor(Math.random() * (maxY - minY)) + minY,
-    };
-    return offset;
-  }
-
-  getRandomAngle(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
-  }
-
   draw(context, vcWidth, vcHeight, scale, origin) {
+    if (!this.imageLoaded) return;
     const dimensions = this.normalize(scale, origin);
     super.draw(context, vcWidth, vcHeight, dimensions, (dimensions) => {
       context.save();
@@ -49,7 +49,7 @@ export class Leaf extends BaseShape {
       context.translate(-offset.x, -offset.y);
 
       context.drawImage(
-        this.img,
+        this.image,
         dimensions.x,
         dimensions.y,
         dimensions.height,
@@ -70,20 +70,19 @@ export class Leaf extends BaseShape {
   }
 
   fall(dt, bottom, top, scale) {
-    console.log(this.selected);
     if (this.selected) {
       return this;
     }
-    const angle = this.angle + (this.rotationSpeed % 360);
+    const angle = (this.angle + this.rotationSpeed) % 360;
     let stepsAfterChange = this.stepsAfterChange;
     let curOffset = this.curOffset;
     let rotationSpeed = this.rotationSpeed;
 
-    const changeDirection = Math.random() < this.stepsAfterChange * 0.00001;
+    const changeDirection = Math.random() < this.stepsAfterChange * 0.001;
     if (changeDirection) {
       stepsAfterChange = 0;
-      curOffset = this.getRandomOffset(-10, 10, 5, 10);
-      rotationSpeed = this.getRandomAngle(-1.5, 1.5);
+      curOffset = { x: random(-10, 10), y: random(5, 10) };
+      rotationSpeed = random(-1.5, 1.5);
     }
     stepsAfterChange += 1;
     const x = this.x + curOffset.x / dt / scale;
@@ -100,6 +99,7 @@ export class Leaf extends BaseShape {
     leaf.rotationSpeed = rotationSpeed;
     leaf.x = x;
     leaf.y = y;
+    leaf.timeSpent = dt + this.timeSpent;
     return leaf;
   }
 }

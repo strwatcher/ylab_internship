@@ -132,7 +132,6 @@ class Core {
 
     this.dpr = window.devicePixelRatio;
     // this.context.restore();
-    console.log(this.dpr);
     this.context.scale(this.dpr, this.dpr);
     // this.context.save();
     this.canvas.width = this.width / this.dpr;

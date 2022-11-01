@@ -60,7 +60,6 @@ class DrawingState extends StateModule {
       );
       leafs.push(leaf);
     }
-    console.log();
 
     this.setState({
       ...this.getState(),

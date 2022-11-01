@@ -71,12 +71,6 @@ function DrawingPage() {
     }, []),
   };
 
-  React.useEffect(() => {
-    //  const leafsInterval = setInterval(() => {
-    //   callbacks.addLeafs();
-    //  }, 5000);
-    //   return () => clearInterval(leafsInterval);
-  }, [callbacks.addLeafs]);
   return (
     <Layout>
       <Tools />
@@ -94,7 +88,7 @@ function DrawingPage() {
       <LayoutPanel>
         <button onClick={callbacks.addShapeFull}>Новая фигура</button>
         <button onClick={callbacks.addShapeTop}>Падающая фигура</button>
-        <button onClick={callbacks.addLeafs}>Падающий листик</button>
+        <button onClick={callbacks.addLeafs}>Осень</button>
         <button onClick={callbacks.clear}>Отчистить</button>
       </LayoutPanel>
     </Layout>
