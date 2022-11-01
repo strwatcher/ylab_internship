@@ -1,14 +1,21 @@
 import { BaseShape } from "../base";
 import { random } from "@src/utils/random";
+import { easeCoefficient } from "@src/utils/ease";
 
 export class Leaf extends BaseShape {
   constructor(id, x, y, size, speed, imgUrl) {
     super(id, x, y, size, size, null, null, speed, 0);
     this.angle = 0;
-    this.rotationSpeed = 1;
-    this.curOffset = { x: random(-10, 10), y: random(5, 10) };
-    this.stepsAfterChange = 0;
 
+    this.animation = {
+      rotation: random(-1.5, 1.5),
+      offset: {
+        x: random(-10, 10),
+        y: random(5, 10),
+      },
+      duration: random(3, 7),
+      time: 0,
+    };
     if (imgUrl !== "") {
       this.image = new Image();
       this.imageLoaded = false;
@@ -22,8 +29,6 @@ export class Leaf extends BaseShape {
     } else {
       this.imageLoaded = true;
     }
-
-    this.timeSpent = 0;
   }
 
   fromOld() {
@@ -70,33 +75,41 @@ export class Leaf extends BaseShape {
   }
 
   fall(dt, bottom, top, scale) {
-    if (this.selected) {
+    if (this.selected || !this.imageLoaded) {
       return this;
     }
-    const angle = (this.angle + this.rotationSpeed) % 360;
-    let stepsAfterChange = this.stepsAfterChange;
-    let curOffset = this.curOffset;
-    let rotationSpeed = this.rotationSpeed;
 
-    const changeDirection = Math.random() < this.stepsAfterChange * 0.001;
+    let offset = this.animation.offset;
+    let rotation = this.animation.rotation;
+    let duration = this.animation.duration;
+    let time = this.animation.time;
+
+    const ease = easeCoefficient(time / duration);
+
+    const changeDirection = this.animation.time >= duration;
     if (changeDirection) {
-      stepsAfterChange = 0;
-      curOffset = { x: random(-10, 10), y: random(5, 10) };
-      rotationSpeed = random(-1.5, 1.5);
+      offset = { x: random(-10, 10), y: random(5, 10) };
+      duration = random(3, 7);
+      rotation = random(-1.5, 1.5);
+      time = 0;
     }
-    stepsAfterChange += 1;
-    const x = this.x + curOffset.x / dt / scale;
-    let y = this.y + curOffset.y / dt / scale;
 
+    const x = this.x + (offset.x / dt / scale) * ease;
+    let y = this.y + offset.y / dt / scale;
+
+    const angle = (this.angle + rotation * ease) % 360;
     if (y > bottom + this.height) {
       y = top - this.height;
     }
 
     const leaf = this.fromOld();
     leaf.angle = angle;
-    leaf.stepsAfterChange = stepsAfterChange;
-    leaf.curOffset = curOffset;
-    leaf.rotationSpeed = rotationSpeed;
+    leaf.animation = {
+      offset,
+      rotation,
+      time: time + dt / 1000,
+      duration,
+    };
     leaf.x = x;
     leaf.y = y;
     leaf.timeSpent = dt + this.timeSpent;

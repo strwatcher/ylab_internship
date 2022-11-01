@@ -20,18 +20,17 @@ function DrawingPage() {
 
   const callbacks = {
     addLeafs: React.useCallback(() => {
-      store
-        .get("drawing")
-        .addLeafs(
-          30,
-          50,
-          select.origin.x,
-          select.origin.y,
-          select.width,
-          200,
-          select.scale,
-          100
-        );
+      store.get("drawing").addLeafs(
+        30,
+        50,
+        select.origin.x,
+        select.origin.y,
+        select.width,
+        200,
+        select.scale,
+
+        1
+      );
     }, [select.width, select.scale, select.origin]),
 
     addShape: React.useCallback(
