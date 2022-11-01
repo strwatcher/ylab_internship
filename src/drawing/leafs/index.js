@@ -11,10 +11,12 @@ export class Leaf extends BaseShape {
       rotation: random(-1.5, 1.5),
       offset: {
         x: random(-10, 10),
-        y: random(5, 10),
+        y: random(5, 7),
       },
-      duration: random(3, 7),
-      time: 0,
+      translationDuration: random(3, 7),
+      translationTime: 0,
+      rotationDuration: random(3, 7),
+      rotationTime: 0,
     };
     if (imgUrl !== "") {
       this.image = new Image();
@@ -81,23 +83,32 @@ export class Leaf extends BaseShape {
 
     let offset = this.animation.offset;
     let rotation = this.animation.rotation;
-    let duration = this.animation.duration;
-    let time = this.animation.time;
+    let translationDuration = this.animation.translationDuration;
+    let translationTime = this.animation.translationTime;
+    let rotationDuration = this.animation.rotationDuration;
+    let rotationTime = this.animation.rotationTime;
 
-    const ease = easeCoefficient(time / duration);
+    const ease = easeCoefficient(translationTime / translationDuration);
 
-    const changeDirection = this.animation.time >= duration;
+    const changeDirection = translationTime >= translationDuration;
     if (changeDirection) {
-      offset = { x: random(-10, 10), y: random(5, 10) };
-      duration = random(3, 7);
+      offset = { x: random(-10, 10), y: random(5, 7) };
+      translationDuration = random(3, 7);
+      translationTime = 0;
+    }
+
+    const changeRotation = rotationTime >= rotationDuration;
+    if (changeRotation) {
       rotation = random(-1.5, 1.5);
-      time = 0;
+      rotationDuration = random(3, 7);
+      rotationTime = 0;
     }
 
     const x = this.x + (offset.x / dt / scale) * ease;
     let y = this.y + offset.y / dt / scale;
 
     const angle = (this.angle + rotation * ease) % 360;
+
     if (y > bottom + this.height) {
       y = top - this.height;
     }
@@ -107,12 +118,13 @@ export class Leaf extends BaseShape {
     leaf.animation = {
       offset,
       rotation,
-      time: time + dt / 1000,
-      duration,
+      translationTime: translationTime + dt / 1000,
+      translationDuration,
+      rotationTime: rotationTime + dt / 1000,
+      rotationDuration,
     };
     leaf.x = x;
     leaf.y = y;
-    leaf.timeSpent = dt + this.timeSpent;
     return leaf;
   }
 }
