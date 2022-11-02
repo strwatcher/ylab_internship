@@ -2,30 +2,7 @@
  * Настройки сервисов
  */
 
-export interface Config {
-  store: {
-    log: boolean;
-    modules: {
-      session: {
-        tokenHeader: string;
-      };
-    };
-  };
-
-  api: {
-    baseUrl: string;
-  };
-
-  websockets: {
-    url: string;
-  };
-
-  drawing: {
-    colors: Array<string>;
-  };
-
-  storeRedux: {};
-}
+import { Config } from "./config";
 
 const config: Config = {
   store: {

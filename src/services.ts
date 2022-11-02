@@ -4,7 +4,7 @@ import Store from "./store";
 import createStoreRedux from "./store-redux";
 import { Store as StoreRedux } from "redux";
 import { WebSocketsService } from "./web-sockets";
-import { Config } from "./config";
+import { Config } from "./config/config";
 
 class Services {
   private config: Config;
@@ -39,14 +39,14 @@ class Services {
     return this._storeRedux;
   }
 
-  get websockets() {
+  get websockets(): WebSocketsService {
     if (!this._ws) {
       this._ws = new WebSocketsService(this, this.config.websockets);
     }
     return this._ws;
   }
 
-  get drawing() {
+  get drawing(): DrawingService {
     if (!this._drawing) {
       this._drawing = new DrawingService(this, this.config.drawing);
     }
