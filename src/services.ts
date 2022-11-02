@@ -2,40 +2,37 @@ import APIService from "./api";
 import DrawingService from "./drawing";
 import Store from "./store";
 import createStoreRedux from "./store-redux";
+import { Store as StoreRedux } from "redux";
 import { WebSocketsService } from "./web-sockets";
+import { Config } from "./config";
 
 class Services {
+  private config: Config;
+  private _store: Store;
+  private _api: APIService;
+  private _storeRedux: StoreRedux;
+  private _ws: WebSocketsService;
+  private _drawing: DrawingService;
 
-  constructor(config) {
+  constructor(config: any) {
     this.config = config;
   }
 
-  /**
-   * Сервис Store
-   * @returns {Store}
-   */
-  get store(){
+  get store(): Store {
     if (!this._store) {
       this._store = new Store(this, this.config.store);
     }
     return this._store;
   }
 
-  /**
-   * Сервис АПИ
-   * @returns {APIService}
-   */
-  get api(){
+  get api(): APIService {
     if (!this._api) {
       this._api = new APIService(this, this.config.api);
     }
     return this._api;
   }
 
-  /**
-   * Redux store
-   */
-  get storeRedux(){
+  get storeRedux(): StoreRedux {
     if (!this._storeRedux) {
       this._storeRedux = createStoreRedux(this, this.config.storeRedux);
     }
@@ -43,18 +40,18 @@ class Services {
   }
 
   get websockets() {
-    if (!this._websockets) {
-      this._websockets = new WebSocketsService(this, this.config.websockets);
+    if (!this._ws) {
+      this._ws = new WebSocketsService(this, this.config.websockets);
     }
-    return this._websockets;
+    return this._ws;
   }
 
   get drawing() {
-    if(!this._drawing) {
+    if (!this._drawing) {
       this._drawing = new DrawingService(this, this.config.drawing);
     }
 
-    return this._drawing
+    return this._drawing;
   }
 }
 
