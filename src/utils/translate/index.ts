@@ -1,7 +1,7 @@
-import * as l from "./locales.js";
+import * as l from "./locales";
 const locales: any = l;
 /**
- * Перевод фразу по словарю
+ * Перевод фраз по словарю
  */
 export default function translate(
   lang: string,

@@ -1,3 +1,4 @@
+import { Node } from "./types";
 /**
  * Преобразование списка в иерархию.
  * @param tree {Array} Иерархия - список узлов со свойством children.
@@ -6,10 +7,16 @@
  * @param [result] {Array} Результат функции - используется рекурсией.
  * @returns {Array} Корневые узлы
  */
-export default function treeToList(tree, callback, level = 0, result = []) {
+export default function treeToList(
+  tree: Array<Node>,
+  callback?: Function,
+  level: number = 0,
+  result: Array<Node> = []
+): Array<Node> {
   for (const item of tree) {
     result.push(callback ? callback(item, level) : item);
-    if (item.children?.length) treeToList(item.children, callback, level + 1, result);
+    if (item.children?.length)
+      treeToList(item.children, callback, level + 1, result);
   }
   return result;
 }

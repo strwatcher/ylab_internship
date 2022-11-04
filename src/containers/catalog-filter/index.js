@@ -4,20 +4,20 @@ import LayoutFlex from "@src/components/layouts/layout-flex";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
 import useTranslate from "@src/hooks/use-translate";
-import listToTree from "@src/utils/list-to-tree";
-import treeToList from "@src/utils/tree-to-list";
-import propTypes from 'prop-types';
+import listToTree from "@src/utils/tree/list-to-tree";
+import treeToList from "@src/utils/tree/tree-to-list";
+import propTypes from "prop-types";
 import React, { useCallback, useMemo } from "react";
 
 CatalogFilter.propTypes = {
-  stateName: propTypes.string
-}
+  stateName: propTypes.string,
+};
 
 CatalogFilter.defaultProps = {
-  stateName: 'catalog'
-}
+  stateName: "catalog",
+};
 
-function CatalogFilter({stateName}) {
+function CatalogFilter({ stateName }) {
   const store = useStore();
 
   const select = useSelector((state) => ({
@@ -50,10 +50,10 @@ function CatalogFilter({stateName}) {
   const options = {
     sort: useMemo(
       () => [
-        { value: "order", title: "По порядку", iconString: "ПП"},
-        { value: "title.ru", title: "По именованию", iconString: "ПИ"},
-        { value: "-price", title: "Сначала дорогие", iconString: "СД"},
-        { value: "edition", title: "Древние", iconString: "ДР"},
+        { value: "order", title: "По порядку", iconString: "ПП" },
+        { value: "title.ru", title: "По именованию", iconString: "ПИ" },
+        { value: "-price", title: "Сначала дорогие", iconString: "СД" },
+        { value: "edition", title: "Древние", iconString: "ДР" },
       ],
       []
     ),
@@ -64,7 +64,7 @@ function CatalogFilter({stateName}) {
         ...treeToList(listToTree(select.categories), (item, level) => ({
           value: item._id,
           title: "- ".repeat(level) + item.title,
-          iconString: ""
+          iconString: "",
         })),
       ],
       [select.categories]
@@ -79,7 +79,11 @@ function CatalogFilter({stateName}) {
         options={options.categories}
         // width={100}
       />
-      <SearchSelect onChange={callbacks.onSort} options={options.sort} value={select.sort}/>
+      <SearchSelect
+        onChange={callbacks.onSort}
+        options={options.sort}
+        value={select.sort}
+      />
       <Input
         onChange={callbacks.onSearch}
         value={select.query}
