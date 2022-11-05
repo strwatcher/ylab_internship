@@ -69,17 +69,20 @@ function Chat() {
     ),
   };
 
-  useInit(async () => {
-    store.get("chat").connect(select.token);
-    await store.get("profile").load();
-  }, []);
+  useInit({
+    callback: async () => {
+      store.get("chat").connect(select.token);
+      await store.get("profile").load();
+    },
+    depends: [],
+  });
 
   useEffect(() => {
     return () => {
       store.get("chat").clear();
-      store.get("chat").disconnect()
-    }
-  }, [])
+      store.get("chat").disconnect();
+    };
+  }, []);
 
   // refs to controll scroll
   const refs = {

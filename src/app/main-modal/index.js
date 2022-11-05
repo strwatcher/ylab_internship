@@ -13,11 +13,14 @@ function MainModal({ stateName, renderItem }) {
     catalog: state[stateName],
   }));
 
-  useInit(async () => {
-    store.createState("catalog", stateName);
-    store.get("multiModality").setCatalog(stateName);
-    await store.get(stateName).initParams();
-  }, []);
+  useInit({
+    callback: async () => {
+      store.createState("catalog", stateName);
+      store.get("multiModality").setCatalog(stateName);
+      await store.get(stateName).initParams();
+    },
+    depends: [],
+  });
 
   const callbacks = {
     close: () => {

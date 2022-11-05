@@ -1,9 +1,13 @@
 import { useCallback, useRef } from "react";
 
-export function useInfinityScroll(fetching, hasMore, onIntersection) {
-  const observer = useRef();
+export function useInfinityScroll(
+  fetching: boolean,
+  hasMore: boolean,
+  onIntersection: Function
+) {
+  const observer = useRef<IntersectionObserver>();
   const observedRef = useCallback(
-    (node) => {
+    (node: HTMLElement) => {
       if (fetching) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {

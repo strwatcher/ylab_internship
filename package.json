@@ -21,6 +21,7 @@
   "author": "YLab",
   "license": "ISC",
   "dependencies": {
+    "@types/shallowequal": "^1.1.1",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "plural-ru": "^2.0.2",

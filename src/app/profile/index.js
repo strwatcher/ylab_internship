@@ -9,29 +9,32 @@ import HeadContainer from "@src/containers/head";
 import ToolsContainer from "@src/containers/tools";
 import ProfileCard from "@src/components/profile/profile-card";
 
-function Profile(){
+function Profile() {
   const store = useStore();
 
-  const select = useSelector(state => ({
+  const select = useSelector((state) => ({
     profile: state.profile.data,
     waiting: state.profile.waiting,
-    exists: state.session.exists
+    exists: state.session.exists,
   }));
 
-  useInit(async () => {
-    await store.get('profile').load();
-  }, []);
+  useInit({
+    callback: async () => {
+      await store.get("profile").load();
+    },
+    depends: [],
+  });
 
   return (
     <Layout>
-      <TopContainer/>
-      <HeadContainer/>
-      <ToolsContainer/>
+      <TopContainer />
+      <HeadContainer />
+      <ToolsContainer />
       <Spinner active={select.waiting}>
-        <ProfileCard data={select.profile}/>
+        <ProfileCard data={select.profile} />
       </Spinner>
     </Layout>
-  )
+  );
 }
 
 export default React.memo(Profile);

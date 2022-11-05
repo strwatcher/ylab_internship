@@ -1,13 +1,13 @@
-import {useEffect, useMemo, useState} from "react";
-import shallowequal from 'shallowequal';
+import Store from "@src/store";
+import { useEffect, useMemo, useState } from "react";
+import shallowequal from "shallowequal";
 import useStore from "./use-store";
 
 /**
  * Хук для доступа к объекту хранилища
  * @return {Store|{}}
  */
-export default function useSelector(selector) {
-
+export default function useSelector(selector: any): Store | any {
   const store = useStore();
 
   const [state, setState] = useState(() => selector(store.getState()));
@@ -18,15 +18,15 @@ export default function useSelector(selector) {
       // Новая выборка
       const newState = selector(store.getState());
       // Установка выбранных данных, если они изменились
-      setState(prevState => {
+      setState((prevState: any) => {
         // Сравнение с предыдущей выборкой
-        return shallowequal(prevState, newState) ? prevState : newState
+        return shallowequal(prevState, newState) ? prevState : newState;
       });
     });
   }, []);
 
   // Отписка от store при демонтировании
-  useEffect(() => unsubscribe, [unsubscribe]);
+  useEffect(() => unsubscribe(), [unsubscribe]);
 
   return state;
 }

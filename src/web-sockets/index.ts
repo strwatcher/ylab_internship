@@ -1,5 +1,13 @@
+import { WSConfig } from "@src/config/websockets";
+import Services from "@src/services";
+import { SocketsMap, WSCallbacks } from "./types";
+
 export class WebSocketsService {
-  constructor(services, config = {}) {
+  services: Services;
+  config: WSConfig;
+  sockets: SocketsMap;
+
+  constructor(services: Services, config: WSConfig) {
     this.services = services;
     this.config = {
       ...config,
@@ -7,30 +15,31 @@ export class WebSocketsService {
     this.sockets = {};
   }
 
-  connect = async (name, url, callbacks) => {
+  connect = async (name: string, url: string, callbacks: WSCallbacks) => {
     return new Promise((resolve) => {
       const socket = new WebSocket(url);
       socket.onopen = callbacks.onopen;
       socket.onclose = callbacks.onclose;
       socket.onerror = callbacks.onerror;
       socket.onmessage = callbacks.onmessage;
-      this.sockets[name] = { socket, resolve };
+      this.sockets[name] = { socket, resolve, connected: false };
     });
   };
 
-  approveConnect = (name) => {
+  approveConnect = (name: string) => {
     if (this.sockets[name].resolve) {
       this.sockets[name].connected = true;
       this.sockets[name].resolve(name);
     }
   };
 
-  getSocket = (name) => {
+  getSocket = (name: string) => {
     return this.sockets[name].socket;
   };
 
-  disconnect = (name) => {
-    this.sockets[name].socket.onclose = null;/*() => {console.log("closed permanently")}*/ 
+  disconnect = (name: string) => {
+    this.sockets[name].socket.onclose =
+      null; /*() => {console.log("closed permanently")}*/
     this.sockets[name].socket.close();
-  }
+  };
 }

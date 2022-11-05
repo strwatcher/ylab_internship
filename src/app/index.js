@@ -18,8 +18,10 @@ import Profile from "./profile";
 function App() {
   const store = useStore();
 
-  useInit(async () => {
-    await store.get("session").remind();
+  useInit({
+    callback: async () => {
+      await store.get("session").remind();
+    },
   });
 
   //const modal = useSelector(state => state.modals.name);

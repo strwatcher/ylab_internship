@@ -16,14 +16,14 @@ function BasketMainModal({ stateName }) {
     basketItems: state.multiselectBasket.items,
   }));
 
-  useInit(
-    async () => {
+  useInit({
+    callback: async () => {
       store.createState("catalog", stateName);
       store.get("multiModality").setCatalog(stateName);
       await store.get(stateName).initParams();
     },
-    [],
-  );
+    depends: [],
+  });
 
   const callbacks = {
     close: useCallback(async (result) => {
@@ -41,7 +41,7 @@ function BasketMainModal({ stateName }) {
     }, []),
 
     setAmount: useCallback((id, amount) => {
-      store.get("multiselectBasket").setAmount(id, amount)
+      store.get("multiselectBasket").setAmount(id, amount);
     }, []),
 
     itemBasketInfo: useCallback(
@@ -77,10 +77,13 @@ function BasketMainModal({ stateName }) {
 
   return (
     select.catalog && (
-      <LayoutModal theme={{ scalable: true }} onClose={() => callbacks.close(null)}>
+      <LayoutModal
+        theme={{ scalable: true }}
+        onClose={() => callbacks.close(null)}
+      >
         <CatalogFilter stateName={stateName} />
         <CatalogList stateName={stateName} renderItem={renders.item} />
-        <BasketCatalogAdd onClick={callbacks.success}/>
+        <BasketCatalogAdd onClick={callbacks.success} />
       </LayoutModal>
     )
   );

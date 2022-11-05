@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { RefObject, useEffect } from "react";
 
-export function useClickOutside(callback, ...refs) {
+export function useClickOutside(callback: Function, ...refs: RefObject<any>[]) {
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: Event) => {
       for (let ref of refs) {
         if (ref.current && !ref.current.contains(event.target)) {
           callback();
