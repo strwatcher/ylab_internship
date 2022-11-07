@@ -1,13 +1,14 @@
-import Store from "@src/store";
+import { State } from "@src/store/types";
 import { useEffect, useMemo, useState } from "react";
 import shallowequal from "shallowequal";
 import useStore from "./use-store";
 
 /**
  * Хук для доступа к объекту хранилища
- * @return {Store|{}}
  */
-export default function useSelector(selector: any): Store | any {
+export default function useSelector(
+  selector: (state: State) => any
+): ReturnType<typeof selector> {
   const store = useStore();
 
   const [state, setState] = useState(() => selector(store.getState()));

@@ -12,7 +12,6 @@ export default function listToTree(
   let trees: any = {};
   let roots: any = {};
   for (const item of list) {
-    console.log(item);
     const kval = item[key];
     // Добавление элемента в индекс узлов с создание свойства children
     if (!trees[kval]) {

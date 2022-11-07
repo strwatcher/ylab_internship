@@ -1,12 +1,12 @@
 import StateModule from "@src/store/module";
+import { AddDialogState } from "./types";
 
 /**
  * Состояние корзины
  */
-class AddDialogState extends StateModule {
+class AddDialogModule extends StateModule<AddDialogState> {
   /**
    * Начальное состояние
-   * @return {Object}
    */
   initState() {
     return {
@@ -14,15 +14,12 @@ class AddDialogState extends StateModule {
     };
   }
 
-  setAmount(newAmount) {
+  setAmount(newAmount: number) {
     this.setState({
       ...this.getState(),
       amount: newAmount,
     });
   }
-
-
-
 }
 
-export default AddDialogState;
+export default AddDialogModule;

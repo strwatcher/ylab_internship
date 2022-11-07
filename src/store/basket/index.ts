@@ -1,14 +1,15 @@
 import StateModule from "@src/store/module";
+import { BasketItem, BasketState } from "./types";
 
 /**
  * Состояние корзины
  */
-class BasketState extends StateModule {
+class BasketModule extends StateModule<BasketState> {
   /**
    * Начальное состояние
    * @return {Object}
    */
-  initState() {
+  initState(): BasketState {
     return {
       items: [],
       sum: 0,
@@ -20,11 +21,11 @@ class BasketState extends StateModule {
    * Добавление товара в корзину
    * @param _id Код товара
    */
-  async addToBasket(_id, amount = 1) {
+  async addToBasket(_id: string, amount = 1) {
     let sum = 0;
     // Ищем товар в корзие, чтобы увеличить его количество. Заодно получаем новый массив items
     let exists = false;
-    const items = this.getState().items.map((item) => {
+    const items = this.getState().items.map((item: BasketItem) => {
       let result = item;
       // Искомый товар для увеличения его количества
       if (item._id === _id) {
@@ -60,7 +61,7 @@ class BasketState extends StateModule {
     );
   }
 
-  merge(items) {
+  merge(items: BasketItem[]) {
     let newItems = [...this.getState().items];
     let sum = 0;
     items.forEach((item) => {
@@ -91,9 +92,9 @@ class BasketState extends StateModule {
    * Добавление товара в корзину
    * @param _id Код товара
    */
-  removeFromBasket(_id) {
+  removeFromBasket(_id: string) {
     let sum = 0;
-    const items = this.getState().items.filter((item) => {
+    const items = this.getState().items.filter((item: BasketItem) => {
       // Удаляемый товар
       if (item._id === _id) return false;
       // Подсчёт суммы если твоар не удаляем.
@@ -110,7 +111,7 @@ class BasketState extends StateModule {
     );
   }
 
-  setBasket(basket) {
+  setBasket(basket: BasketState) {
     this.setState({
       ...this.getState(),
       items: [...basket.items],
@@ -120,4 +121,4 @@ class BasketState extends StateModule {
   }
 }
 
-export default BasketState;
+export default BasketModule;

@@ -12,7 +12,6 @@ export default function useInit({
   depends?: any[];
   options?: { backForward: boolean };
 }) {
-  console.log(callback);
   useEffect(() => {
     callback(false);
 

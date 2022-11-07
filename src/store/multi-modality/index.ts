@@ -1,36 +1,34 @@
 import StateModule from "@src/store/module";
+import { MultiModalityState } from "./types";
 
 /**
  * Состояние корзины
  */
-class MultiModalityState extends StateModule {
+class MultiModalityModule extends StateModule<MultiModalityState> {
   /**
    * Начальное состояние
    * @return {Object}
    */
-  initState() {
+  initState(): MultiModalityState {
     return {
-      catalogState: 'catalog',
-      basketState: 'basket'
+      catalogState: "catalog",
+      basketState: "basket",
     };
   }
 
-  setCatalog(state) {
+  setCatalog(state: string) {
     this.setState({
       ...this.getState(),
       catalogState: state,
     });
   }
 
-  setBasket(state) {
+  setBasket(state: string) {
     this.setState({
       ...this.getState(),
-      basketState: state
+      basketState: state,
     });
   }
-
-
-
 }
 
-export default MultiModalityState;
+export default MultiModalityModule;

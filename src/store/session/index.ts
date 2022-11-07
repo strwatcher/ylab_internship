@@ -1,15 +1,16 @@
 import StateModule from "@src/store/module";
 import simplifyErrors from "@src/utils/simplify-errors";
+import { SessionState, SignInData } from "./types";
 
 /**
  * Сессия
  */
-class SessionState extends StateModule {
+class SessionModule extends StateModule<SessionState> {
   /**
    * Начальное состояние
    * @return {Object}
    */
-  initState() {
+  initState(): SessionState {
     return {
       user: {},
       token: null,
@@ -23,9 +24,8 @@ class SessionState extends StateModule {
    * Авторизация (вход)
    * @param data
    * @param onSuccess
-   * @returns {Promise<void>}
    */
-  async signIn(data, onSuccess) {
+  async signIn(data: SignInData, onSuccess: Function) {
     this.setState(this.initState(), "Авторизация (начало)");
     try {
       const json = await this.services.api.request({
@@ -68,7 +68,6 @@ class SessionState extends StateModule {
 
   /**
    * Отмена авторизации (выход)
-   * @returns {Promise<void>}
    */
   async signOut() {
     try {
@@ -85,7 +84,6 @@ class SessionState extends StateModule {
 
   /**
    * По токену восстановление сессии
-   * @return {Promise<void>}
    */
   async remind() {
     const token = localStorage.getItem("token");
@@ -124,4 +122,4 @@ class SessionState extends StateModule {
   }
 }
 
-export default SessionState;
+export default SessionModule;

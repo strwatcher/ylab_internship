@@ -1,14 +1,16 @@
 import StateModule from "@src/store/module";
+import { BasketItem } from "../basket/types";
+import { MultiselectBasketState } from "./types";
 
 /**
  * Состояние корзины
  */
-class MultiselectBasketState extends StateModule {
+class MultiselectBasketModule extends StateModule<MultiselectBasketState> {
   /**
    * Начальное состояние
    * @return {Object}
    */
-  initState() {
+  initState(): MultiselectBasketState {
     return {
       items: [],
     };
@@ -18,19 +20,21 @@ class MultiselectBasketState extends StateModule {
    * Добавление товара в корзину
    * @param _id Код товара
    */
-  async addToBasket(_id) {
+  async addToBasket(_id: string) {
     // Ищем товар в корзие, чтобы увеличить его количество. Заодно получаем новый массив items
     let exists = false;
-    const items = this.getState().items.map((item) => {
-      let result = item;
-      // Искомый товар для увеличения его количества
-      if (item._id === _id) {
-        exists = true;
-        result = { ...item, amount: item.amount + 1 };
+    const items: BasketItem[] = this.getState().items.map(
+      (item: BasketItem) => {
+        let result = item;
+        // Искомый товар для увеличения его количества
+        if (item._id === _id) {
+          exists = true;
+          result = { ...item, amount: item.amount + 1 };
+        }
+        // Добавляея в общую сумму
+        return result;
       }
-      // Добавляея в общую сумму
-      return result;
-    });
+    );
 
     // Если товар не был найден в корзине, то добавляем его из каталога
     if (!exists) {
@@ -52,8 +56,10 @@ class MultiselectBasketState extends StateModule {
     );
   }
 
-  setAmount(_id, amount) {
-    const item = this.getState().items.findIndex((item) => item._id === _id);
+  setAmount(_id: string, amount: number) {
+    const item = this.getState().items.findIndex(
+      (item: BasketItem) => item._id === _id
+    );
     let items = [...this.getState().items];
     if (amount <= 0) {
       items = items.filter((i) => i._id !== _id);
@@ -73,4 +79,4 @@ class MultiselectBasketState extends StateModule {
   }
 }
 
-export default MultiselectBasketState;
+export default MultiselectBasketModule;

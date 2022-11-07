@@ -15,11 +15,11 @@ const OPTIONS = {
 };
 
 export default {
-  parse: (query: any) => {
-    return qs.parse(query, OPTIONS.parse) || {};
+  parse: function <T = any>(query: string) {
+    return (qs.parse(query, OPTIONS.parse) as T) || ({} as T);
   },
 
-  stringify: (params: any) => {
+  stringify: function <T = any>(params: T) {
     return qs.stringify(params, OPTIONS.stringify);
   },
 };

@@ -1,7 +1,8 @@
 import StateModule from "@src/store/module";
+import { DrawingState } from "./types";
 
-class DrawingState extends StateModule {
-  initState() {
+class DrawingModule extends StateModule<DrawingState> {
+  initState(): DrawingState {
     return {
       shapes: [],
       origin: { x: 0, y: 0 },
@@ -12,7 +13,7 @@ class DrawingState extends StateModule {
     };
   }
 
-  setSome(props) {
+  setSome(props: DrawingState) {
     this.setState({
       ...this.getState(),
       ...props,
@@ -29,7 +30,16 @@ class DrawingState extends StateModule {
     });
   }
 
-  addRandomSquare(minS, maxS, mx, my, w, h, acc, scale) {
+  addRandomSquare(
+    minS: number,
+    maxS: number,
+    mx: number,
+    my: number,
+    w: number,
+    h: number,
+    acc: number,
+    scale: number
+  ) {
     const shape = this.services.drawing.genSquare(
       minS,
       maxS,
@@ -46,7 +56,16 @@ class DrawingState extends StateModule {
     });
   }
 
-  addLeafs(minS, maxS, mx, my, w, h, scale, count) {
+  addLeafs(
+    minS: number,
+    maxS: number,
+    mx: number,
+    my: number,
+    w: number,
+    h: number,
+    scale: number,
+    count: number
+  ) {
     let leafs = [];
     for (let i = 0; i < count; i += 1) {
       const leaf = this.services.drawing.genLeaf(
@@ -67,7 +86,7 @@ class DrawingState extends StateModule {
     });
   }
 
-  changeSelected(...attributes) {
+  changeSelected(...attributes: Attr[]) {
     let res = this.getState().selected;
     for (const attr of attributes) {
       res = res.setAttr(attr.name, attr.value);
@@ -79,4 +98,4 @@ class DrawingState extends StateModule {
   }
 }
 
-export default DrawingState;
+export default DrawingModule;

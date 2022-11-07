@@ -36,7 +36,10 @@ function Chat() {
       if (/^[\s]*$/.test(select.message)) return;
       store
         .get("chat")
-        .post({ text: select.message, username: select.author.username });
+        .post({
+          text: select.message,
+          author: { username: select.author.username },
+        });
     }, [select.author, select.message]),
 
     load: useCallback(async () => {

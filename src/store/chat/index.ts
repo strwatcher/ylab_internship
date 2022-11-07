@@ -1,15 +1,16 @@
 import StateModule from "@src/store/module";
 import { v4 as uuidv4 } from "uuid";
+import { ChatState, Message } from "./types";
 
 /**
  * Состояние товара
  */
-class ChatState extends StateModule {
+class ChatModule extends StateModule<ChatState> {
   /**
    * Начальное состояние
    * @return {Object}
    */
-  initState() {
+  initState(): ChatState {
     return {
       signed: false,
       connected: false,
@@ -22,23 +23,23 @@ class ChatState extends StateModule {
     };
   }
   clear() {
-    this.setState({...this.initState()})
+    this.setState({ ...this.initState() });
   }
-  setMessage(message) {
+  setMessage(message: string) {
     this.setState({
       ...this.getState(),
       message,
     });
   }
 
-  setWaiting(waiting) {
+  setWaiting(waiting: boolean) {
     this.setState({
       ...this.getState(),
       waiting,
     });
   }
 
-  async connect(token) {
+  async connect(token: string) {
     this.setState({
       ...this.getState(),
       token,
@@ -48,10 +49,10 @@ class ChatState extends StateModule {
       "chat",
       "ws://example.front.ylab.io/chat",
       {
-        onopen: this.#onopen,
-        onclose: this.#onclose,
-        onerror: this.#onerror,
-        onmessage: this.#onmessage,
+        onopen: this.onopen,
+        onclose: this.onclose,
+        onerror: this.onerror,
+        onmessage: this.onmessage,
       }
     );
     this.setState({
@@ -64,7 +65,7 @@ class ChatState extends StateModule {
     this.services.websockets.disconnect("chat");
   }
 
-  async send(method, payload) {
+  async send(method: string, payload: any) {
     return new Promise((resolve) => {
       this.services.websockets
         .getSocket("chat")
@@ -77,25 +78,27 @@ class ChatState extends StateModule {
   }
 
   async auth() {
-    const signed = await this.send("auth", { token: this.getState().token });
+    const signed = !!(await this.send("auth", {
+      token: this.getState().token,
+    }));
     this.setState({
       ...this.getState(),
       signed,
     });
   }
 
-  async authedOperation(callback) {
+  async authedOperation(callback: Function) {
     if (!this.getState().signed) {
       await this.auth();
     }
     return await callback();
   }
 
-  async getLast(fromDate) {
-    const last = await this.authedOperation(() =>
+  async getLast(fromDate?: string) {
+    const last: Message[] = await this.authedOperation(() =>
       this.send("last", { fromDate })
     );
-    let messages = [...this.getState().messages];
+    let messages: Message[] = [...this.getState().messages];
     last.forEach((message) => {
       const index = messages.findIndex((i) => i._key === message._key);
       if (index >= 0) {
@@ -105,7 +108,10 @@ class ChatState extends StateModule {
       }
     });
 
-    messages = messages.sort((a, b) => new Date(a) - new Date(b));
+    messages = messages.sort(
+      (a, b) =>
+        new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime()
+    );
     this.setState({
       ...this.getState(),
       messages,
@@ -128,14 +134,18 @@ class ChatState extends StateModule {
     });
   }
 
-  post(message) {
+  post(message: Message) {
     let newMessage = { text: message.text, _key: uuidv4() };
 
     this.setState({
       ...this.getState(),
       messages: [
         ...this.getState().messages,
-        { ...newMessage, mine: true, author: { username: message.username } },
+        {
+          ...newMessage,
+          mine: true,
+          author: { username: message.author.username },
+        },
       ],
       action: "post",
     });
@@ -143,13 +153,13 @@ class ChatState extends StateModule {
     this.authedOperation(() => this.send("post", { ...newMessage }));
   }
 
-  #onopen = () => {
+  onopen = () => {
     // console.log("opened");
     this.services.websockets.approveConnect("chat");
     this.getLast();
   };
 
-  #onclose = () => {
+  onclose = () => {
     // console.log("closed");
     this.setState({
       ...this.getState(),
@@ -159,7 +169,7 @@ class ChatState extends StateModule {
     this.connect(this.getState().token);
   };
 
-  #onerror = () => {
+  onerror = () => {
     // console.log("error");
     this.setState({
       ...this.getState(),
@@ -169,7 +179,7 @@ class ChatState extends StateModule {
     this.connect(this.getState().token);
   };
 
-  #onmessage = (e) => {
+  onmessage = (e: MessageEvent) => {
     const json = JSON.parse(e.data);
     // console.log(json);
     let result;
@@ -195,4 +205,4 @@ class ChatState extends StateModule {
   };
 }
 
-export default ChatState;
+export default ChatModule;
