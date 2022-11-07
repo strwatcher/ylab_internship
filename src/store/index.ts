@@ -1,6 +1,7 @@
 import { StoreConfig } from "@src/config/store/index.js";
 import Services from "@src/services.js";
-import { State, modules, Modules } from "./types";
+import StateModule from "./module";
+import { State, modules, Modules, SomeState } from "./types";
 
 class Store {
   services: Services;
@@ -52,13 +53,14 @@ class Store {
   /**
    * Доступ к модулю состояния
    */
-  get<TState>(name: keyof typeof modules): TState {
-    return this.modules[name] as TState;
+  get<TModule extends StateModule<SomeState>>(
+    name: keyof typeof modules
+  ): TModule {
+    return this.modules[name] as TModule;
   }
 
   /**
    * Выбор state
-   * @return {Object}
    */
   getState(): State {
     return this.state;

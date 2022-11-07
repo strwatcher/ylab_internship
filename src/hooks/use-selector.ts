@@ -6,9 +6,7 @@ import useStore from "./use-store";
 /**
  * Хук для доступа к объекту хранилища
  */
-export default function useSelector<T extends (...args: any) => any>(
-  selector: (state: State) => any
-): ReturnType<T> {
+export default function useSelector<T>(selector: (state: State) => T): T {
   const store = useStore();
 
   const [state, setState] = useState(() => selector(store.getState()));
@@ -19,7 +17,7 @@ export default function useSelector<T extends (...args: any) => any>(
       // Новая выборка
       const newState = selector(store.getState());
       // Установка выбранных данных, если они изменились
-      setState((prevState: ReturnType<T>) => {
+      setState((prevState: T) => {
         // Сравнение с предыдущей выборкой
         return shallowequal(prevState, newState) ? prevState : newState;
       });

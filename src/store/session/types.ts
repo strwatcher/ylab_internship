@@ -15,7 +15,9 @@ export interface SessionState {
 
 export interface User {
   _id?: string;
-  name?: string;
+  profile?: {
+    name?: string;
+  };
 }
 
 export interface SignInData {

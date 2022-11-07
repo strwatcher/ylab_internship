@@ -11,15 +11,12 @@ import React, { useCallback, useMemo } from "react";
 
 function ToolsContainer() {
   const store = useStore();
-  // const storeRedux = useStoreRedux();
-  //
-  const selector = (state: State) => ({
+
+  const select = useSelector((state: State) => ({
     amount: state.basket.amount,
     sum: state.basket.sum,
     lang: state.locale.lang,
-  });
-
-  const select = useSelector<typeof selector>(selector);
+  }));
 
   const { t } = useTranslate();
 

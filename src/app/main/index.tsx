@@ -15,13 +15,11 @@ import React, { useEffect } from "react";
 function Main() {
   const store = useStore();
 
-  const selector = (state: State) => ({
+  const select = useSelector((state: State) => ({
     params: state.catalog.params,
     catalogState: state.multiModality.catalogState,
     catalog: state.catalog.items,
-  });
-
-  const select = useSelector<typeof selector>(selector);
+  }));
 
   useInit({
     callback: async () => {

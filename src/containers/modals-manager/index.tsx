@@ -7,7 +7,7 @@ function ModalsManager() {
   const selector = (state: State) => ({
     modals: state.modals.items,
   });
-  const select = useSelector<typeof selector>(selector);
+  const select = useSelector(selector);
 
   useEffect(() => {
     if (select.modals.length >= 1) {
