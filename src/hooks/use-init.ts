@@ -8,12 +8,12 @@ export default function useInit({
   depends = [],
   options = { backForward: false },
 }: {
-  callback: Function;
+  callback: () => void;
   depends?: any[];
   options?: { backForward: boolean };
 }) {
   useEffect(() => {
-    callback(false);
+    callback();
 
     const evCallback = (_: PopStateEvent) => {
       callback();

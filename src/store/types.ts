@@ -62,5 +62,18 @@ export type Modules = {
 };
 
 export type State = {
+  addDialog?: AddDialogState;
+  article?: ArticleState;
+  basket?: BasketState;
+  catalog?: CatalogState;
+  categories?: CategoriesState;
+  chat?: ChatState;
+  drawing?: DrawingState;
+  locale?: LocaleState;
+  modals?: ModalsState;
+  multiModality?: MultiModalityState;
+  multiselectBasket?: MultiselectBasketState;
+  profile?: ProfileState;
+  session?: SessionState;
   [name: string]: SomeState;
 };

@@ -1,13 +1,13 @@
 import ModalsBase from "@src/components/elements/modals-base";
 import useSelector from "@src/hooks/use-selector";
-import useStore from "@src/hooks/use-store";
+import { State } from "@src/store/types";
 import React, { useEffect } from "react";
 
 function ModalsManager() {
-  const store = useStore();
-  const select = useSelector((state) => ({
+  const selector = (state: State) => ({
     modals: state.modals.items,
-  }));
+  });
+  const select = useSelector<typeof selector>(selector);
 
   useEffect(() => {
     if (select.modals.length >= 1) {
@@ -18,14 +18,14 @@ function ModalsManager() {
     };
   }, [select.modals.length]);
 
+  if (!select.modals.length) return <></>;
+
   return (
-    select.modals.length >= 1 && (
-      <ModalsBase>
-        {select.modals.map((item, index) => (
-          <item.Modal key={index} {...item.props}/>
-        ))}
-      </ModalsBase>
-    )
+    <ModalsBase>
+      {select.modals.map((item, index) => (
+        <item.Modal key={index} {...item.props} />
+      ))}
+    </ModalsBase>
   );
 }
 

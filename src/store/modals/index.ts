@@ -14,7 +14,10 @@ class ModalsModule extends StateModule<ModalsState> {
   /**
    * Открытие модального окна по названию
    */
-  async open<TModal extends React.FC, TProps>(item: ModalItem<TModal, TProps>) {
+  async open<TModal extends React.ExoticComponent, TProps>(
+    item: ModalItem<TModal, TProps>
+  ) {
+    console.log("test1");
     return new Promise((resolve) => {
       this.setState(
         {

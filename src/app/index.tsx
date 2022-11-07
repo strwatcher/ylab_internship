@@ -6,9 +6,11 @@ import SessionModule from "@src/store/session";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Article from "./article";
+import Chat from "./chat";
 import DrawingPage from "./drawing";
 import Login from "./login";
 import Main from "./main";
+import Profile from "./profile";
 
 /**
  * Приложение
@@ -28,29 +30,29 @@ function App(): JSX.Element {
 
   return (
     <>
-    <Routes>
-    <Route path= { ""} element = {< Main />} />
-      < Route path = { "/articles/:id"} element = {< Article />} />
-        < Route path = { "/login"} element = {< Login />} />
-          < Route
-path = { "/profile"}
-element = {
-            < Protected redirect = { "/login"} >
-  <Profile />
-  < /Protected>
+      <Routes>
+        <Route path={""} element={<Main />} />
+        <Route path={"/articles/:id"} element={<Article />} />
+        <Route path={"/login"} element={<Login />} />
+        <Route
+          path={"/profile"}
+          element={
+            <Protected redirect={"/login"}>
+              <Profile />
+            </Protected>
           }
-/>
-  < Route
-path = { "/chat"}
-element = {
-            < Protected redirect = { "/login"} >
-  <Chat />
-  < /Protected>
+        />
+        <Route
+          path={"/chat"}
+          element={
+            <Protected redirect={"/login"}>
+              <Chat />
+            </Protected>
           }
-/>
-  < Route path = { "/drawing"} element = {< DrawingPage />} />
-    < /Routes>
-    < ModalsManager />
+        />
+        <Route path={"/drawing"} element={<DrawingPage />} />
+      </Routes>
+      <ModalsManager />
     </>
   );
 }

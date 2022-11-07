@@ -12,11 +12,11 @@ import React, { useCallback } from "react";
 
 CatalogList.propTypes = {
   stateName: propTypes.string,
+  renderItem: propTypes.func,
 };
 
 CatalogList.defaultProps = {
   stateName: "catalog",
-  basketStateName: "basket",
 };
 
 function CatalogList({ stateName, renderItem }) {
@@ -41,7 +41,7 @@ function CatalogList({ stateName, renderItem }) {
         .open({ Modal: Error, props: { errorText: "Неверный формат поля" } });
       store.get("addDialog").setAmount(1);
     }, []),
-    
+
     // Добавление в корзину
     addToBasket: useCallback(async (_id) => {
       const result = await store.get("modals").open({
@@ -90,7 +90,6 @@ function CatalogList({ stateName, renderItem }) {
       [t]
     ),
   };
-
 
   return (
     <Spinner active={select.waiting}>

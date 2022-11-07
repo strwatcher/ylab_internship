@@ -6,12 +6,10 @@ import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
 import useTranslate from "@src/hooks/use-translate";
 import React, { useCallback } from "react";
-import { useStore as useStoreRedux } from "react-redux";
 import basketCatalogModal from "../basket-catalog-modal";
 
 function Basket() {
   const store = useStore();
-  const storeRedux = useStoreRedux();
 
   const select = useSelector((state) => ({
     items: state.basket.items,

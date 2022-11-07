@@ -5,24 +5,31 @@ import Menu from "@src/components/navigation/menu";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
 import useTranslate from "@src/hooks/use-translate";
+import ModalsModule from "@src/store/modals";
+import { State } from "@src/store/types";
 import React, { useCallback, useMemo } from "react";
 
 function ToolsContainer() {
   const store = useStore();
   // const storeRedux = useStoreRedux();
-
-  const select = useSelector((state) => ({
+  //
+  const selector = (state: State) => ({
     amount: state.basket.amount,
     sum: state.basket.sum,
     lang: state.locale.lang,
-  }));
+  });
+
+  const select = useSelector<typeof selector>(selector);
 
   const { t } = useTranslate();
 
   const callbacks = {
     // Открытие корзины
     openModalBasket: useCallback(() => {
-      store.get("modals").open({ Modal: Basket });
+      console.log("test");
+      store
+        .get<ModalsModule>("modals")
+        .open<typeof Basket, {}>({ Modal: Basket, props: {} });
     }, []),
   };
 

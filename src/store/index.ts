@@ -37,7 +37,7 @@ class Store {
         }
       );
       // По названию модля устанавливается свойство с начальным состоянием от модуля
-      this.state[castedName] = this.modules[castedName].initState();
+      this.state[name] = this.modules[castedName].initState();
     }
   }
 
@@ -46,8 +46,7 @@ class Store {
       name,
       ...(this.config.modules[ref as keyof StoreConfig["modules"]] ?? {}),
     });
-    this.state[name as keyof State] =
-      this.modules[name as keyof typeof modules].initState();
+    this.state[name] = this.modules[name as keyof typeof modules].initState();
   }
 
   /**

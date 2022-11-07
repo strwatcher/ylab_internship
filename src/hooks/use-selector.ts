@@ -6,9 +6,9 @@ import useStore from "./use-store";
 /**
  * Хук для доступа к объекту хранилища
  */
-export default function useSelector(
+export default function useSelector<T extends (...args: any) => any>(
   selector: (state: State) => any
-): ReturnType<typeof selector> {
+): ReturnType<T> {
   const store = useStore();
 
   const [state, setState] = useState(() => selector(store.getState()));
@@ -19,7 +19,7 @@ export default function useSelector(
       // Новая выборка
       const newState = selector(store.getState());
       // Установка выбранных данных, если они изменились
-      setState((prevState: any) => {
+      setState((prevState: ReturnType<T>) => {
         // Сравнение с предыдущей выборкой
         return shallowequal(prevState, newState) ? prevState : newState;
       });
@@ -27,7 +27,9 @@ export default function useSelector(
   }, []);
 
   // Отписка от store при демонтировании
-  useEffect(() => unsubscribe(), [unsubscribe]);
+  useEffect(() => {
+    return () => unsubscribe();
+  }, [unsubscribe]);
 
   return state;
 }
