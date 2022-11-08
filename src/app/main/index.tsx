@@ -7,8 +7,6 @@ import TopContainer from "@src/containers/top";
 import useInit from "@src/hooks/use-init";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
-import CatalogModule from "@src/store/catalog";
-import CategoriesModule from "@src/store/categories";
 import { State } from "@src/store/types";
 import React, { useEffect } from "react";
 
@@ -23,23 +21,24 @@ function Main() {
 
   useInit({
     callback: async () => {
-      await store.get<CategoriesModule>("categories").load();
-      await store.get<CatalogModule>("catalog").initParams();
+      await store.get("categories").load();
+      await store.get("catalog").initParams();
     },
+
     depends: [],
     options: { backForward: true },
   });
 
   useEffect(() => {
     store
-      .get<CatalogModule>("catalog")
+      .get("catalog")
       .setParams({ ...select.params }, { historyReplace: true, append: false });
   }, [select.catalogState]);
 
   return (
     <Layout>
       <TopContainer />
-      <HeadContainer />
+      <HeadContainer title={"Каталог"} />
       <ToolsContainer />
       <CatalogFilter />
       <CatalogList />

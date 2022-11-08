@@ -6,7 +6,11 @@ import useTranslate from "@src/hooks/use-translate";
 import propTypes from "prop-types";
 import React, { useCallback } from "react";
 
-function HeadContainer(props) {
+interface HeadContainerProps {
+  title: string;
+}
+
+const HeadContainer: React.FC<HeadContainerProps> = (props) => {
   const store = useStore();
   const { t } = useTranslate();
 
@@ -24,12 +28,12 @@ function HeadContainer(props) {
   };
 
   return (
-    <LayoutHead title={t(props.title)}>
+    <LayoutHead title={t(props.title)} fixed={false}>
       <button onClick={callbacks.openMainInWindow}>В окне</button>
       <LocaleSelect />
     </LayoutHead>
   );
-}
+};
 
 HeadContainer.propTypes = {
   title: propTypes.string,

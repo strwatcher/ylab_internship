@@ -4,9 +4,16 @@ import CatalogList from "@src/containers/catalog-list";
 import useInit from "@src/hooks/use-init";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
+import CatalogModule from "@src/store/catalog";
+import StateModule from "@src/store/module";
 import React from "react";
 
-function MainModal({ stateName, renderItem }) {
+interface MainModalProps {
+  stateName: string;
+  renderItem: (item: any) => React.ReactNode;
+}
+
+const MainModal: React.FC<MainModalProps> = ({ stateName, renderItem }) => {
   const store = useStore();
 
   const select = useSelector((state) => ({
@@ -17,7 +24,7 @@ function MainModal({ stateName, renderItem }) {
     callback: async () => {
       store.createState("catalog", stateName);
       store.get("multiModality").setCatalog(stateName);
-      await store.get(stateName).initParams();
+      await (store.modules[stateName] as CatalogModule).initParams();
     },
     depends: [],
   });
@@ -39,6 +46,6 @@ function MainModal({ stateName, renderItem }) {
       )}
     </>
   );
-}
+};
 
 export default React.memo(MainModal);

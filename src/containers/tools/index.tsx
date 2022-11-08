@@ -5,7 +5,6 @@ import Menu from "@src/components/navigation/menu";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
 import useTranslate from "@src/hooks/use-translate";
-import ModalsModule from "@src/store/modals";
 import { State } from "@src/store/types";
 import React, { useCallback, useMemo } from "react";
 
@@ -24,9 +23,7 @@ function ToolsContainer() {
     // Открытие корзины
     openModalBasket: useCallback(() => {
       console.log("test");
-      store
-        .get<ModalsModule>("modals")
-        .open<typeof Basket, {}>({ Modal: Basket, props: {} });
+      store.get("modals").open<typeof Basket, {}>({ Modal: Basket, props: {} });
     }, []),
   };
 

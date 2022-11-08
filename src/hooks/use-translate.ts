@@ -2,7 +2,6 @@ import { useCallback } from "react";
 import useSelector from "@src/hooks/use-selector";
 import translate from "@src/utils/translate";
 import useStore from "@src/hooks/use-store";
-import LocaleModule from "@src/store/locale";
 
 /**
  * Хук возвращает функция для локализации текстов
@@ -16,7 +15,7 @@ export default function useTranslate() {
 
   // Функция для семны локали
   const setLang = useCallback(
-    (lang: string) => store.get<LocaleModule>("locale").setLang(lang),
+    (lang: string) => store.get("locale").setLang(lang),
     []
   );
 

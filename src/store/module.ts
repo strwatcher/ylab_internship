@@ -1,8 +1,7 @@
 import Services from "@src/services";
 import Store from ".";
-import { SomeState } from "./types";
 
-abstract class StateModule<TState extends SomeState> {
+abstract class StateModule<TState> {
   store: Store;
   config: any;
   services: Services;

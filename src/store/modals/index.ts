@@ -32,7 +32,7 @@ class ModalsModule extends StateModule<ModalsState> {
   /**
    * Закрытие модального окна
    */
-  async close<TResult>(result: TResult) {
+  async close<TResult>(result: TResult = null) {
     const modalToClose = this.getState().items.at(-1);
     if (modalToClose.resolve) {
       modalToClose.resolve(result);

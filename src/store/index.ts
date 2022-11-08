@@ -1,14 +1,19 @@
 import { StoreConfig } from "@src/config/store/index.js";
 import Services from "@src/services.js";
-import StateModule from "./module";
-import { State, modules, Modules, SomeState } from "./types";
+import {
+  IModules,
+  IStoreModules,
+  modules,
+  State,
+  StaticStoreModules,
+} from "./types";
 
 class Store {
   services: Services;
   config: StoreConfig;
-  state: State;
+  private state: State;
+  readonly modules: IStoreModules;
   listeners: Function[];
-  modules: Modules;
   /**
    * @param services {Services}
    * @param config {Object}
@@ -21,42 +26,40 @@ class Store {
       ...config,
     };
     // Состояние приложения (данные)
-    this.state = {};
     // Слушатели изменений state
     this.listeners = [];
 
     // Модули
-    this.modules = {};
+    const tmpModules: any = {};
+    const tmpState: any = {};
+
     for (const name of Object.keys(modules)) {
-      const castedName = name as keyof typeof modules;
+      const castedName = name as keyof IModules;
       // Экземпляр модуля. Передаём ему ссылку на store и навзание модуля.
-      this.modules[name as keyof typeof modules] = new modules[castedName](
-        this,
-        {
-          name,
-          ...(this.config.modules[name as keyof StoreConfig["modules"]] ?? {}),
-        }
-      );
-      // По названию модля устанавливается свойство с начальным состоянием от модуля
-      this.state[name] = this.modules[castedName].initState();
+      tmpModules[name] = new modules[castedName](this, {
+        name,
+        ...(this.config.modules[name as keyof StoreConfig["modules"]] ?? {}),
+      });
+      // По названию модyля устанавливается свойство с начальным состоянием от модуля
+      tmpState[name] = tmpModules[castedName].initState();
     }
+    this.modules = tmpModules;
+    this.state = tmpState;
   }
 
-  createState(ref: keyof typeof modules, name: string) {
+  createState(ref: keyof IModules, name: string) {
     this.modules[name] = new modules[ref](this, {
       name,
       ...(this.config.modules[ref as keyof StoreConfig["modules"]] ?? {}),
     });
-    this.state[name] = this.modules[name as keyof typeof modules].initState();
+    this.state[name] = this.modules[name].initState();
   }
 
   /**
    * Доступ к модулю состояния
    */
-  get<TModule extends StateModule<SomeState>>(
-    name: keyof typeof modules
-  ): TModule {
-    return this.modules[name] as TModule;
+  get<T extends keyof StaticStoreModules>(name: T): StaticStoreModules[T] {
+    return this.modules[name];
   }
 
   /**

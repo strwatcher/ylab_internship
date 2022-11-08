@@ -2,7 +2,6 @@ import ModalsManager from "@src/containers/modals-manager";
 import Protected from "@src/containers/protected";
 import useInit from "@src/hooks/use-init";
 import useStore from "@src/hooks/use-store";
-import SessionModule from "@src/store/session";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Article from "./article";
@@ -21,7 +20,7 @@ function App(): JSX.Element {
 
   useInit({
     callback: async () => {
-      await store.get<SessionModule>("session").remind();
+      await store.get("session").remind();
     },
   });
 

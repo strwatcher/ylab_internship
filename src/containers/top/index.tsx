@@ -26,7 +26,7 @@ function TopContainer() {
 
     // Отмена авторизации
     onSignOut: useCallback(() => {
-      store.get<SessionModule>("session").signOut();
+      store.get("session").signOut();
     }, [location.pathname]),
   };
 
