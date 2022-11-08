@@ -13,13 +13,15 @@ import React, { useCallback } from "react";
 CatalogList.propTypes = {
   stateName: propTypes.string,
   renderItem: propTypes.func,
+  target: propTypes.string,
 };
 
 CatalogList.defaultProps = {
   stateName: "catalog",
+  target: "_self",
 };
 
-function CatalogList({ stateName, renderItem }) {
+function CatalogList({ stateName, renderItem, target }) {
   const store = useStore();
 
   const select = useSelector((state) => ({
@@ -85,6 +87,7 @@ function CatalogList({ stateName, renderItem }) {
           onAdd={callbacks.addToBasket}
           link={`/articles/${item._id}`}
           labelAdd={t("article.add")}
+          target={target}
         />
       ),
       [t]

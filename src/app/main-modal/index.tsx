@@ -41,7 +41,11 @@ const MainModal: React.FC<MainModalProps> = ({ stateName, renderItem }) => {
       {select.catalog && (
         <LayoutModal theme={{ scalable: true }} onClose={callbacks.close}>
           <CatalogFilter stateName={stateName} />
-          <CatalogList stateName={stateName} renderItem={renderItem} />
+          <CatalogList
+            stateName={stateName}
+            renderItem={renderItem}
+            target={"_blank"}
+          />
         </LayoutModal>
       )}
     </>
