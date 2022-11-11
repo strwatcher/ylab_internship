@@ -36,7 +36,7 @@ export type StaticStoreModules = {
   [P in keyof IModules]: InstanceType<IModules[P]>;
 };
 
-export type DynamicStoreModules = {
+type DynamicStoreModules = {
   [name: string]: InstanceType<IModules[keyof IModules]>;
 };
 

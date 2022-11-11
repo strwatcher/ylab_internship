@@ -5,7 +5,6 @@ import useInit from "@src/hooks/use-init";
 import useSelector from "@src/hooks/use-selector";
 import useStore from "@src/hooks/use-store";
 import CatalogModule from "@src/store/catalog";
-import StateModule from "@src/store/module";
 import React from "react";
 
 interface MainModalProps {
